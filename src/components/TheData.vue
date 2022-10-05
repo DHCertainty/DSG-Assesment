@@ -120,140 +120,143 @@
         <!-- <div class="container" v-show="neeuro"> -->
         <!-- </div> -->
         <div class="container" v-show="neeuro">
-          <h2>Pick Games:</h2>
-          <div>
-            <div class="left">
-              <input
-                v-model="atten"
-                id="att"
-                name="part2ins"
-                type="checkbox"
-                value="att"
-              />
-              <label for="att">&nbsp;Attention</label>
-            </div>
-            <section class="grid-rows" v-show="atten">
-              <div>
-                <label class="inside" for="stageof">Game played:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
+            <h2>Pick Games:</h2>
+            <div>
+              <div class="left">
+                <input
+                  v-model="atten"
+                  id="att"
+                  name="part2ins"
+                  type="checkbox"
+                  value="att"
+                />
+                <label for="att">&nbsp;Attention</label>
               </div>
-              <div>
-                <label class="inside" for="stageof">Finished Level:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
+              <section class="grid-rows" v-show="atten">
+                <div>
+                  <label class="inside" for="stageof">Game played:</label>
+                  <v-select
+                    :options="[
+                      'Psychic Cyclist',
+                      'Mindcopter',
+                      'Sushi Recall',
+                      'Sitting Ducks',
+                      'Multitask Master',
+                    ]"
+                  ></v-select>
+                </div>
+                <div>
+                  <label class="inside" for="stageof">Finished Level:</label>
+                  <v-select :options="['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']"></v-select>
+                </div>
+              </section>
+              <div class="gap left">
+                <input
+                  v-model="spatial"
+                  id="spat"
+                  name="part2ins"
+                  type="checkbox"
+                  value="spat"
+                />
+                <label for="spat">&nbsp;Spatial</label>
               </div>
-            </section>
-            <div class="gap left">
-              <input
-                v-model="spatial"
-                id="spat"
-                name="part2ins"
-                type="checkbox"
-                value="spat"
-              />
-              <label for="spat">&nbsp;Spatial</label>
-            </div>
-            <section class="grid-rows" v-show="spatial">
-              <div>
-                <label class="inside" for="stageof">Game played:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
+              <section class="grid-rows" v-show="spatial">
+                <div>
+                  <label class="inside" for="stageof">Game played:</label>
+                  <v-select
+                    :options="[
+                      'Whats’s this Word ?',
+                      'Dot Connect',
+                      'Stargazer',
+                      'Space 360',
+                    ]"
+                  ></v-select>
+                </div>
+                <div>
+                  <label class="inside" for="stageof">Finished Level:</label>
+                  <v-select :options="['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']"></v-select>
+                </div>
+              </section>
+              <div class="gap left">
+                <input
+                  v-model="decision"
+                  id="dec"
+                  name="part2ins"
+                  type="checkbox"
+                  value="dec"
+                />
+                <label for="dec">&nbsp;Decision</label>
               </div>
-              <div>
-                <label class="inside" for="stageof">Finished Level:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
+              <section class="grid-rows" v-show="decision">
+                <div>
+                  <label class="inside" for="stageof">Game played:</label>
+                  <v-select
+                    :options="[
+                      'Junction Control',
+                      'Pyramid Solitaire',
+                      'Supreme Shopper',
+                      'Flower Garden',
+                    ]"
+                  ></v-select>
+                </div>
+                <div>
+                  <label class="inside" for="stageof">Finished Level:</label>
+                  <v-select :options="['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']"></v-select>
+                </div>
+              </section>
+              <div class="gap left">
+                <input
+                  v-model="memory"
+                  id="mem"
+                  name="part2ins"
+                  type="checkbox"
+                  value="mem"
+                />
+                <label for="mem">&nbsp;Memory</label>
               </div>
-            </section>
-            <div class="gap left">
-              <input v-model="decision" id="dec" name="part2ins" type="checkbox" value="dec" />
-              <label for="dec">&nbsp;Decision</label>
-            </div>
-            <section class="grid-rows" v-show="decision">
-              <div>
-                <label class="inside" for="stageof">Game played:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
+              <section class="grid-rows" v-show="memory">
+                <div>
+                  <label class="inside" for="stageof">Game played:</label>
+                  <v-select
+                    :options="[
+                      'Farmhouse Friends',
+                      'Who’s Who?',
+                      'Pyramid Solitaire',
+                      'Sushi Recall',
+                      'Sitting Ducks',
+                    ]"
+                  ></v-select>
+                </div>
+                <div>
+                  <label class="inside" for="stageof">Finished Level:</label>
+                  <v-select :options="['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']"></v-select>
+                </div>
+              </section>
+              <div class="gap left">
+                <input
+                  v-model="flexibility"
+                  id="flexi"
+                  name="part2ins"
+                  type="checkbox"
+                  value="flexi"
+                />
+                <label for="flexi">&nbsp;Flexibility</label>
               </div>
-              <div>
-                <label class="inside" for="stageof">Finished Level:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-            </section>
-            <div class="gap left">
-              <input v-model="memory" id="mem" name="part2ins" type="checkbox" value="mem" />
-              <label for="mem">&nbsp;Memory</label>
-            </div>
-            <section class="grid-rows" v-show="memory">
-              <div>
-                <label class="inside" for="stageof">Game played:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-              <div>
-                <label class="inside" for="stageof">Finished Level:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-            </section>
-            <div class="gap left">
-              <input v-model="flexibility" id="flexi" name="part2ins" type="checkbox" value="flexi" />
-              <label for="flexi">&nbsp;Flexibility</label>
-            </div>
-            <section class="grid-rows" v-show="flexibility">
-              <div>
-                <label class="inside" for="stageof">Game played:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-              <div>
-                <label class="inside" for="stageof">Finished Level:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-            </section>
+              <section class="grid-rows" v-show="flexibility">
+                <div>
+                  <label class="inside" for="stageof">Game played:</label>
+                  <v-select
+                    :options="[
+                      'Multitask Master',
+                      'Junction Control',
+                    ]"
+                  ></v-select>
+                </div>
+                <div>
+                  <label class="inside" for="stageof">Finished Level:</label>
+                  <v-select :options="['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']"></v-select>
+                </div>
+              </section>
           </div>
         </div>
         <hr />
