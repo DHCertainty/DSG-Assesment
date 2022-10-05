@@ -5,7 +5,18 @@
         <div class="grid-rows">
           <div class="form-control">
             <label class="common" for="typeof">Type of Dementia:</label>
-            <v-select v-model="type" :options="['1', '2', '3']"></v-select>
+            <v-select
+              v-model="type"
+              :options="[
+                'Alzheimers Disease',
+                'Vascular Dementia',
+                'Mixed Dementia',
+                'Lewy Body Dementia',
+                'Parkinson Dementia',
+                'Fronto-temporal Dementia',
+                'Others',
+              ]"
+            ></v-select>
             <!-- <select v-model="type" class="common" id="typeof" name="typeof">
               <option disabled selected value="type0"></option>
               <option value="type1">1</option>
@@ -15,7 +26,16 @@
           </div>
           <div class="form-control">
             <label class="common" for="stageof">Stage of Dementia:</label>
-            <v-select v-model="stageof" :options="['1', '2', '3']"></v-select>
+            <v-select
+              v-model="stageof"
+              :options="[
+                'Mild',
+                'Mild to Moderate',
+                'Moderate',
+                'Moderate to Severe',
+                'Severe',
+              ]"
+            ></v-select>
             <!-- <select
               v-model="stageof"
               class="common"
