@@ -5,7 +5,18 @@
         <div class="grid-rows">
           <div class="form-control">
             <label class="common" for="typeof">Type of Dementia:</label>
-            <v-select v-model="type" :options="['1', '2', '3']"></v-select>
+            <v-select
+              v-model="type"
+              :options="[
+                'Alzheimer’s Disease',
+                'Vascular Dementia',
+                'Mixed Dementia',
+                'Lewy Body Dementia',
+                'Parkinson Dementia',
+                'Fronto-temporal Dementia',
+                'Others',
+              ]"
+            ></v-select>
             <!-- <select v-model="type" class="common" id="typeof" name="typeof">
               <option disabled selected value="type0"></option>
               <option value="type1">1</option>
@@ -15,7 +26,16 @@
           </div>
           <div class="form-control">
             <label class="common" for="stageof">Stage of Dementia:</label>
-            <v-select v-model="stageof" :options="['1', '2', '3']"></v-select>
+            <v-select
+              v-model="stageof"
+              :options="[
+                'Mild',
+                'Mild to Moderate',
+                'Moderate',
+                'Moderate to Severe',
+                'Severe',
+              ]"
+            ></v-select>
             <!-- <select
               v-model="stageof"
               class="common"
@@ -37,7 +57,8 @@
               class="common"
               id="score"
               name="score"
-              type="text"
+              type="number"
+              min="0"
             />
           </div>
           <div class="form-control">
@@ -52,191 +73,256 @@
           </div>
         </div>
         <hr />
-        <section v-show="type && stageof && latest && date">
-        <div class="form-control gap">
-          <input
-            v-model="checker"
-            id="sacop"
-            name="part2"
-            type="checkbox"
-            value="sacop"
-          />
-          <label class="gapped" for="sacop"
-            >Shared about Centre's objectives & program</label
-          >
-        </div>
-        <div class="form-control gap">
-          <input
-            v-model="checker2"
-            id="wcv"
-            name="part2"
-            type="checkbox"
-            value="wcv"
-          />
-          <label class="gapped" for="wcv">Watched Centre's video</label>
-        </div>
-        <div class="form-control gap">
-          <input
-            id="pnbtg"
-            name="the-pnbtg"
-            type="checkbox"
-            value="pnbtg"
-            v-model="neeuro"
-          />
-          <label class="gapped" for="pnbtg"
-            >Played NeeuroFIT brain training game</label
-          >
-        </div>
-        <div class="form-control gap">
-          <input
-            v-model="checker3"
-            id="pttg"
-            name="part2"
-            type="checkbox"
-            value="pttg"
-          />
-          <label class="gapped" for="pttg">Played Table Top games</label>
-        </div>
-        <!-- <div class="container" v-show="neeuro"> -->
-        <!-- </div> -->
-        <div class="container" v-show="neeuro">
-          <h2>Pick Games:</h2>
-          <div>
-            <div class="left">
-              <input
-                v-model="atten"
-                id="att"
-                name="part2ins"
-                type="checkbox"
-                value="att"
-              />
-              <label for="att">&nbsp;Attention</label>
-            </div>
-            <section class="grid-rows" v-show="atten">
-              <div>
-                <label class="inside" for="stageof">Game played:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-              <div>
-                <label class="inside" for="stageof">Finished Level:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-            </section>
-            <div class="gap left">
-              <input
-                v-model="spatial"
-                id="spat"
-                name="part2ins"
-                type="checkbox"
-                value="spat"
-              />
-              <label for="spat">&nbsp;Spatial</label>
-            </div>
-            <section class="grid-rows" v-show="spatial">
-              <div>
-                <label class="inside" for="stageof">Game played:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-              <div>
-                <label class="inside" for="stageof">Finished Level:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-            </section>
-            <div class="gap left">
-              <input v-model="decision" id="dec" name="part2ins" type="checkbox" value="dec" />
-              <label for="dec">&nbsp;Decision</label>
-            </div>
-            <section class="grid-rows" v-show="decision">
-              <div>
-                <label class="inside" for="stageof">Game played:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-              <div>
-                <label class="inside" for="stageof">Finished Level:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-            </section>
-            <div class="gap left">
-              <input v-model="memory" id="mem" name="part2ins" type="checkbox" value="mem" />
-              <label for="mem">&nbsp;Memory</label>
-            </div>
-            <section class="grid-rows" v-show="memory">
-              <div>
-                <label class="inside" for="stageof">Game played:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-              <div>
-                <label class="inside" for="stageof">Finished Level:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-            </section>
-            <div class="gap left">
-              <input v-model="flexibility" id="flexi" name="part2ins" type="checkbox" value="flexi" />
-              <label for="flexi">&nbsp;Flexibility</label>
-            </div>
-            <section class="grid-rows" v-show="flexibility">
-              <div>
-                <label class="inside" for="stageof">Game played:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-              <div>
-                <label class="inside" for="stageof">Finished Level:</label>
-                <select class="inside" id="stageof" name="stageof">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-            </section>
+        <section v-show="type && stageof && (latest || latest == 0) && date">
+          <div class="form-control gap">
+            <input
+              v-model="checker"
+              id="sacop"
+              name="part2"
+              type="checkbox"
+              value="sacop"
+            />
+            <label class="gapped" for="sacop"
+              >Shared about Centre's objectives & program</label
+            >
           </div>
-        </div>
-        <hr />
+          <div class="form-control gap">
+            <input
+              v-model="checker2"
+              id="wcv"
+              name="part2"
+              type="checkbox"
+              value="wcv"
+            />
+            <label class="gapped" for="wcv">Watched Centre's video</label>
+          </div>
+          <div class="form-control gap">
+            <input
+              id="pnbtg"
+              name="the-pnbtg"
+              type="checkbox"
+              value="pnbtg"
+              v-model="neeuro"
+            />
+            <label class="gapped" for="pnbtg"
+              >Played NeeuroFIT brain training game</label
+            >
+          </div>
+          <div class="form-control gap">
+            <input
+              v-model="checker3"
+              id="pttg"
+              name="part2"
+              type="checkbox"
+              value="pttg"
+            />
+            <label class="gapped" for="pttg">Played Table Top games</label>
+          </div>
+          <!-- <div class="container" v-show="neeuro"> -->
+          <!-- </div> -->
+          <div class="container" v-show="neeuro">
+            <h2>Pick Games:</h2>
+            <div>
+              <div class="left">
+                <input
+                  v-model="atten"
+                  id="att"
+                  name="part2ins"
+                  type="checkbox"
+                  value="att"
+                />
+                <label for="att">&nbsp;Attention</label>
+              </div>
+              <section class="grid-rows" v-show="atten">
+                <div>
+                  <label class="inside" for="stageof">Game played:</label>
+                  <v-select
+                    :options="[
+                      'Psychic Cyclist',
+                      'Mindcopter',
+                      'Sushi Recall',
+                      'Sitting Ducks',
+                      'Multitask Master',
+                    ]"
+                  ></v-select>
+                </div>
+                <div>
+                  <label class="inside" for="stageof">Finished Level:</label>
+                  <v-select
+                    :options="[
+                      '1',
+                      '2',
+                      '3',
+                      '4',
+                      '5',
+                      '6',
+                      '7',
+                      '8',
+                      '9',
+                      '10',
+                    ]"
+                  ></v-select>
+                </div>
+              </section>
+              <div class="gap left">
+                <input
+                  v-model="spatial"
+                  id="spat"
+                  name="part2ins"
+                  type="checkbox"
+                  value="spat"
+                />
+                <label for="spat">&nbsp;Spatial</label>
+              </div>
+              <section class="grid-rows" v-show="spatial">
+                <div>
+                  <label class="inside" for="stageof">Game played:</label>
+                  <v-select
+                    :options="[
+                      'Whats’s this Word ?',
+                      'Dot Connect',
+                      'Stargazer',
+                      'Space 360',
+                    ]"
+                  ></v-select>
+                </div>
+                <div>
+                  <label class="inside" for="stageof">Finished Level:</label>
+                  <v-select
+                    :options="[
+                      '1',
+                      '2',
+                      '3',
+                      '4',
+                      '5',
+                      '6',
+                      '7',
+                      '8',
+                      '9',
+                      '10',
+                    ]"
+                  ></v-select>
+                </div>
+              </section>
+              <div class="gap left">
+                <input
+                  v-model="decision"
+                  id="dec"
+                  name="part2ins"
+                  type="checkbox"
+                  value="dec"
+                />
+                <label for="dec">&nbsp;Decision</label>
+              </div>
+              <section class="grid-rows" v-show="decision">
+                <div>
+                  <label class="inside" for="stageof">Game played:</label>
+                  <v-select
+                    :options="[
+                      'Junction Control',
+                      'Pyramid Solitaire',
+                      'Supreme Shopper',
+                      'Flower Garden',
+                    ]"
+                  ></v-select>
+                </div>
+                <div>
+                  <label class="inside" for="stageof">Finished Level:</label>
+                  <v-select
+                    :options="[
+                      '1',
+                      '2',
+                      '3',
+                      '4',
+                      '5',
+                      '6',
+                      '7',
+                      '8',
+                      '9',
+                      '10',
+                    ]"
+                  ></v-select>
+                </div>
+              </section>
+              <div class="gap left">
+                <input
+                  v-model="memory"
+                  id="mem"
+                  name="part2ins"
+                  type="checkbox"
+                  value="mem"
+                />
+                <label for="mem">&nbsp;Memory</label>
+              </div>
+              <section class="grid-rows" v-show="memory">
+                <div>
+                  <label class="inside" for="stageof">Game played:</label>
+                  <v-select
+                    :options="[
+                      'Farmhouse Friends',
+                      'Who’s Who?',
+                      'Pyramid Solitaire',
+                      'Sushi Recall',
+                      'Sitting Ducks',
+                    ]"
+                  ></v-select>
+                </div>
+                <div>
+                  <label class="inside" for="stageof">Finished Level:</label>
+                  <v-select
+                    :options="[
+                      '1',
+                      '2',
+                      '3',
+                      '4',
+                      '5',
+                      '6',
+                      '7',
+                      '8',
+                      '9',
+                      '10',
+                    ]"
+                  ></v-select>
+                </div>
+              </section>
+              <div class="gap left">
+                <input
+                  v-model="flexibility"
+                  id="flexi"
+                  name="part2ins"
+                  type="checkbox"
+                  value="flexi"
+                />
+                <label for="flexi">&nbsp;Flexibility</label>
+              </div>
+              <section class="grid-rows" v-show="flexibility">
+                <div>
+                  <label class="inside" for="stageof">Game played:</label>
+                  <v-select
+                    :options="['Multitask Master', 'Junction Control']"
+                  ></v-select>
+                </div>
+                <div>
+                  <label class="inside" for="stageof">Finished Level:</label>
+                  <v-select
+                    :options="[
+                      '1',
+                      '2',
+                      '3',
+                      '4',
+                      '5',
+                      '6',
+                      '7',
+                      '8',
+                      '9',
+                      '10',
+                    ]"
+                  ></v-select>
+                </div>
+              </section>
+            </div>
+          </div>
+          <hr />
         </section>
         <section
           v-show="
@@ -272,7 +358,7 @@
             (neeuro || checker || checker2 || checker3)
           "
         >
-        <!-- <section> -->
+          <!-- <section> -->
           <div class="form-control">
             <label class="common" for="session">Session Reccomended:</label>
             <v-select
@@ -294,20 +380,21 @@
               class="half"
               id="admission"
               name="admission"
-              type="text"
+              type="date"
             />
           </div>
           <hr />
         </section>
         <section
-          v-show="
+        v-show="
             type &&
             stageof &&
             latest &&
             date &&
             checking &&
-            (neeuro || checker || checker2 || checker3)
-            && ses.length > 0 && adm
+            (neeuro || checker || checker2 || checker3) &&
+            ses.length > 0 &&
+            adm
           "
         >
         <!-- <section> -->
@@ -335,34 +422,73 @@
           </div>
           <!--  -->
           <section v-show="subsidy">
-            <div class="grid-rows-subsidy">
-            <label class="common">Means Test Result</label>
-              <input class="common" id="means" name="means" type="text" />
-              <label class="common subsidy">% subsidy</label>
-            </div>
-
-            <div class="grid-rows">
-              <div class="form-control gapbot">
-                <label class="common" for="sponsor">Pick Sponsor:</label>
-                <select class="common" id="sponsor" name="sponsor">
-                  <option disabled selected value></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-
-              <div class="form-control gapbot">
-                <label class="common" for="subsid">Amount Subsidized:</label>
+            <main></main>
+            <div class="form-control">
+              <div class="form-control gap">
                 <input
-                  class="common"
-                  id="subsid"
-                  name="subsid"
-                  type="text"
-                  value="S$"
-                  readonly="readonly"
+                  v-model="subs1"
+                  id="dsg1"
+                  name="subsidy1"
+                  type="checkbox"
+                  value="dsg1"
                 />
+                <label class="long" for="dsg1">DSG</label>
               </div>
+              <div class="form-control gap">
+                <input
+                  v-model="subs2"
+                  id="dsg2"
+                  name="subsidy2"
+                  type="checkbox"
+                  value="dsg2"
+                />
+                <label class="long" for="dsg2">Toteboard</label>
+                <div v-show="subs2" class="grid-rows-subsidy gap">
+                  <label class="common gap">Means Test Result</label>
+                  <input
+                    class="common"
+                    id="means"
+                    name="means"
+                    type="number"
+                    min="0"
+                  />
+                  <label class="common subsidy">% subsidy</label>
+                </div>
+              </div>
+              <div class="form-control gap">
+                <input
+                  v-model="subs3"
+                  id="dsg3"
+                  name="subsidy3"
+                  type="checkbox"
+                  value="dsg3"
+                />
+                <label class="long" for="dsg3">Others</label>
+                <div v-show="subs3" class="form-control gap">
+                  <label class="common" for="others">Specify:</label>
+                  <input class="half" id="others" name="others" type="text" />
+                </div>
+              </div>
+            </div>
+            <div class="form-control gap gapbot">
+              <input
+                v-model="subs4"
+                id="dsg4"
+                name="subsidy4"
+                type="checkbox"
+                value="dsg4"
+              />
+              <label class="long" for="dsg4">Amount Subsidized</label>
+            </div>
+            <div v-show="subs4" class="form-control gapbot">
+              <label class="common" for="subsid">Amount Subsidized:</label>
+              <input
+                class="half"
+                id="subsid"
+                name="subsid"
+                type="number"
+                min="0"
+              />
             </div>
           </section>
           <hr />
@@ -558,6 +684,10 @@ export default {
       type: "",
       stageof: "",
       date: "",
+      subs1: true,
+      subs2: false,
+      subs3: false,
+      subs4: false,
     };
   },
   methods: {
@@ -566,12 +696,35 @@ export default {
     },
   },
   watch: {
-    checking(value) {
-      if (value === "") {
-        this.ses = [];
-        this.adm = "";
+    subs1(value) {
+      if (value === true) {
+        this.subs2 = false;
+        this.subs3 = false;
+        this.subs4 = false;
       }
     },
+    subs2(value) {
+      if (value === true) {
+        this.subs1 = false;
+        this.subs4 = false;
+        this.subs3 = false;
+      }
+    },
+    subs3(value) {
+      if (value === true) {
+        this.subs2 = false;
+        this.subs1 = false;
+        this.subs4 = false;
+      }
+    },
+    subs4(value) {
+      if (value === true) {
+        this.subs2 = false;
+        this.subs1 = false;
+        this.subs3 = false;
+      }
+    },
+
     // ses(value){
     //   if(value.length === 0){
     //     value = [];
@@ -719,7 +872,7 @@ textarea:focus {
   /* width: 60%; */
 }
 
-.subsidy{
+.subsidy {
   text-align: left;
 }
 
