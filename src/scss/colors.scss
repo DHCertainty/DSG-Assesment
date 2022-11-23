@@ -1,0 +1,55 @@
+$blue:#4475C3;
+$cyan: #3894A0;
+$indigo: #655AAF;
+$tq: #6161AB;
+$green:#569E73;
+$red: #D83A2A;
+$warning: #f0ad4e;
+$primary: #4B2B67;
+$chartprimary: rgb(135,117,241);
+$secondary: #383874;
+$primarytext: $secondary;
+$primarypurple: $primary;
+$primaryred: #ff708b;
+$primarywhite: #fff;
+
+$cal5: #673c4f;
+$cal4: #7f557d;
+$cal3: #726e97;
+$cal2: #7698b3;
+$cal1: #83b5d1;
+
+$theme-colors: (
+  'black':#000,
+  'tq':$tq,
+  'cal1': $cal1,
+  'cal2': $cal2,
+  'cal3': $cal3,
+  'cal4': $cal4,
+  'cal5': $cal5,
+  'Updated':$green,
+  'Absent':$red,
+  'Attended':$warning,
+  'cal-split1': rgba($cal1,.2),
+  'cal-split2': rgba($cal2,.2),
+  'cal-split3': rgba($cal3,.2),
+  'cal-split4': rgba($cal4,.2),
+  'cal-split5': rgba($cal5,.2),
+  'primary': $primary,
+  'lightinfo' :#d9edf7,
+  'white': #fff ,
+  'safeentry': #EB5E5E,
+  'dark-ms': #2f2f2f,
+  'dark-sp': #aaaaaa,
+  'outlook-blue':#026ABD,
+  'sec1':#4c4c82,
+  'sec2':#606090,
+  'sec3':#74749e,
+  'sec4':#8888ac,
+  'sec5':#4c4c82,
+  'sec6':#afafc7,
+  'ana1': #563874,
+  'ana2': #387474,
+  'tri1': #ffa176,
+  'tri2': #ffe676,
+);

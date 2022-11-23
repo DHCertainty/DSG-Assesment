@@ -15,3 +15,12 @@ export default {
   }
 }
 </script>
+
+<style>
+
+
+.back{
+  /* position: static; */
+  z-index: 0;
+}
+</style>
