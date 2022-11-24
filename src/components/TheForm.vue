@@ -70,8 +70,8 @@
           </div>
         </div>
         <hr />
-        <section v-show="type && stageof && latest && latestscore && date">
-        <!-- <section> -->
+        <!-- <section v-show="type && stageof && latest && latestscore && date"> -->
+        <section>
           <div class="formed gap">
             <input
               v-model="checker"
@@ -388,11 +388,11 @@
                 <p class="common gap">Visuospatial/Executive</p>
                 <div class="col-sm-6">
                   <label>Alternating Trail Making:</label>
-                  <v-select v-model="vis1" :options="['0', '1']"></v-select>
+                  <v-select v-model="vis1" :options="['0', '1']" :clearable="false"></v-select>
                 </div>
                 <div class="col-sm-6">
                   <label>Copy Cube:</label>
-                  <v-select v-model="vis2" :options="['0', '1']"></v-select>
+                  <v-select v-model="vis2" :options="['0', '1']" :clearable="false"></v-select>
                 </div>
               </div>
               <label class="gap">Draw Clock(Ten past eleven) [3 Points]</label>
@@ -409,49 +409,49 @@
                 <p class="common gap">Naming</p>
                 <div class="col-sm-6">
                   <label>Lion:</label>
-                  <v-select v-model="vis4" :options="['0', '1']"></v-select>
+                  <v-select v-model="vis4" :options="['0', '1']" :clearable="false"></v-select>
                 </div>
                 <div class="col-sm-6">
                   <label>Elephant:</label>
-                  <v-select v-model="vis5" :options="['0', '1']"></v-select>
+                  <v-select v-model="vis5" :options="['0', '1']" :clearable="false"></v-select>
                 </div>
                 <div class="col-sm-6 gap">
                   <label>Camel:</label>
-                  <v-select v-model="vis6" :options="['0', '1']"></v-select>
+                  <v-select v-model="vis6" :options="['0', '1']" :clearable="false"></v-select>
                 </div>
                 <p class="common gap">Memory[0 Point]</p>
                 <div class="col-sm-6">
-                  <input class="numbers" type="text" value="0" disabled />
+                  <input class="numbers" type="text" value="0" disabled/>
                 </div>
               </div>
               <div class="row">
                 <p class="common gap">Attention</p>
                 <div class="col-sm-6">
                   <label>Repeat Forward order 2 1 8 5 4 :</label>
-                  <v-select v-model="vis7" :options="['0', '1']"></v-select>
+                  <v-select v-model="vis7" :options="['0', '1']" :clearable="false"></v-select>
                 </div>
                 <div class="col-sm-6">
                   <label>Able to tap with his hand at each number 1:</label>
-                  <v-select v-model="vis8" :options="['0', '1']"></v-select>
+                  <v-select v-model="vis8" :options="['0', '1']" :clearable="false"></v-select>
                 </div>
                 <div class="col-sm-6 gap">
                   <label>Serial 7 subtraction starting at 100:</label>
-                  <v-select v-model="vis9" :options="['0', '1']"></v-select>
+                  <v-select v-model="vis9" :options="['0', '1']" :clearable="false"></v-select>
                 </div>
               </div>
               <div class="row">
                 <p class="common gap">Language(Repeat)</p>
                 <div class="col-sm-6">
                   <label>First Sentence:</label>
-                  <v-select v-model="vis9" :options="['0', '1']"></v-select>
+                  <v-select v-model="vis9" :options="['0', '1']" :clearable="false"></v-select>
                 </div>
                 <div class="col-sm-6">
                   <label>Second Sentence:</label>
-                  <v-select v-model="vis10" :options="['0', '1']"></v-select>
+                  <v-select v-model="vis10" :options="['0', '1']" :clearable="false"></v-select>
                 </div>
                 <div class="col-sm-6 gap">
                   <label>Verbal Fluency:</label>
-                  <v-select v-model="vis11" :options="['0', '1']"></v-select>
+                  <v-select v-model="vis11" :options="['0', '1']" :clearable="false"></v-select>
                 </div>
                 <div class="col-sm-6 gap">
                   <label>Specify(how many animals)</label>
@@ -479,11 +479,11 @@
                 <p class="common gap">Abstraction</p>
                 <div class="col-sm-6">
                   <label>Similarity between Train - bicycle:</label>
-                  <v-select v-model="vis13" :options="['0', '1']"></v-select>
+                  <v-select v-model="vis13" :options="['0', '1']" :clearable="false"></v-select>
                 </div>
                 <div class="col-sm-6">
                   <label>Similarity between watch - ruler:</label>
-                  <v-select v-model="vis14" :options="['0', '1']"></v-select>
+                  <v-select v-model="vis14" :options="['0', '1']" :clearable="false"></v-select>
                 </div>
               </div>
               <p class="common gap">Delayed Recall[5 Points]</p>
@@ -501,11 +501,11 @@
               <p class="common gap">Orientation</p>
               <v-select
                 multiple
-                v-model="vis15"
+                v-model="vis16"
                 :options="['Date', 'Month', 'Year', 'Day', 'Place', 'Country']"
               ></v-select>
               <div class="row">
-                <p class="common gap">Total Score: {{ totalscr }}</p>
+                <p class="common gap">Total Score: {{ totalscore }}</p>
               </div>
             </div>
           </div>
@@ -526,51 +526,61 @@
                   <div class="row gap">
                     <label class="col-lg-4">Mobility:</label>
                     <v-select
+                      v-model="eq1"
                       class="col-lg-8"
                       :options="['0', '1', '2', '3', '4', '5']"
+                      :clearable="false"
                     ></v-select>
                   </div>
                   <div class="row gap">
                     <label class="col-lg-4">Self-Care:</label>
                     <v-select
+                      v-model="eq2"
                       class="col-lg-8"
                       :options="['0', '1', '2', '3', '4', '5']"
+                      :clearable="false"
                     ></v-select>
                   </div>
                   <div class="row gap">
                     <label class="col-lg-4">Usual Activities:</label>
                     <v-select
+                      v-model="eq3"
                       class="col-lg-8"
                       :options="['0', '1', '2', '3', '4', '5']"
+                      :clearable="false"
                     ></v-select>
                   </div>
                   <div class="row gap">
                     <label class="col-lg-4">Pain/Discomfort:</label>
                     <v-select
+                      v-model="eq4"
                       class="col-lg-8"
                       :options="['0', '1', '2', '3', '4', '5']"
+                      :clearable="false"
                     ></v-select>
                   </div>
                   <div class="row gap">
                     <label class="col-lg-4">Anxiety/Depression:</label>
                     <v-select
+                      v-model="eq5"
                       class="col-lg-8"
                       :options="['0', '1', '2', '3', '4', '5']"
+                      :clearable="false"
                     ></v-select>
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <p class="gapbot">Total Score:</p>
                   <div class="sm-container">
-                    <br/>
-                    <h1>{{eq5dcounter}}/25</h1>
+                    <br />
+                    <h1>{{ eq5dcounter }}/25</h1>
                   </div>
                 </div>
                 <p class="common gap">Perceived Health Scale:</p>
                 <div class="row">
                   <label class="left col-sm-2">Health Scale:</label>
                   <div class="col-sm-4">
-                    <input class="numbers" type="number" min="0" max="100"/>
+                    <input class="numbers" type="number" min="0" max="100" />
                   </div>
                 </div>
               </div>
@@ -1039,6 +1049,7 @@ export default {
       subs2: false,
       subs3: false,
       subs4: false,
+      edulev: "",
       amtcollect: 0,
       fees1: false,
       fees2: false,
@@ -1069,8 +1080,13 @@ export default {
       vis12: [0],
       vis13: [0],
       vis14: [0],
-      totalscr: 0,
-      eq5dcounter: 0,
+      vis15: [],
+      vis16: [],
+      eq1: 0,
+      eq2: 0,
+      eq3: 0,
+      eq4: 0,
+      eq5: 0,
     };
   },
   methods: {
@@ -1185,6 +1201,39 @@ export default {
       }
     },
   },
+  computed: {
+    totalscore: function () {
+      let length1 = this.vis3.length;
+      let length2 = this.vis15.length;
+      let length3 = this.vis16.length;
+      return (
+        parseInt(this.vis1) +
+        parseInt(this.vis2) +
+        length1 +
+        parseInt(this.vis4) +
+        parseInt(this.vis5) + 
+        parseInt(this.vis6) +
+        parseInt(this.vis7) +
+        parseInt(this.vis8) +
+        parseInt(this.vis9) +
+        parseInt(this.vis10) +
+        parseInt(this.vis11) +
+        parseInt(this.vis13) +
+        parseInt(this.vis14) +
+        length2 +
+        length3
+      );
+    },
+    eq5dcounter: function(){
+      return (
+        parseInt(this.eq1) +
+        parseInt(this.eq2) +
+        parseInt(this.eq3) +
+        parseInt(this.eq4) +
+        parseInt(this.eq5) 
+      );
+    },
+  },
 };
 
 //font: roboto
@@ -1199,14 +1248,14 @@ export default {
   border-radius: 10px;
   border: 1px solid #ccc;
   padding: 1rem;
-  margin: 2rem auto;
-  max-width: 65rem;
+  margin: auto;
+  max-width: 80vw;
   display: block;
   justify-content: center;
   text-align: center;
 }
 
-.sm-container{
+.sm-container {
   border-radius: 15px;
   border: 1px solid #ccc;
   padding: 1rem;
