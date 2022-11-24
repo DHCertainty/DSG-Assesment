@@ -70,8 +70,8 @@
           </div>
         </div>
         <hr />
-        <!-- <section v-show="type && stageof && latest && latestscore && date"> -->
-        <section>
+        <section v-show="type && stageof && latest && latestscore && date">
+        <!-- <section> -->
           <div class="formed gap">
             <input
               v-model="checker"
