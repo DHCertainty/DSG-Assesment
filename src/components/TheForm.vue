@@ -80,7 +80,7 @@
               type="checkbox"
               value="sacop"
             />
-            <label class="gapped" for="sacop"
+            <label class="gapped text-small" for="sacop"
               >Shared about Centre's objectives & program</label
             >
           </div>
@@ -92,7 +92,7 @@
               type="checkbox"
               value="wcv"
             />
-            <label class="gapped" for="wcv">Watched Centre's video</label>
+            <label class="gapped text-small" for="wcv">Watched Centre's video</label>
           </div>
           <div class="formed gap">
             <input
@@ -102,7 +102,7 @@
               value="pnbtg"
               v-model="neeuro"
             />
-            <label class="gapped" for="pnbtg"
+            <label class="gapped text-small" for="pnbtg"
               >Played NeeuroFIT brain training game</label
             >
           </div>
@@ -316,7 +316,7 @@
               type="checkbox"
               value="pttg"
             />
-            <label class="gapped" for="pttg">Played Table Top games</label>
+            <label class="gapped text-small" for="pttg">Played Table Top games</label>
           </div>
           <div class="formed gap">
             <input
@@ -326,7 +326,7 @@
               type="checkbox"
               value="mocaform"
             />
-            <label class="gapped" for="mocaform">MOCA form</label>
+            <label class="gapped text-small" for="mocaform">MOCA form</label>
             <div v-show="checker4" class="container left gap">
               <h2 class="moca gapbot">MOCA</h2>
               <p class="common">Version:</p>
@@ -376,10 +376,14 @@
                 <v-select
                   v-model="edulev"
                   :options="[
-                    'Primary School',
-                    'Junior High',
-                    'Senior High',
-                    'College',
+                    'Primary',
+                    'Secondary',
+                    'Pre-University',
+                    'Diploma',
+                    'Associate Degree',
+                    'Bachelor’s Degree',
+                    'Master’s Degree',
+                    'Doctorate Degree',
                   ]"
                   class="col-sm-6 gapbot"
                 ></v-select>
@@ -517,7 +521,7 @@
               type="checkbox"
               value="eq5d"
             />
-            <label class="gapped" for="eq5d">EQ-5D-5L form</label>
+            <label class="gapped text-small" for="eq5d">EQ-5D-5L form</label>
             <div v-show="checker5" class="container">
               <h2 class="moca gapbot">EQ-5D-5L</h2>
               <p class="common">Health Status:</p>
@@ -817,7 +821,7 @@
                   value="80"
                   v-model="fees1"
                 />
-                <label class="long" for="80"
+                <label class="gapped text-small" for="80"
                   >Centre-based 3-HR FOW group session [$80]</label
                 >
               </div>
@@ -829,7 +833,7 @@
                   value="90"
                   v-model="fees2"
                 />
-                <label class="long" for="90"
+                <label class="gapped text-small" for="90"
                   >Centre-based 1.5-HR one-to-one FOW session [$90]</label
                 >
               </div>
@@ -841,7 +845,7 @@
                   value="256"
                   v-model="fees3"
                 />
-                <label class="long" for="256"
+                <label class="gapped text-small" for="256"
                   >Centre-based NeeuroFIT 6 months subcription [$240]</label
                 >
               </div>
@@ -853,7 +857,7 @@
                   value="sgp"
                   v-model="fees4"
                 />
-                <label class="long" for="sgp"
+                <label class="gapped text-small" for="sgp"
                   >Centre-based 3-HR CIP trial run [S'porean]</label
                 >
               </div>
@@ -865,7 +869,7 @@
                   value="prfees"
                   v-model="fees5"
                 />
-                <label class="long" for="prfees"
+                <label class="gapped text-small" for="prfees"
                   >Centre-based 3-HR CIP trial run [PR]</label
                 >
               </div>
@@ -877,7 +881,7 @@
                   value="hb90"
                   v-model="fees6"
                 />
-                <label class="long" for="hb90"
+                <label class="gapped text-small" for="hb90"
                   >Home-based 1-HR one-to-one FOW session(incl. transport)
                   [$90]</label
                 >
@@ -890,7 +894,7 @@
                   value="hb120"
                   v-model="fees7"
                 />
-                <label class="long" for="hb120"
+                <label class="gapped text-small" for="hb120"
                   >Home-based 1.5-HR one-to-one FOW session(incl. transport)
                   [$120]</label
                 >
@@ -903,7 +907,7 @@
                   value="hb150"
                   v-model="fees8"
                 />
-                <label class="long" for="hb150"
+                <label class="gapped text-small" for="hb150"
                   >Home-based 2-HR one-to-one FOW session(incl. transport)
                   [$150]</label
                 >
@@ -916,7 +920,7 @@
                   value="hb90"
                   v-model="fees9"
                 />
-                <label class="long" for="hb90"
+                <label class="gapped text-small" for="hb90"
                   >Home-based 1-HR FOW session via video calls [$90]</label
                 >
               </div>
@@ -928,7 +932,7 @@
                   value="50"
                   v-model="fees10"
                 />
-                <label class="long" for="50">One-time Assessment [$50]</label>
+                <label class="gapped text-small" for="50">One-time Assessment [$50]</label>
               </div>
               <div class="formed gap">
                 <input
@@ -938,7 +942,7 @@
                   value="refund"
                   v-model="fees11"
                 />
-                <label class="long" for="refund"
+                <label class="gapped text-small" for="refund"
                   >Refundable One-Month Deposit (4 X applicable fee)</label
                 >
               </div>
@@ -1065,6 +1069,7 @@ export default {
       cn: false,
       en: false,
       un: false,
+      unpoint: 0,
       ov: false,
       vis1: [0],
       vis2: [0],
@@ -1121,6 +1126,27 @@ export default {
         this.subs2 = false;
         this.subs1 = false;
         this.subs3 = false;
+      }
+    },
+    cn(value){
+      if(value === true){
+        this.en = false;
+      }
+    },
+    en(value){
+      if(value === true){
+        this.cn = false;
+      }
+    },
+    un(value){
+      if(value === true){
+        this.ov = false;
+        this.unpoint = 1;
+      }
+    },
+    ov(value){
+      if(value === true){
+        this.un = false;
       }
     },
     fees1(value) {
@@ -1221,7 +1247,8 @@ export default {
         parseInt(this.vis13) +
         parseInt(this.vis14) +
         length2 +
-        length3
+        length3 +
+        this.unpoint
       );
     },
     eq5dcounter: function(){
@@ -1286,6 +1313,15 @@ label.inside {
   display: flex;
   margin-bottom: 0.5rem;
   // max-width: 15vw;
+}
+
+@media screen and (max-width: 411px) {
+  .text-small{
+    // display: none;
+    // background-color: red;
+    margin: 0;
+    font-size: 3vw;
+  }
 }
 
 .long {
