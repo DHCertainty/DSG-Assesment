@@ -1,11 +1,11 @@
 <template>
-  <br />
-  <br />
-  <br />
-  <br />
-  <br />
-  <br />
-  <br />
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
   <div class="container-xxl">
     <form>
       <section>
@@ -1142,6 +1142,9 @@ export default {
       if(value === true){
         this.ov = false;
         this.unpoint = 1;
+      }
+      else{
+        this.unpoint = 0;
       }
     },
     ov(value){
