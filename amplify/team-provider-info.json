@@ -17,6 +17,15 @@
           "appId": "d2v6wsjz0y4p40",
           "type": "cicd"
         }
+      },
+      "function": {
+        "dsgassessment": {
+          "deploymentBucketName": "amplify-dsgassessment-dev-143733-deployment",
+          "s3Key": "amplify-builds/dsgassessment-6b796930624e764d7257-build.zip"
+        }
+      },
+      "api": {
+        "assessmentapi": {}
       }
     }
   }
