@@ -440,7 +440,7 @@
                 </div>
                 <div class="col-sm-6 gap">
                   <label>Serial 7 subtraction starting at 100:</label>
-                  <v-select v-model="vis9" :options="['0', '1']" :clearable="false"></v-select>
+                  <v-select v-model="vis9" :options="['0', '1', '2', '3']" :clearable="false"></v-select>
                 </div>
               </div>
               <div class="row">
