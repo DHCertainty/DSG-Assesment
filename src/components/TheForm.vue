@@ -1,1020 +1,325 @@
-<template>
-  <br/>
-  <br/>
-  <br/>
-  <br/>
-  <br/>
-  <br/>
-  <br/>
-  <div class="container-xxl">
-    <form>
-      <section>
-        <div class="row">
-          <div class="col-sm-6">
-            <label class="common gap" for="typeof">Type of Dementia:</label>
-            <v-select
-              v-model="type"
-              :options="[
-                'Alzheimer’s Disease',
-                'Vascular Dementia',
-                'Mixed Dementia',
-                'Lewy Body Dementia',
-                'Parkinson Dementia',
-                'Fronto-temporal Dementia',
-                'Others',
-              ]"
-            ></v-select>
-          </div>
-          <div class="col-sm-6">
-            <label class="common gap" for="stageof">Stage of Dementia:</label>
-            <v-select
-              v-model="stageof"
-              :options="[
-                'Mild',
-                'Mild to Moderate',
-                'Moderate',
-                'Moderate to Severe',
-                'Severe',
-              ]"
-            ></v-select>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-3">
-            <label class="common gap" for="score">Latest score on:</label>
-            <v-select
-              v-model="latestscore"
-              :options="['AMT', 'MMSE', 'MOCA']"
-            ></v-select>
-          </div>
-          <div class="col-sm-3 gap">
-            <input
-              v-model="latest"
-              class="numbers gap-twice"
-              id="score"
-              name="score"
-              type="number"
-              min="0"
-              :disabled="!latestscore"
-            />
-          </div>
-          <div class="col-sm-6">
-            <label class="common gap" for="score">Date Done : </label>
-            <input
-              v-model="date"
-              class="numbers"
-              id="score"
-              name="score"
-              type="date"
-            />
-          </div>
-        </div>
-        <hr />
-        <section v-show="type && stageof && latest && latestscore && date">
-        <!-- <section> -->
-          <div class="formed gap">
-            <input
-              v-model="checker"
-              id="sacop"
-              name="part2"
-              type="checkbox"
-              value="sacop"
-            />
-            <label class="gapped text-small" for="sacop"
-              >Shared about Centre's objectives & program</label
-            >
-          </div>
-          <div class="formed gap">
-            <input
-              v-model="checker2"
-              id="wcv"
-              name="part2"
-              type="checkbox"
-              value="wcv"
-            />
-            <label class="gapped text-small" for="wcv">Watched Centre's video</label>
-          </div>
-          <div class="formed gap">
-            <input
-              id="pnbtg"
-              name="the-pnbtg"
-              type="checkbox"
-              value="pnbtg"
-              v-model="neeuro"
-            />
-            <label class="gapped text-small" for="pnbtg"
-              >Played NeeuroFIT brain training game</label
-            >
-          </div>
-          <div class="container" v-show="neeuro">
-            <h2>Pick Games:</h2>
-            <div>
-              <div class="left">
-                <input
-                  v-model="atten"
-                  id="att"
-                  name="part2ins"
-                  type="checkbox"
-                  value="att"
-                />
-                <label for="att">&nbsp;Attention</label>
-              </div>
-              <section class="row" v-show="atten">
-                <div class="gap-twice col-sm-6">
-                  <label class="inside" for="stageof">Game played:</label>
-                  <v-select
-                    :options="[
-                      'Psychic Cyclist',
-                      'Mindcopter',
-                      'Sushi Recall',
-                      'Sitting Ducks',
-                      'Multitask Master',
-                    ]"
-                  ></v-select>
-                </div>
-                <div class="gap-twice col-sm-6">
-                  <label class="inside" for="stageof">Finished Level:</label>
-                  <v-select
-                    :options="[
-                      '1',
-                      '2',
-                      '3',
-                      '4',
-                      '5',
-                      '6',
-                      '7',
-                      '8',
-                      '9',
-                      '10',
-                    ]"
-                  ></v-select>
-                </div>
-              </section>
-              <div class="gap left">
-                <input
-                  v-model="spatial"
-                  id="spat"
-                  name="part2ins"
-                  type="checkbox"
-                  value="spat"
-                />
-                <label for="spat">&nbsp;Spatial</label>
-              </div>
-              <section class="row" v-show="spatial">
-                <div class="gap-twice col-sm-6">
-                  <label class="inside" for="stageof">Game played:</label>
-                  <v-select
-                    :options="[
-                      'Whats’s this Word ?',
-                      'Dot Connect',
-                      'Stargazer',
-                      'Space 360',
-                    ]"
-                  ></v-select>
-                </div>
-                <div class="gap-twice col-sm-6">
-                  <label class="inside" for="stageof">Finished Level:</label>
-                  <v-select
-                    :options="[
-                      '1',
-                      '2',
-                      '3',
-                      '4',
-                      '5',
-                      '6',
-                      '7',
-                      '8',
-                      '9',
-                      '10',
-                    ]"
-                  ></v-select>
-                </div>
-              </section>
-              <div class="gap left">
-                <input
-                  v-model="decision"
-                  id="dec"
-                  name="part2ins"
-                  type="checkbox"
-                  value="dec"
-                />
-                <label for="dec">&nbsp;Decision</label>
-              </div>
-              <section class="row" v-show="decision">
-                <div class="gap-twice col-sm-6">
-                  <label class="inside" for="stageof">Game played:</label>
-                  <v-select
-                    :options="[
-                      'Junction Control',
-                      'Pyramid Solitaire',
-                      'Supreme Shopper',
-                      'Flower Garden',
-                    ]"
-                  ></v-select>
-                </div>
-                <div class="gap-twice col-sm-6">
-                  <label class="inside" for="stageof">Finished Level:</label>
-                  <v-select
-                    :options="[
-                      '1',
-                      '2',
-                      '3',
-                      '4',
-                      '5',
-                      '6',
-                      '7',
-                      '8',
-                      '9',
-                      '10',
-                    ]"
-                  ></v-select>
-                </div>
-              </section>
-              <div class="gap left">
-                <input
-                  v-model="memory"
-                  id="mem"
-                  name="part2ins"
-                  type="checkbox"
-                  value="mem"
-                />
-                <label for="mem">&nbsp;Memory</label>
-              </div>
-              <section class="row" v-show="memory">
-                <div class="gap-twice col-sm-6">
-                  <label class="inside" for="stageof">Game played:</label>
-                  <v-select
-                    :options="[
-                      'Farmhouse Friends',
-                      'Who’s Who?',
-                      'Pyramid Solitaire',
-                      'Sushi Recall',
-                      'Sitting Ducks',
-                    ]"
-                  ></v-select>
-                </div>
-                <div class="gap-twice col-sm-6">
-                  <label class="inside" for="stageof">Finished Level:</label>
-                  <v-select
-                    :options="[
-                      '1',
-                      '2',
-                      '3',
-                      '4',
-                      '5',
-                      '6',
-                      '7',
-                      '8',
-                      '9',
-                      '10',
-                    ]"
-                  ></v-select>
-                </div>
-              </section>
-              <div class="gap left">
-                <input
-                  v-model="flexibility"
-                  id="flexi"
-                  name="part2ins"
-                  type="checkbox"
-                  value="flexi"
-                />
-                <label for="flexi">&nbsp;Flexibility</label>
-              </div>
-              <section class="row" v-show="flexibility">
-                <div class="gap-twice col-sm-6">
-                  <label class="inside" for="stageof">Game played:</label>
-                  <v-select
-                    :options="['Multitask Master', 'Junction Control']"
-                  ></v-select>
-                </div>
-                <div class="gap-twice col-sm-6">
-                  <label class="inside" for="stageof">Finished Level:</label>
-                  <v-select
-                    :options="[
-                      '1',
-                      '2',
-                      '3',
-                      '4',
-                      '5',
-                      '6',
-                      '7',
-                      '8',
-                      '9',
-                      '10',
-                    ]"
-                  ></v-select>
-                </div>
-              </section>
-            </div>
-          </div>
-          <div class="formed gap">
-            <input
-              v-model="checker3"
-              id="pttg"
-              name="part2"
-              type="checkbox"
-              value="pttg"
-            />
-            <label class="gapped text-small" for="pttg">Played Table Top games</label>
-          </div>
-          <div class="formed gap">
-            <input
-              v-model="checker4"
-              id="mocaform"
-              name="mocaform"
-              type="checkbox"
-              value="mocaform"
-            />
-            <label class="gapped text-small" for="mocaform">MOCA form</label>
-            <div v-show="checker4" class="container left gap">
-              <h2 class="moca gapbot">MOCA</h2>
-              <p class="common">Version:</p>
-              <div>
-                <input
-                  v-model="cn"
-                  id="cn"
-                  name="cnbx"
-                  type="checkbox"
-                  value="cn"
-                />
-                <label class="gapped" for="cn">Chinese</label>
-              </div>
-              <div>
-                <input
-                  v-model="en"
-                  id="en"
-                  name="enbx"
-                  type="checkbox"
-                  value="en"
-                />
-                <label class="gapped" for="en">English</label>
-              </div>
-              <p class="common gap">Education:</p>
-              <div>
-                <input
-                  v-model="un"
-                  id="un"
-                  name="unbx"
-                  type="checkbox"
-                  value="un"
-                />
-                <label class="gapped" for="un">≤ 6 Years</label>
-              </div>
-              <div>
-                <input
-                  v-model="ov"
-                  id="ov"
-                  name="ovbx"
-                  type="checkbox"
-                  value="ov"
-                />
-                <label class="gapped" for="ov">> 6 Years</label>
-              </div>
-              <div v-show="ov" class="gap row">
-                <label class="common">Education Level:</label>
-                <v-select
-                  v-model="edulev"
-                  :options="[
-                    'Primary',
-                    'Secondary',
-                    'Pre-University',
-                    'Diploma',
-                    'Associate Degree',
-                    'Bachelor’s Degree',
-                    'Master’s Degree',
-                    'Doctorate Degree',
-                  ]"
-                  class="col-sm-6 gapbot"
-                ></v-select>
-              </div>
-              <div class="row">
-                <p class="common gap">Visuospatial/Executive</p>
-                <div class="col-sm-6">
-                  <label>Alternating Trail Making:</label>
-                  <v-select v-model="vis1" :options="['0', '1']" :clearable="false"></v-select>
-                </div>
-                <div class="col-sm-6">
-                  <label>Copy Cube:</label>
-                  <v-select v-model="vis2" :options="['0', '1']" :clearable="false"></v-select>
-                </div>
-              </div>
-              <label class="gap">Draw Clock(Ten past eleven) [3 Points]</label>
-              <v-select
-                multiple
-                v-model="vis3"
-                :options="[
-                  'Contour(1 point)',
-                  'Numbers(1 point)',
-                  'Hands(1 point)',
-                ]"
-              ></v-select>
-              <div class="row">
-                <p class="common gap">Naming</p>
-                <div class="col-sm-6">
-                  <label>Lion:</label>
-                  <v-select v-model="vis4" :options="['0', '1']" :clearable="false"></v-select>
-                </div>
-                <div class="col-sm-6">
-                  <label>Elephant:</label>
-                  <v-select v-model="vis5" :options="['0', '1']" :clearable="false"></v-select>
-                </div>
-                <div class="col-sm-6 gap">
-                  <label>Camel:</label>
-                  <v-select v-model="vis6" :options="['0', '1']" :clearable="false"></v-select>
-                </div>
-                <p class="common gap">Memory[0 Point]</p>
-                <div class="col-sm-6">
-                  <input class="numbers" type="text" value="0" disabled/>
-                </div>
-              </div>
-              <div class="row">
-                <p class="common gap">Attention</p>
-                <div class="col-sm-6">
-                  <label>Repeat Forward order 2 1 8 5 4 :</label>
-                  <v-select v-model="vis7" :options="['0', '1']" :clearable="false"></v-select>
-                </div>
-                <div class="col-sm-6">
-                  <label>Able to tap with his hand at each number 1:</label>
-                  <v-select v-model="vis8" :options="['0', '1']" :clearable="false"></v-select>
-                </div>
-                <div class="col-sm-6 gap">
-                  <label>Serial 7 subtraction starting at 100:</label>
-                  <v-select v-model="vis9" :options="['0', '1']" :clearable="false"></v-select>
-                </div>
-              </div>
-              <div class="row">
-                <p class="common gap">Language(Repeat)</p>
-                <div class="col-sm-6">
-                  <label>First Sentence:</label>
-                  <v-select v-model="vis9" :options="['0', '1']" :clearable="false"></v-select>
-                </div>
-                <div class="col-sm-6">
-                  <label>Second Sentence:</label>
-                  <v-select v-model="vis10" :options="['0', '1']" :clearable="false"></v-select>
-                </div>
-                <div class="col-sm-6 gap">
-                  <label>Verbal Fluency:</label>
-                  <v-select v-model="vis11" :options="['0', '1']" :clearable="false"></v-select>
-                </div>
-                <div class="col-sm-6 gap">
-                  <label>Specify(how many animals)</label>
-                  <v-select
-                    v-model="vis12"
-                    :options="[
-                      '0',
-                      '1',
-                      '2',
-                      '3',
-                      '4',
-                      '5',
-                      '6',
-                      '7',
-                      '8',
-                      '9',
-                      '10',
-                      '11',
-                      'more than 11',
-                    ]"
-                  ></v-select>
-                </div>
-              </div>
-              <div class="row">
-                <p class="common gap">Abstraction</p>
-                <div class="col-sm-6">
-                  <label>Similarity between Train - bicycle:</label>
-                  <v-select v-model="vis13" :options="['0', '1']" :clearable="false"></v-select>
-                </div>
-                <div class="col-sm-6">
-                  <label>Similarity between watch - ruler:</label>
-                  <v-select v-model="vis14" :options="['0', '1']" :clearable="false"></v-select>
-                </div>
-              </div>
-              <p class="common gap">Delayed Recall[5 Points]</p>
-              <v-select
-                multiple
-                v-model="vis15"
-                :options="[
-                  'Face(1 point)',
-                  'Silk(1 point)',
-                  'Church(1 point)',
-                  'Rose(1 point)',
-                  'Red(1 point)',
-                ]"
-              ></v-select>
-              <p class="common gap">Orientation</p>
-              <v-select
-                multiple
-                v-model="vis16"
-                :options="['Date', 'Month', 'Year', 'Day', 'Place', 'Country']"
-              ></v-select>
-              <div class="row">
-                <p class="common gap">Total Score: {{ totalscore }}</p>
-              </div>
-            </div>
-          </div>
-          <div class="formed gap">
-            <input
-              v-model="checker5"
-              id="eq5d"
-              name="eq5d"
-              type="checkbox"
-              value="eq5d"
-            />
-            <label class="gapped text-small" for="eq5d">EQ-5D-5L form</label>
-            <div v-show="checker5" class="container">
-              <h2 class="moca gapbot">EQ-5D-5L</h2>
-              <p class="common">Health Status:</p>
-              <div class="row">
-                <div class="left col-sm-6">
-                  <div class="row gap">
-                    <label class="col-lg-4">Mobility:</label>
-                    <v-select
-                      v-model="eq1"
-                      class="col-lg-8"
-                      :options="['0', '1', '2', '3', '4', '5']"
-                      :clearable="false"
-                    ></v-select>
-                  </div>
-                  <div class="row gap">
-                    <label class="col-lg-4">Self-Care:</label>
-                    <v-select
-                      v-model="eq2"
-                      class="col-lg-8"
-                      :options="['0', '1', '2', '3', '4', '5']"
-                      :clearable="false"
-                    ></v-select>
-                  </div>
-                  <div class="row gap">
-                    <label class="col-lg-4">Usual Activities:</label>
-                    <v-select
-                      v-model="eq3"
-                      class="col-lg-8"
-                      :options="['0', '1', '2', '3', '4', '5']"
-                      :clearable="false"
-                    ></v-select>
-                  </div>
-                  <div class="row gap">
-                    <label class="col-lg-4">Pain/Discomfort:</label>
-                    <v-select
-                      v-model="eq4"
-                      class="col-lg-8"
-                      :options="['0', '1', '2', '3', '4', '5']"
-                      :clearable="false"
-                    ></v-select>
-                  </div>
-                  <div class="row gap">
-                    <label class="col-lg-4">Anxiety/Depression:</label>
-                    <v-select
-                      v-model="eq5"
-                      class="col-lg-8"
-                      :options="['0', '1', '2', '3', '4', '5']"
-                      :clearable="false"
-                    ></v-select>
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <p class="gapbot">Total Score:</p>
-                  <div class="sm-container">
-                    <br />
-                    <h1>{{ eq5dcounter }}/25</h1>
-                  </div>
-                </div>
-                <p class="common gap">Perceived Health Scale:</p>
-                <div class="row">
-                  <label class="left col-sm-2">Health Scale:</label>
-                  <div class="col-sm-4">
-                    <input class="numbers" type="number" min="0" max="100" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <hr />
-        </section>
-        <section
-          v-show="
-            type &&
-            stageof &&
-            latest &&
-            date &&
-            (neeuro ||
-              checker ||
-              checker2 ||
-              checker3 ||
-              checker4 ||
-              checker5) &&
-            latestscore
-          "
-        >
-          <div class="formed">
-            <label class="common" for="comment"
-              >Comment/Observation about the client</label
-            >
-            <textarea
-              id="comment"
-              name="comment"
-              rows="3"
-              type="text"
-              v-model="checking"
-            ></textarea>
-          </div>
-          <hr />
-        </section>
-        <section
-          v-show="
-            type &&
-            stageof &&
-            latest &&
-            date &&
-            checking &&
-            (neeuro ||
-              checker ||
-              checker2 ||
-              checker3 ||
-              checker4 ||
-              checker5) &&
-            latestscore
-          "
-        >
-          <!-- <section> -->
-          <div class="formed">
-            <label class="common" for="session">Session Reccomended:</label>
-            <v-select
-              multiple
-              v-model="ses"
-              :options="[
-                'Monday',
-                'Tuesday',
-                'Wednesday',
-                'Thursday',
-                'Friday',
-              ]"
-            ></v-select>
-          </div>
-          <div class="formed">
-            <label class="common gap" for="admission">Admission date:</label>
-            <input
-              v-model="adm"
-              class="numbers-half"
-              id="admission"
-              name="admission"
-              type="date"
-            />
-          </div>
-          <hr />
-        </section>
-        <section
-          v-show="
-            type &&
-            stageof &&
-            latest &&
-            date &&
-            checking &&
-            (neeuro ||
-              checker ||
-              checker2 ||
-              checker3 ||
-              checker4 ||
-              checker5) &&
-            ses.length > 0 &&
-            adm &&
-            latestscore
-          "
-        >
-          <!-- <section> -->
-          <label class="common gap">Subsidy:</label>
-          <div class="formed gap">
-            <input
-              v-model="no"
-              id="no"
-              name="subsidy"
-              type="radio"
-              value="no"
-              @click="revert()"
-            />
-            <label for="no">&nbsp;No</label>
-          </div>
-          <div class="formed gap gapbot">
-            <input
-              v-model="subsidy"
-              id="yes"
-              name="subsidy"
-              type="radio"
-              value="yes"
-            />
-            <label for="yes">&nbsp;Yes</label>
-          </div>
-          <!--  -->
-          <section v-show="subsidy">
-            <!-- <section> -->
-            <main></main>
-            <div class="formed">
-              <div class="formed gap">
-                <input
-                  v-model="subs1"
-                  id="dsg1"
-                  name="subsidy1"
-                  type="checkbox"
-                  value="dsg1"
-                />
-                <label class="long" for="dsg1">DSG</label>
-              </div>
-              <div class="gap">
-                <input
-                  v-model="subs2"
-                  id="dsg2"
-                  name="subsidy2"
-                  type="checkbox"
-                  value="dsg2"
-                />
-                <label class="long" for="dsg2">Toteboard</label>
-                <div v-show="subs2" class="row gap">
-                  <div class="col-md-2">
-                    <label class="common">Means Test Result</label>
-                  </div>
-                  <div class="col-md-2">
-                    <input
-                      class="numbers"
-                      id="means"
-                      name="means"
-                      type="number"
-                      min="0"
-                    />
-                  </div>
-                  <div class="col-md-2">
-                    <label class="common">% subsidy</label>
-                  </div>
-                </div>
-              </div>
-              <div class="formed gap">
-                <input
-                  v-model="subs3"
-                  id="dsg3"
-                  name="subsidy3"
-                  type="checkbox"
-                  value="dsg3"
-                />
-                <label class="long" for="dsg3">Others</label>
-                <div v-show="subs3" class="formed gap">
-                  <label class="common" for="others">Specify:</label>
-                  <input
-                    class="numbers-half"
-                    id="others"
-                    name="others"
-                    type="text"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="formed gap gapbot">
-              <input
-                v-model="subs4"
-                id="dsg4"
-                name="subsidy4"
-                type="checkbox"
-                value="dsg4"
-              />
-              <label class="long" for="dsg4">Amount Subsidized</label>
-            </div>
-            <div v-show="subs4" class="formed gapbot">
-              <label class="common" for="subsid">Amount Subsidized:</label>
-              <input
-                class="numbers-half"
-                id="subsid"
-                name="subsid"
-                type="number"
-                min="0"
-              />
-            </div>
-          </section>
-          <hr />
-        </section>
-        <section
-          v-show="
-            type &&
-            stageof &&
-            latest &&
-            date &&
-            checking &&
-            (neeuro ||
-              checker ||
-              checker2 ||
-              checker3 ||
-              checker4 ||
-              checker5) &&
-            (no || subsidy) &&
-            ses.length > 0 &&
-            adm &&
-            latestscore
-          "
-        >
-          <!-- <section> -->
-          <div>
-            <label class="common">Applicable Fee (excluding GST):</label>
-            <div class="formed">
-              <div class="formed gap">
-                <input
-                  id="80"
-                  name="cbfees"
-                  type="checkbox"
-                  value="80"
-                  v-model="fees1"
-                />
-                <label class="gapped text-small" for="80"
-                  >Centre-based 3-HR FOW group session [$80]</label
-                >
-              </div>
-              <div class="formed gap">
-                <input
-                  id="90"
-                  name="cbfees"
-                  type="checkbox"
-                  value="90"
-                  v-model="fees2"
-                />
-                <label class="gapped text-small" for="90"
-                  >Centre-based 1.5-HR one-to-one FOW session [$90]</label
-                >
-              </div>
-              <div class="formed gap">
-                <input
-                  id="256"
-                  name="cbfees"
-                  type="checkbox"
-                  value="256"
-                  v-model="fees3"
-                />
-                <label class="gapped text-small" for="256"
-                  >Centre-based NeeuroFIT 6 months subcription [$240]</label
-                >
-              </div>
-              <div class="formed gap">
-                <input
-                  id="sgp"
-                  name="cbfees"
-                  type="checkbox"
-                  value="sgp"
-                  v-model="fees4"
-                />
-                <label class="gapped text-small" for="sgp"
-                  >Centre-based 3-HR CIP trial run [S'porean]</label
-                >
-              </div>
-              <div class="formed gap gapbot">
-                <input
-                  id="prfees"
-                  name="cbfees"
-                  type="checkbox"
-                  value="prfees"
-                  v-model="fees5"
-                />
-                <label class="gapped text-small" for="prfees"
-                  >Centre-based 3-HR CIP trial run [PR]</label
-                >
-              </div>
-              <div class="formed gap">
-                <input
-                  id="hb90"
-                  name="hbfees"
-                  type="checkbox"
-                  value="hb90"
-                  v-model="fees6"
-                />
-                <label class="gapped text-small" for="hb90"
-                  >Home-based 1-HR one-to-one FOW session(incl. transport)
-                  [$90]</label
-                >
-              </div>
-              <div class="formed gap">
-                <input
-                  id="hb120"
-                  name="hbfees"
-                  type="checkbox"
-                  value="hb120"
-                  v-model="fees7"
-                />
-                <label class="gapped text-small" for="hb120"
-                  >Home-based 1.5-HR one-to-one FOW session(incl. transport)
-                  [$120]</label
-                >
-              </div>
-              <div class="formed gap">
-                <input
-                  id="hb150"
-                  name="hbfees"
-                  type="checkbox"
-                  value="hb150"
-                  v-model="fees8"
-                />
-                <label class="gapped text-small" for="hb150"
-                  >Home-based 2-HR one-to-one FOW session(incl. transport)
-                  [$150]</label
-                >
-              </div>
-              <div class="formed gap gapbot">
-                <input
-                  id="hb902"
-                  name="hbfees"
-                  type="checkbox"
-                  value="hb902"
-                  v-model="fees9"
-                />
-                <label class="gapped text-small" for="hb902"
-                  >Home-based 1-HR FOW session via video calls [$90]</label
-                >
-              </div>
-              <div class="formed gap">
-                <input
-                  id="50"
-                  name="other-fees"
-                  type="checkbox"
-                  value="50"
-                  v-model="fees10"
-                />
-                <label class="gapped text-small" for="50">One-time Assessment [$50]</label>
-              </div>
-              <div class="formed gap">
-                <input
-                  id="refund"
-                  name="other-fees"
-                  type="checkbox"
-                  value="refund"
-                  v-model="fees11"
-                />
-                <label class="gapped text-small" for="refund"
-                  >Refundable One-Month Deposit (4 X applicable fee)</label
-                >
-              </div>
-              <div class="gapright row">
-                <div class="gap col-sm-6">
-                  <label class="common" for="receipt">Official Receipt:</label>
-                  <input
-                    class="numbers"
-                    id="receipt"
-                    name="receipt"
-                    type="text"
-                  />
-                </div>
-                <div class="gap col-sm-6">
-                  <label class="common" for="collect"
-                    >Amount Collected [in SGD($)]:</label
-                  >
-                  <input
-                    v-model="amtcollect"
-                    class="numbers"
-                    id="collect"
-                    name="collect"
-                    type="text"
-                    readonly="readonly"
-                  />
-                </div>
-              </div>
-              <label class="common gap" for="cash">Mode of Payment: </label>
-              <div class="row">
-                <div class="col-md-3">
-                  <input id="cash" name="payment" type="radio" value="cash" />
-                  <label for="cash">&nbsp;Cash</label>
-                </div>
-                <div class="col-md-3">
-                  <input
-                    id="paynow"
-                    name="payment"
-                    type="radio"
-                    value="paynow"
-                  />
-                  <label for="paynow">&nbsp;PayNow</label>
-                </div>
-                <div class="col-md-3">
-                  <input
-                    id="e-bank"
-                    name="payment"
-                    type="radio"
-                    value="e-bank"
-                  />
-                  <label for="e-bank">&nbsp;Internet Banking</label>
-                </div>
-                <div class="col-md-3">
-                  <input
-                    id="cheque"
-                    name="payment"
-                    type="radio"
-                    value="cheque"
-                  />
-                  <label for="cheque">&nbsp;Cheque</label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </section>
-    </form>
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-  </div>
+<template lang="pug">
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+  .container-xxl
+    form
+      section
+        .row
+          .col-sm-6
+            label.common.gap(for="typeof") Type of Dementia:
+            v-select(v-model="type" :options="DementiaType")
+          .col-sm-6
+            label.common.gap(for="stageof") Stage of Dementia:
+            v-select(v-model="stageof" :options="DementiaStage")
+        .row
+          .col-sm-3 
+            label.common.gap(for="score") Latest score on:
+            v-select(v-model="latestscore" :options="['AMT', 'MMSE', 'MOCA']")
+          .col-sm-3.gap
+            input.numbers.gap-twice#score(v-model="latest" type="number" min="0" :disabled="!latestscore")
+          .col-sm-6
+            label.common.gap(for="score") Date Done:
+            input.numbers#score(v-model="date" name="score" type="date")
+        hr
+        section(v-show="type && stageof && latest && latestscore && date")
+          .formed.gap
+            input#sacop(v-model="checker" type="checkbox" value="sacop" name="part2")
+            label.gapped.text-small(for="sacop") Shared about Centre's objectives & program
+          .formed.gap
+            input#wcv(v-model="checker2" name="part2" type="checkbox" value="wcv")
+            label.gapped.text-small(for="wcv") Watched Centre's video
+          .formed.gap
+            input#pnbtg(name="the-pnbtg" value="pnbtg" type="checkbox" v-model="neeuro")
+            label.gapped.text-small(for="pnbtg") Played NeeuroFIT brain training game
+          .container(v-show="neeuro")
+            h2 Pick Games:
+            .left
+              input#att(v-model="atten" name="part2ins" type="checkbox" value="att")
+              label(for="att") &nbsp;Attention
+              .row(v-show="atten")
+                .gap.col-sm-6
+                  label.common.inside(for="stageof") Game played:
+                  v-select(:options="game1")
+                .gap.col-sm-6
+                  label.common.inside(for="stageof") Finished Level:
+                  v-select(:options="levels")
+            .gap.left 
+              input#spat(type="checkbox" name="part2ins" v-model="spatial" value="spat")
+              label(for="spat") &nbsp;Spatial
+              .row(v-show="spatial")
+                .gap.col-sm-6
+                  label.common.inside(for="stageof") Game Played:
+                  v-select(:options="game2")
+                .gap.col-sm-6
+                  label.common.inside(for="stageof") Finished Level:
+                  v-select(:options="levels")
+            .gap.left 
+              input#dec(type="checkbox" name="part2ins" v-model="decision" value="dec")
+              label(for="dec") &nbsp;Decision
+              .row(v-show="decision")
+                .gap.col-sm-6
+                  label.common.inside(for="stageof") Game Played:
+                  v-select(:options="game3")
+                .gap.col-sm-6
+                  label.common.inside(for="stageof") Finished Level:
+                  v-select(:options="levels")
+            .gap.left 
+              input#mem(type="checkbox" name="part2ins" v-model="memory" value="mem")
+              label(for="mem") &nbsp;Memory
+              .row(v-show="memory")
+                .gap.col-sm-6
+                  label.common.inside(for="stageof") Game Played:
+                  v-select(:options="game4")
+                .gap.col-sm-6
+                  label.common.inside(for="stageof") Finished Level:
+                  v-select(:options="levels")
+              .gap.left
+                input#flexi(type="checkbox" name="part2ins" v-model="flexibility" value="flexi")
+                label(for="flexi") &nbsp;Flexibility
+                .row(v-show="flexibility")
+                  .gap.col-sm-6
+                    label.common.inside(for="stageof") Game Played:
+                    v-select(:options="game5")
+                  .gap.col-sm-6
+                    label.common.inside(for="stageof") Finished Level:
+                    v-select(:options="levels")
+          .formed.gap
+            input#pttg(v-model="checker3" name="part2" type="checkbox" value="pttg")
+            label.gapped.text-small(for="pttg") Played Table Top games
+          .formed.gap
+            input#mocaform(v-model="checker4" name="mocaform" type="checkbox" value="mocaform")
+            label.gapped.text-small(for="mocaform") MOCA form
+          .container.left.gap(v-show="checker4")
+            h2.moca.gapbot MOCA
+            p.common Version:
+            div
+              input#cn(v-model="cn" name="cnbx" type="checkbox" value="cn")
+              label.gapped(for="cn") Chinese 
+            div
+              input#en(v-model="en" name="enbx" type="checkbox" value="en")
+              label.gapped(for="en") English 
+            p.common.gap Education:
+            div
+              input#un(v-model="un" name="unbx" type="checkbox" value="un")
+              label.gapped(for="un") ≤ 6 Years
+            div
+              input#ov(v-model="ov" name="ovbx" type="checkbox" value="ov")
+              label.gapped(for="ov") > 6 Years
+            .gap.row(v-show="ov")
+              label.common Education Level:
+              v-select.col-sm-6.gapbot(v-model="edulev" :options="edulevel")
+            .row 
+              p.common.gap Visuospatial/Executive
+              .col-sm-6 
+                label Alternating Trail Making:
+                v-select(v-model="vis1" :options="['0', '1']" :clearable="false") 
+              .col-sm-6 
+                label Copy Cube:
+                v-select(v-model="vis2" :options="['0', '1']" :clearable="false") 
+              label.gap Draw Clock(Ten past eleven) [3 Points]
+              v-select(multiple v-model="vis3" :options="dclock" :clearable="false") 
+            .row 
+              p.common.gap Naming
+              .col-sm-6 
+                label Lion:
+                v-select(v-model="vis4" :options="['0', '1']" :clearable="false")
+              .col-sm-6 
+                label Elephant:
+                v-select(v-model="vis5" :options="['0', '1']" :clearable="false")
+              .col-sm-6 
+                label.gap Camel:
+                v-select(v-model="vis6" :options="['0', '1']" :clearable="false")
+              p.common.gap Memory[0 Point]
+              .col-sm-6
+                input.numbers(type="text" value="0" disabled)
+            .row
+              p.common.gap Attention
+              .col-sm-6
+                label Repeat Forward order 2 1 8 5 4 :
+                v-select(v-model="vis7" :options="['0', '1']" :clearable="false")
+              .col-sm-6
+                label Able to tap with his hand at each number 1:
+                v-select(v-model="vis8" :options="['0', '1']" :clearable="false")
+              .col-sm-6.gap
+                label Serial 7 subtraction starting at 100:
+                v-select(v-model="vis9" :options="['0', '1']" :clearable="false")
+            .row
+              p.common.gap Language(Repeat)
+              .col-sm-6
+                label First Sentence:
+                v-select(v-model="vis10" :options="['0', '1']" :clearable="false")
+              .col-sm-6
+                label Second Sentence:
+                v-select(v-model="vis11" :options="['0', '1']" :clearable="false")
+              .col-sm-6.gap
+                label Verbal Fluency:
+                v-select(v-model="vis12" :options="['0', '1']" :clearable="false")
+              .col-sm-6.gap
+                label Specify(how many animals)
+                v-select(:options="specify")
+            .row 
+              p.common.gap Abstraction
+              .col-sm-6 
+                label Similarity between train - bicycle:
+                v-select(v-model="vis13" :options="['0', '1']" :clearable="false")
+              .col-sm-6 
+                label Similarity between watch - ruler:
+                v-select(v-model="vis14" :options="['0', '1']" :clearable="false")
+            p.common.gap Delayed Recall[5 Points]
+            v-select(multiple v-model="vis15" :options="Delayed")
+            p.common.gap Orientation
+            v-select(multiple v-model="vis16" :options="['Date', 'Month', 'Year', 'Day', 'Place', 'Country']")
+            p.common.gap Total Score: {{ totalscore }}
+          .formed.gap
+            input#eq5d(v-model="checker5" name="eq5d" type="checkbox" value="eq5d")
+            label.gapped.text-small(for="eq5d") EQ-5D-5L form
+          .container.gap(v-show="checker5")
+            h2.moca.gapbot EQ-5D-5L
+            p.common Health Status:
+            .row
+              .left.col-sm-6
+                .row.gap
+                  label.col-lg-4 Mobility:
+                  v-select.col-lg-8(v-model="eq1" :options="eq5dnumbers" :clearable="false")
+                .row.gap
+                  label.col-lg-4 Self-Care:
+                  v-select.col-lg-8(v-model="eq2" :options="eq5dnumbers" :clearable="false")
+                .row.gap
+                  label.col-lg-4 Usual Activities:
+                  v-select.col-lg-8(v-model="eq3" :options="eq5dnumbers" :clearable="false")
+                .row.gap
+                  label.col-lg-4 Pain/Discomfort:
+                  v-select.col-lg-8(v-model="eq4" :options="eq5dnumbers" :clearable="false")
+                .row.gap
+                  label.col-lg-4 Anxiety/Depression:
+                  v-select.col-lg-8(v-model="eq5" :options="eq5dnumbers" :clearable="false")
+              .col-sm-6
+                p.gapbot Total Score:
+                .sm-container
+                  <br/>
+                  h1 {{ eq5dcounter }}/25
+            p.common.gap Perceived Health Scale:
+            .row 
+              label.left.col-sm-2 Health Scale:
+              .col-sm-4
+                input.numbers(type="number" min="0" max="100")
+          hr    
+        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
+          .formed
+            label.common(for="comment") Comment/Observation about the client
+            textarea#comment(name="comment" rows="3" type="text" v-model="checking")
+          hr
+        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking")
+          .formed
+            label.common(for="session") Session Reccomended:
+            v-select(multiple v-model="ses" :options="['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',]")
+          .formed
+            label.common.gap(for="admission") Admission date:
+            input.numbers-half#admission(v-model="adm" name="admission" type="date")
+          hr
+        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking && ses.length > 0 && adm")
+          label.common.gap Subsidy:
+          .formed.gap
+            input#no(v-model="no" name="subsidy" type="radio" value="no" @click="revert()")
+            label(for="no") &nbsp;No
+          .formed.gap.gapbot
+            input#yes(v-model="subsidy" name="subsidy" type="radio" value="yes")
+            label(for="yes") &nbsp;Yes
+            section(v-show="subsidy")
+              .formed
+                .formed.gap
+                  input#dsg1(v-model="subs1" name="subsidy1" type="checkbox" value="dsg1")
+                  label.long(for="dsg1") DSG
+                .gap 
+                  input#dsg2(v-model="subs2" name="subsidy2" type="checkbox" value="dsg2")
+                  label.long(for="dsg2") Toteboard
+                  .row.gap(v-show="subs2")
+                    .col-md-2 
+                      label.common Means Test Result
+                    .col-md-2 
+                      input.numbers#means(name="means" type="number" min="0")
+                    .col-md-2
+                      label.common % subsidy
+                .formed.gap
+                  input#dsg3(v-model="subs3" name="subsidy3" type="checkbox" value="dsg3")
+                  label.long(for="dsg3") Others
+                  .formed.gap(v-show="subs3")
+                    label.common(for="others") Specify: 
+                    input.numbers-half#others(name="others" type="text")
+                .formed.gap.gapbot 
+                  input#dsg4(v-model="subs4" name="subsidy4" type="checkbox" value="dsg4")
+                  label.long(for="dsg4") Amount Subsidized
+                  .formed.gapbot(v-show="subs4")
+                    label.common(for="subsid") Amount Subsidized:
+                    input.numbers-half#subsid(name="subsid" type="number" min="0")
+          hr
+        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking && ses.length > 0 && adm && (no || subsidy)")
+          label.common Applicable Fee (excluding GST):
+          .formed
+            .formed.gap
+              input#80(v-model="fees1" name="cbfees" type="checkbox" value="80")
+              label.gapped.text-small(for="80") Centre-based 3-HR FOW group session [$80]
+            .formed.gap
+              input#90(v-model="fees2" name="cbfees" type="checkbox" value="90")
+              label.gapped.text-small(for="90") Centre-based 1.5-HR one-to-one FOW session [$90]
+            .formed.gap
+              input#240(v-model="fees3" name="cbfees" type="checkbox" value="240")
+              label.gapped.text-small(for="240") Centre-based NeeuroFIT 6 months subcription [$240]
+            .formed.gap
+              input#sgp(v-model="fees4" name="cbfees" type="checkbox" value="sgp")
+              label.gapped.text-small(for="sgp") Centre-based 3-HR CIP trial run [S'porean]
+            .formed.gap.gapbot
+              input#prfees(v-model="fees5" name="cbfees" type="checkbox" value="prfees")
+              label.gapped.text-small(for="prfees") Centre-based 3-HR CIP trial run [PR]
+            .formed.gap
+              input#hb90(v-model="fees6" name="cbfees" type="checkbox" value="hb90")
+              label.gapped.text-small(for="hb90") Home-based 1-HR one-to-one FOW session(incl. transport) [$90]
+            .formed.gap
+              input#hb120(v-model="fees7" name="cbfees" type="checkbox" value="hb120")
+              label.gapped.text-small(for="hb120") Home-based 1.5-HR one-to-one FOW session(incl. transport) [$120]
+            .formed.gap
+              input#hb150(v-model="fees8" name="cbfees" type="checkbox" value="hb150")
+              label.gapped.text-small(for="hb150") Home-based 2-HR one-to-one FOW session(incl. transport) [$150]
+            .formed.gap.gapbot
+              input#hb90-2(v-model="fees9" name="cbfees" type="checkbox" value="hb90-2")
+              label.gapped.text-small(for="hb90-2") Home-based 1-HR FOW session via video calls [$90]
+            .formed.gap
+              input#50(v-model="fees10" name="cbfees" type="checkbox" value="50")
+              label.gapped.text-small(for="50") One-time Assessment [$50]
+            .formed.gap
+              input#refund(v-model="fees11" name="cbfees" type="checkbox" value="refund")
+              label.gapped.text-small(for="refund") Refundable One-Month Deposit (4 X applicable fee)
+          .gapright.row
+            .gap.col-sm-6
+              label.common(for="receipt") Official Receipt:
+              input.numbers#receipt(name="receipt" type="text")
+            .gap.col-sm-6
+              label.common(for="collect") Amount Collected [in SGD($)]:
+              input.numbers#collect(v-model="amtcollect" name="collect" type="text" readonly="readonly")
+          label.common.gap Mode of Payment:
+          .row 
+            .col-md-3
+              input#cash(name="payment" type="radio" value="cash")
+              label(for="cash") &nbsp;Cash
+            .col-md-3
+              input#paynow(name="payment" type="radio" value="paynow")
+              label(for="paynow") &nbsp;PayNow
+            .col-md-3
+              input#e-bank(name="payment" type="radio" value="e-bank")
+              label(for="e-bank") &nbsp;Internet Banking
+            .col-md-3
+              input#cheque(name="payment" type="radio" value="cheque")
+              label(for="cheque") &nbsp;Cheque
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
 </template>
 
 <script>
@@ -1092,6 +397,79 @@ export default {
       eq3: 0,
       eq4: 0,
       eq5: 0,
+      DementiaType: [
+        "Alzheimer’s Disease",
+        "Vascular Dementia",
+        "Mixed Dementia",
+        "Lewy Body Dementia",
+        "Parkinson Dementia",
+        "Fronto-temporal Dementia",
+        "Others",
+      ],
+      DementiaStage: [
+        "Mild",
+        "Mild to Moderate",
+        "Moderate",
+        "Moderate to Severe",
+        "Severe",
+      ],
+      levels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+      game1: [
+        "Psychic Cyclist",
+        "Mindcopter",
+        "Sushi Recall",
+        "Sitting Ducks",
+        "Multitask Master",
+      ],
+      game2: ["Whats’s this Word ?", "Dot Connect", "Stargazer", "Space 360"],
+      game3: [
+        "Junction Control",
+        "Pyramid Solitaire",
+        "Supreme Shopper",
+        "Flower Garden",
+      ],
+      game4: [
+        "Farmhouse Friends",
+        "Who’s Who?",
+        "Pyramid Solitaire",
+        "Sushi Recall",
+        "Sitting Ducks",
+      ],
+      game5: ["Multitask Master", "Junction Control"],
+      edulevel: [
+        "Primary",
+        "Secondary",
+        "Pre-University",
+        "Diploma",
+        "Associate Degree",
+        "Bachelor’s Degree",
+        "Master’s Degree",
+        "Doctorate Degree",
+      ],
+      dclock: ["Contour(1 point)", "Numbers(1 point)", "Hands(1 point)"],
+      specify: [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "more than 11",
+      ],
+      Delayed: [
+        "Face(1 point)",
+        "Silk(1 point)",
+        "Church(1 point)",
+        "Rose(1 point)",
+        "Red(1 point)",
+      ],
+      eq5dnumbers: ['0', '1', '2', '3', '4', '5'],
     };
   },
   methods: {
@@ -1128,27 +506,26 @@ export default {
         this.subs3 = false;
       }
     },
-    cn(value){
-      if(value === true){
+    cn(value) {
+      if (value === true) {
         this.en = false;
       }
     },
-    en(value){
-      if(value === true){
+    en(value) {
+      if (value === true) {
         this.cn = false;
       }
     },
-    un(value){
-      if(value === true){
+    un(value) {
+      if (value === true) {
         this.ov = false;
         this.unpoint = 1;
-      }
-      else{
+      } else {
         this.unpoint = 0;
       }
     },
-    ov(value){
-      if(value === true){
+    ov(value) {
+      if (value === true) {
         this.un = false;
       }
     },
@@ -1240,13 +617,14 @@ export default {
         parseInt(this.vis2) +
         length1 +
         parseInt(this.vis4) +
-        parseInt(this.vis5) + 
+        parseInt(this.vis5) +
         parseInt(this.vis6) +
         parseInt(this.vis7) +
         parseInt(this.vis8) +
         parseInt(this.vis9) +
         parseInt(this.vis10) +
         parseInt(this.vis11) +
+        parseInt(this.vis12) +
         parseInt(this.vis13) +
         parseInt(this.vis14) +
         length2 +
@@ -1254,13 +632,13 @@ export default {
         this.unpoint
       );
     },
-    eq5dcounter: function(){
+    eq5dcounter: function () {
       return (
         parseInt(this.eq1) +
         parseInt(this.eq2) +
         parseInt(this.eq3) +
         parseInt(this.eq4) +
-        parseInt(this.eq5) 
+        parseInt(this.eq5)
       );
     },
   },
@@ -1319,7 +697,7 @@ label.inside {
 }
 
 @media screen and (max-width: 411px) {
-  .text-small{
+  .text-small {
     // display: none;
     // background-color: red;
     margin: 0;
