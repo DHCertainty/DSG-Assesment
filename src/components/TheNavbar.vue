@@ -6,7 +6,7 @@
     />
     <img src="../assets/logo.png" />
     <ul>
-      <li class="navbar__dateAssessment">Date of Assessment: {{ dateofassessment }}</li>
+      <li class="navbar__dateAssessment">Date of assessment: {{ dateofassessment }}</li>
       <li class="navbar__clientName">Client name: {{ clientname }}</li>
     </ul>
     <h1>Day of Assessment</h1>
