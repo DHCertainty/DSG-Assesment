@@ -103,16 +103,17 @@
             div
               input#en(v-model="en" name="enbx" type="checkbox" value="en")
               label.gapped(for="en") English 
-            p.common.gap Education:
-            div
-              input#un(v-model="un" name="unbx" type="checkbox" value="un")
-              label.gapped(for="un") ≤ 6 Years
-            div
-              input#ov(v-model="ov" name="ovbx" type="checkbox" value="ov")
-              label.gapped(for="ov") > 6 Years
-            .gap.row(v-show="ov")
-              label.common Education Level:
-              v-select.col-sm-6.gapbot(v-model="edulev" :options="edulevel")
+            p.common.gap Education Level:
+            .col-sm-6
+              v-select(v-model="edulev" :options="edulevel")
+              .gap(v-show="edulev")
+                p.common.gap Education Year:
+                div
+                  input#un(v-model="unyearSelected" name="unbx" type="checkbox" value="un")
+                  label.gapped(for="un") ≤ 6 Years
+                div
+                  input#ov(v-model="ovyearSelected" name="ovbx" type="checkbox" value="ov")
+                  label.gapped(for="ov") > 6 Years
             .row 
               p.common.gap Visuospatial/Executive
               .col-sm-6 
@@ -147,7 +148,10 @@
                 v-select(v-model="vis8" :options="['0', '1']" :clearable="false")
               .col-sm-6.gap
                 label Serial 7 subtraction starting at 100:
-                v-select(v-model="vis9" :options="['0', '1']" :clearable="false")
+                v-select(v-model="vis9" :options="['0', '1', '2', '3']" :clearable="false")
+              .col-sm-6.gap
+                label Repeat Backward order 7 4 2 :
+                v-select(v-model="vis17" :options="['0', '1']" :clearable="false")
             .row
               p.common.gap Language(Repeat)
               .col-sm-6
@@ -161,7 +165,7 @@
                 v-select(v-model="vis12" :options="['0', '1']" :clearable="false")
               .col-sm-6.gap
                 label Specify(how many animals)
-                v-select(:options="specify")
+                v-select(v-model="vis18" :options="specify" :clearable="false")
             .row 
               p.common.gap Abstraction
               .col-sm-6 
@@ -216,13 +220,41 @@
           hr
         section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking")
           .formed
-            label.common(for="session") Session Reccomended:
-            v-select(multiple v-model="ses" :options="['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',]")
+            label.common(for="session") Session Recomended:
+            .formed.gap
+              label Type of Session:
+                .gap
+                  input#group(v-model="gp" name="typeSes" type="radio" value="group")
+                  label(for="group") &nbsp;Group
+                .gap
+                  input#individual(v-model="ind" name="typeSes" type="radio" value="individual")
+                  label(for="individual") &nbsp;Individual
+                  .row.gap(v-show="gp")
+                      label.gap Day of Session:
+                      v-select(v-model="ses" :options="['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',]")
+                      label.gap Time of Session:
+                      v-select(v-model="time" :options="['AM', 'PM']")
+                  .row.gap(v-show="ind")
+                    label Location: 
+                      div
+                        input#center(v-model="location" name="location" type="checkbox" value="center")
+                        label.gapped(for="center") &nbsp;Center
+                      div
+                        input#home(v-model="location" name="location" type="checkbox" value="home")
+                        label.gapped(for="home") &nbsp;Home
+                      div
+                        input#videocall(v-model="location" name="location" type="checkbox" value="videocall")
+                        label.gapped(for="videocall") &nbsp;Video Call
+                    label.gap Day of Session:
+                    v-select(v-model="ses" :options="['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',]")
+                    label.gap(for="timeSession") Time:
+                    input.numbers#timeSession(v-model="timeses" name="timeSession" type="time")
+              
           .formed
             label.common.gap(for="admission") Admission date:
             input.numbers-half#admission(v-model="adm" name="admission" type="date")
           hr
-        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking && ses.length > 0 && adm")
+        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking && ses.length > 0 ")
           label.common.gap Subsidy:
           .formed.gap
             input#no(v-model="no" name="subsidy" type="radio" value="no" @click="revert()")
@@ -354,11 +386,13 @@ export default {
       type: "",
       stageof: "",
       date: "",
+      edulev: "",
+      gp: false,
+      ind: false,
       subs1: true,
       subs2: false,
       subs3: false,
       subs4: false,
-      edulev: "",
       amtcollect: 0,
       fees1: false,
       fees2: false,
@@ -373,9 +407,11 @@ export default {
       fees11: false,
       cn: false,
       en: false,
+      unyearSelected: false,
+      ovyearSelected: false,
       un: false,
-      unpoint: 0,
       ov: false,
+      unpoint: 0,
       vis1: [0],
       vis2: [0],
       vis3: [],
@@ -392,6 +428,8 @@ export default {
       vis14: [0],
       vis15: [],
       vis16: [],
+      vis17: [0],
+      vis18: [],
       eq1: 0,
       eq2: 0,
       eq3: 0,
@@ -463,6 +501,7 @@ export default {
         "more than 11",
       ],
       Delayed: [
+        "Cannot Recall(0 point)",
         "Face(1 point)",
         "Silk(1 point)",
         "Church(1 point)",
@@ -478,6 +517,16 @@ export default {
     },
   },
   watch: {
+    gp(value) {
+      if( value === true) {
+        this.ind = false;
+      }
+    },
+    ind(value) {
+      if( value === true) {
+        this.gp = false;
+      }
+    },
     subs1(value) {
       if (value === true) {
         this.subs2 = false;
@@ -514,6 +563,30 @@ export default {
     en(value) {
       if (value === true) {
         this.cn = false;
+      }
+    },
+    edulev(value){
+      if(value === "Primary" || value === "Secondary"){
+        // checked
+        this.unyearSelected = true;
+        // checked
+        // unchecked
+        this.ovyearSelected = false;
+        // unchecked
+        this.un = true;
+        this.ov = false;
+        this.unpoint = 1;
+      }
+      else {
+        // unchecked
+        this.unyearSelected = false;
+        // unchecked
+        // checked
+        this.ovyearSelected = true;
+        // checked
+        this.un = false;
+        this.ov = true;
+        this.unpoint = 0;
       }
     },
     un(value) {
@@ -610,8 +683,9 @@ export default {
   computed: {
     totalscore: function () {
       let length1 = this.vis3.length;
-      let length2 = this.vis15.length;
       let length3 = this.vis16.length;
+      let vis18_point = (this.vis18 == '11' || this.vis18 == 'more than 11') ? 1 : 0;
+      let vis15_point =  (this.vis15.includes("Cannot Recall(0 point)"))? 0: this.vis15.length;
       return (
         parseInt(this.vis1) +
         parseInt(this.vis2) +
@@ -627,8 +701,10 @@ export default {
         parseInt(this.vis12) +
         parseInt(this.vis13) +
         parseInt(this.vis14) +
-        length2 +
+        vis15_point +
         length3 +
+        parseInt(this.vis17) +
+        vis18_point +
         this.unpoint
       );
     },
@@ -641,13 +717,14 @@ export default {
         parseInt(this.eq5)
       );
     },
-  },
-};
+}}
 
 //font: roboto
 </script>
 
 <style lang="scss" scoped>
+$base-color-purple :#50276B;
+
 * {
   font-family: roboto;
 }
@@ -812,5 +889,9 @@ hr {
 }
 .moca {
   font-weight: bold;
+}
+
+.addButton{
+  background-color: $base-color-purple;
 }
 </style>
