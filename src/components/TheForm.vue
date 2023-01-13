@@ -220,35 +220,55 @@
           hr
         section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking")
           .formed
-            label.common(for="session") Session Recomended:
-            .formed.gap
-              label Type of Session:
-                .gap
-                  input#group(v-model="gp" name="typeSes" type="radio" value="group")
+            label.common(for="session") Session Recomended: 
+            b-btn#add-btn(@click="addmethod") + Add Session 
+            b-modal#add-session(size="lg" title="Add Session" centered)
+              label Type 
+                .gap 
+                  input#group(v-model="type" name="typeSes" type="radio" value="group")
                   label(for="group") &nbsp;Group
                 .gap
-                  input#individual(v-model="ind" name="typeSes" type="radio" value="individual")
+                  input#individual(v-model="type" name="typeSes" type="radio" value="individual")
                   label(for="individual") &nbsp;Individual
-                  .row.gap(v-show="gp")
-                      label.gap Day of Session:
-                      v-select(v-model="ses" :options="['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',]")
-                      label.gap Time of Session:
-                      v-select(v-model="time" :options="['AM', 'PM']")
-                  .row.gap(v-show="ind")
-                    label Location: 
-                      div
-                        input#center(v-model="location" name="location" type="checkbox" value="center")
-                        label.gapped(for="center") &nbsp;Center
-                      div
-                        input#home(v-model="location" name="location" type="checkbox" value="home")
-                        label.gapped(for="home") &nbsp;Home
-                      div
-                        input#videocall(v-model="location" name="location" type="checkbox" value="videocall")
-                        label.gapped(for="videocall") &nbsp;Video Call
-                    label.gap Day of Session:
-                    v-select(v-model="ses" :options="['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',]")
-                    label.gap(for="timeSession") Time:
-                    input.numbers#timeSession(v-model="timeses" name="timeSession" type="time")
+                  .row.gap(v-show="gp || ind")
+                    label.gap Day 
+                      .gap
+                        input#monday(v-model="day" name="daySes" type="radio" value="monday")
+                        label(for="monday") &nbsp;Monday
+                      .gap
+                        input#tuesday(v-model="day" name="daySes" type="radio" value="tuesday")
+                        label(for="tuesday") &nbsp;Tuesday
+                      .gap
+                        input#wednesday(v-model="day" name="daySes" type="radio" value="wednesday")
+                        label(for="wednesday") &nbsp;Wednesday
+                      .gap
+                        input#thursday(v-model="day" name="daySes" type="radio" value="thursday")
+                        label(for="thursday") &nbsp;Thursday
+                      .gap
+                        input#friday(v-model="day" name="daySes" type="radio" value="friday")
+                        label(for="friday") &nbsp;Friday
+                        .row.gap(v-show="mon || tue || wed || thurs || fri")
+                          label.gap Time 
+                          .gap 
+                            input#am(v-model="time" name="timeSes" type="radio" value="am")
+                            label(for="am") &nbsp;9:30 AM
+                          .gap
+                            input#pm(v-model="time" name="timeSes" type="radio" value="pm")
+                            label(for="pm") &nbsp;2:30 PM
+                            .row.gap(v-show="am || pm")
+                              .gap
+                                input#center(v-model="location" name="location" type="radio" value="center")
+                                label(for="center") &nbsp;Center 
+                            .row.gap(v-show="(am || pm) && ind")
+                              .gap
+                                input#videocall(v-model="location" name="location" type="radio" value="videocall")
+                                label(for="videocall") &nbsp;Video Call (Zoom)
+                              .gap
+                                input#residence(v-model="location" name="location" type="radio" value="residence")
+                                label(for="residence") &nbsp;Residence 
+                                .row.gap(v-show="cen || video || res")
+                                  b-button(size="md" @click="") Add
+
               
           .formed
             label.common.gap(for="admission") Admission date:
@@ -514,6 +534,9 @@ export default {
   methods: {
     revert() {
       this.subsidy = null;
+    },
+    addmethod() {
+      this.$bvModal.show("add-session");
     },
   },
   watch: {
@@ -889,9 +912,5 @@ hr {
 }
 .moca {
   font-weight: bold;
-}
-
-.addButton{
-  background-color: $base-color-purple;
 }
 </style>
