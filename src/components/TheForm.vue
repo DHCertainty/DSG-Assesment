@@ -212,7 +212,6 @@ div
             label.common(for="comment") Comment/Observation about the client
             textarea#comment(name="comment" rows="3" type="text" v-model="checking")
           hr
-        b-button Test
         section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking")
           .formed
             label.common(for="session") Session Recomended: 
