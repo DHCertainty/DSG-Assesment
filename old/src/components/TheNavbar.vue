@@ -11,6 +11,7 @@
     </ul>
     <h1>Day of Assessment</h1>
   </header>
+  <br />
 </template>
 
 <script>
@@ -32,8 +33,7 @@ header {
   justify-content: center;
   /* text-align: center; */
   background-color: #f6f6f6;
-  position: sticky;
-  top: 0;
+  position: fixed;
   overflow: hidden;
   /* float: left; */
 }

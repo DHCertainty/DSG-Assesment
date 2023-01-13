@@ -10,7 +10,7 @@ import TheForm from './components/TheForm.vue';
 import TheNavbar from './components/TheNavbar.vue';
 import axios from "axios";
 import * as msal from "@azure/msal-browser";
-export default {
+export default ({
   name: 'App',
   components: {
     TheNavbar,
@@ -117,7 +117,7 @@ export default {
       });
     },
   }
-};
+});
 
 </script>
 

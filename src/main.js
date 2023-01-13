@@ -1,15 +1,21 @@
-import { createApp } from 'vue';
-//import Vue from 'vue';
-import bootstrap from 'bootstrap';
-import App from './App.vue' ;
+import Vue from 'vue'
+import App from './App.vue'
 
+import { BootstrapVue } from 'bootstrap-vue'
+
+// Import Bootstrap and BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import store from './store'
+import router from './router'
 
-const app = createApp(App);
 
-//Vue.use(bootstrap);
-// app.component("v-select", vSelect);
-app.use(bootstrap);
-app.mount('#app');
+Vue.use(BootstrapVue)
 
+Vue.config.productionTip = false
+
+new Vue({
+  store,
+  router,
+  render: h => h(App)
+}).$mount('#app')

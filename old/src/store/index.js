@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-   state () {
+  state () {
     return {
       msalApp: null,
       logindata: null,
@@ -42,4 +42,4 @@ export default new Vuex.Store({
   actions: {
     
   }
-})
+});

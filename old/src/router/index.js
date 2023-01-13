@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import TheForm from '@/components/TheForm';
+
 Vue.use(VueRouter)
 
 const routes = [
