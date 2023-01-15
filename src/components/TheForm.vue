@@ -214,61 +214,61 @@ div
           hr
         section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking")
           .formed
-            label.common(for="session") Session Recomended: 
+            label.common(for="session") Session Recommended:      
             b-btn#add-btn(@click="addmethod") + Add Session 
-            b-modal#add-session(size="lg" title="Add Session" centered)
-              label Type 
-                .gap 
-                  input#group(v-model="type" name="typeSes" type="radio" value="group")
+            b-modal#add-session(size="lg" title="Add Session" centered)         
+              p.common Type 
+                div
+                  input#group(v-model="typeses" name="typeSes" type="radio" value="Group")
                   label(for="group") &nbsp;Group
-                .gap
-                  input#individual(v-model="type" name="typeSes" type="radio" value="individual")
+                div
+                  input#individual(v-model="typeses" name="typeSes" type="radio" value="Individual")
                   label(for="individual") &nbsp;Individual
-                  .row.gap(v-show="gp || ind")
-                    label.gap Day 
-                      .gap
-                        input#monday(v-model="day" name="daySes" type="radio" value="monday")
+                  .row.gap(v-show="typeses")
+                    p.common.gap Day 
+                      div 
+                        input#monday(v-model="day" name="daySes" type="radio" value="Monday")
                         label(for="monday") &nbsp;Monday
-                      .gap
-                        input#tuesday(v-model="day" name="daySes" type="radio" value="tuesday")
+                      div
+                        input#tuesday(v-model="day" name="daySes" type="radio" value="Tuesday")
                         label(for="tuesday") &nbsp;Tuesday
-                      .gap
-                        input#wednesday(v-model="day" name="daySes" type="radio" value="wednesday")
+                      div
+                        input#wednesday(v-model="day" name="daySes" type="radio" value="Wednesday")
                         label(for="wednesday") &nbsp;Wednesday
-                      .gap
-                        input#thursday(v-model="day" name="daySes" type="radio" value="thursday")
+                      div
+                        input#thursday(v-model="day" name="daySes" type="radio" value="Thursday")
                         label(for="thursday") &nbsp;Thursday
-                      .gap
-                        input#friday(v-model="day" name="daySes" type="radio" value="friday")
+                      div 
+                        input#friday(v-model="day" name="daySes" type="radio" value="Friday")
                         label(for="friday") &nbsp;Friday
-                        .row.gap(v-show="mon || tue || wed || thurs || fri")
-                          label.gap Time 
-                          .gap 
-                            input#am(v-model="time" name="timeSes" type="radio" value="am")
+                        .row.gap(v-show="day")
+                          p.common.gap Time 
+                          div
+                            input#am(v-model="time" name="timeSes" type="radio" value="AM")
                             label(for="am") &nbsp;9:30 AM
-                          .gap
-                            input#pm(v-model="time" name="timeSes" type="radio" value="pm")
+                          div
+                            input#pm(v-model="time" name="timeSes" type="radio" value="PM")
                             label(for="pm") &nbsp;2:30 PM
-                            .row.gap(v-show="am || pm")
-                              .gap
-                                input#center(v-model="location" name="location" type="radio" value="center")
+                            .row.gap(v-show="time")
+                              p.common.gap Location
+                              div
+                                input#center(v-model="location" name="location" type="radio" value="Center")
                                 label(for="center") &nbsp;Center 
-                            .row.gap(v-show="(am || pm) && ind")
-                              .gap
-                                input#videocall(v-model="location" name="location" type="radio" value="videocall")
-                                label(for="videocall") &nbsp;Video Call (Zoom)
-                              .gap
-                                input#residence(v-model="location" name="location" type="radio" value="residence")
+                            div(v-if="(time==='AM' || time==='PM') && typeses==='Individual'")
+                              input#videocall(v-model="location" name="location" type="radio" value="Video Call (Zoom)")
+                              label(for="videocall") &nbsp;Video Call (Zoom)
+                              div
+                                input#residence(v-model="location" name="location" type="radio" value="Residence")
                                 label(for="residence") &nbsp;Residence 
-                                .row.gap(v-show="cen || video || res")
-                                  b-button(size="md" @click="") Add
+              template(#modal-footer="{ok}")
+                b-btn(v-show="location" size="md" @click="addNew") Add
 
-              
+
           .formed
             label.common.gap(for="admission") Admission date:
             input.numbers-half#admission(v-model="adm" name="admission" type="date")
           hr
-        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking && ses.length > 0 ")
+        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking ")
           label.common.gap Subsidy:
           .formed.gap
             input#no(v-model="no" name="subsidy" type="radio" value="no" @click="revert()")
@@ -304,7 +304,7 @@ div
                     label.common(for="subsid") Amount Subsidized:
                     input.numbers-half#subsid(name="subsid" type="number" min="0")
           hr
-        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking && ses.length > 0 && adm && (no || subsidy)")
+        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking && (no || subsidy)")
           label.common Applicable Fee (excluding GST):
           .formed
             .formed.gap
@@ -425,6 +425,10 @@ export default {
       ovyearSelected: false,
       un: false,
       ov: false,
+      typeses: false,
+      day: false,
+      time: false,
+      location: false,
       unpoint: 0,
       vis1: [0],
       vis2: [0],
@@ -533,6 +537,23 @@ export default {
     addmethod() {
       this.$bvModal.show("add-session");
     },
+    addNew() {
+      const sessions = [];
+
+      sessions.push({
+        type: this.typeses,
+        day: this.day,
+        time: this.time,
+        location: this.location,
+      });
+
+      console.log('after: ', sessions)
+
+      this.typeses= false;
+      this.day=false;
+      this.time=false;
+      this.location= false;
+    }
   },
   watch: {
     gp(value) {
