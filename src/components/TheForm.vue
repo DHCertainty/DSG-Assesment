@@ -214,11 +214,14 @@ div
           hr
         section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking")
           .formed
-            label.common(for="session") Session Recommended:      
-            b-btn#add-btn(@click="addmethod") + Add Session 
-            div(v-if="this.sessions.length === 0")
+            .row
+              .col-sm-3
+                label.common(for="session") Session Recommended: 
+              .col     
+                b-btn#add-btn(@click="addmethod") + Add Session 
+            div.my-4(v-if="this.sessions.length === 0")
               p.common.gap No Session Selected
-            ul(v-for="ses in sessions" key="ses.id")
+            ul.my-4(v-for="ses in sessions" key="ses.id")
               li()
                   | {{ses.type}} , {{ ses.day }} {{ ses.time }} ( {{ ses.location }} )
             b-modal#add-session(size="lg" title="Add Session" centered)         
@@ -269,7 +272,7 @@ div
                 b-btn(v-show="location" size="md" @click="addNew") Add
 
 
-          .formed
+          .formed(style="margin-top: 20px")
             label.common.gap(for="admission") Admission date:
             input.numbers-half#admission(v-model="adm" name="admission" type="date")
           hr
@@ -556,6 +559,8 @@ export default {
       this.day=false;
       this.time=false;
       this.location= false;
+
+      this.$bvModal.hide("add-session");
     }
   },
   watch: {
