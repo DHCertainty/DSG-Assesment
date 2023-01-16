@@ -216,6 +216,11 @@ div
           .formed
             label.common(for="session") Session Recommended:      
             b-btn#add-btn(@click="addmethod") + Add Session 
+            div(v-if="this.sessions.length === 0")
+              p.common.gap No Session Selected
+            ul(v-for="ses in sessions" key="ses.id")
+              li()
+                  | {{ses.type}} , {{ ses.day }} {{ ses.time }} ( {{ ses.location }} )
             b-modal#add-session(size="lg" title="Add Session" centered)         
               p.common Type 
                 div
@@ -268,7 +273,7 @@ div
             label.common.gap(for="admission") Admission date:
             input.numbers-half#admission(v-model="adm" name="admission" type="date")
           hr
-        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking ")
+        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking && this.sessions.length > 0")
           label.common.gap Subsidy:
           .formed.gap
             input#no(v-model="no" name="subsidy" type="radio" value="no" @click="revert()")
@@ -304,7 +309,7 @@ div
                     label.common(for="subsid") Amount Subsidized:
                     input.numbers-half#subsid(name="subsid" type="number" min="0")
           hr
-        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking && (no || subsidy)")
+        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking && this.sessions.length  > 0 && (no || subsidy)")
           label.common Applicable Fee (excluding GST):
           .formed
             .formed.gap
@@ -393,7 +398,7 @@ export default {
       subsidy: null,
       no: null,
       checking: "",
-      ses: [],
+      sessions: [],
       latestscore: "",
       adm: "",
       latest: "0",
@@ -538,16 +543,14 @@ export default {
       this.$bvModal.show("add-session");
     },
     addNew() {
-      const sessions = [];
-
-      sessions.push({
+      this.sessions.push({
         type: this.typeses,
         day: this.day,
         time: this.time,
         location: this.location,
       });
 
-      console.log('after: ', sessions)
+      console.log('after: ', this.sessions)
 
       this.typeses= false;
       this.day=false;
