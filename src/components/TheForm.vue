@@ -138,27 +138,24 @@ div
                 label Repeat Forward order 2 1 8 5 4 :
                 v-select(v-model="vis7" :options="['0', '1']" :clearable="false")
               .col-sm-6
+                label Repeat Backward order 7 4 2 :
+                v-select(v-model="vis17" :options="['0', '1']" :clearable="false")
+              .col-sm-6.gap
                 label Able to tap with his hand at each number 1:
                 v-select(v-model="vis8" :options="['0', '1']" :clearable="false")
               .col-sm-6.gap
                 label Serial 7 subtraction starting at 100:
                 v-select(v-model="vis9" :options="['0', '1', '2', '3']" :clearable="false")
-              .col-sm-6.gap
-                label Repeat Backward order 7 4 2 :
-                v-select(v-model="vis17" :options="['0', '1']" :clearable="false")
             .row
-              p.common.gap Language(Repeat)
+              p.common.gap Language
               .col-sm-6
-                label First Sentence:
+                label Repeat First Sentence:
                 v-select(v-model="vis10" :options="['0', '1']" :clearable="false")
               .col-sm-6
-                label Second Sentence:
+                label Repeat Second Sentence:
                 v-select(v-model="vis11" :options="['0', '1']" :clearable="false")
               .col-sm-6.gap
-                label Verbal Fluency:
-                v-select(v-model="vis12" :options="['0', '1']" :clearable="false")
-              .col-sm-6.gap
-                label Specify(how many animals)
+                label Fluency(Specify how many animals):
                 v-select(v-model="vis18" :options="specify" :clearable="false")
             .row 
               p.common.gap Abstraction
@@ -639,6 +636,9 @@ export default {
     unyearSelected(value) {
       if (value === true) {
         this.ovyearSelected = false;
+        this.unpoint = 1;
+      } else {
+        this.unpoint = 0;
       }
     },
     ovyearSelected(value) {
