@@ -636,17 +636,14 @@ export default {
         this.unpoint = 0;
       }
     },
-    un(value) {
+    unyearSelected(value) {
       if (value === true) {
-        this.ov = false;
-        this.unpoint = 1;
-      } else {
-        this.unpoint = 0;
+        this.ovyearSelected = false;
       }
     },
-    ov(value) {
+    ovyearSelected(value) {
       if (value === true) {
-        this.un = false;
+        this.unyearSelected = false;
       }
     },
     fees1(value) {
