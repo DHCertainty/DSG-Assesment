@@ -246,20 +246,24 @@ div
                       div 
                         input#friday(v-model="day" name="daySes" type="radio" value="Friday")
                         label(for="friday") &nbsp;Friday
-                        .row.gap(v-show="day")
+                        .row.gap(v-show="day && typeses==='Group'")
                           p.common.gap Time 
                           div
                             input#am(v-model="time" name="timeSes" type="radio" value="AM")
                             label(for="am") &nbsp;9:30 AM
                           div
                             input#pm(v-model="time" name="timeSes" type="radio" value="PM")
-                            label(for="pm") &nbsp;2:30 PM
+                            label(for="pm") &nbsp;2:00 PM
+                        .row.gap(v-show="day && typeses==='Individual'")
+                          p.common.gap Time 
+                          div
+                            input.numbers#timeSession(v-model="time" name="timeSession" type="time")
                             .row.gap(v-show="time")
                               p.common.gap Location
                               div
                                 input#center(v-model="location" name="location" type="radio" value="Center")
                                 label(for="center") &nbsp;Center 
-                            div(v-if="(time==='AM' || time==='PM') && typeses==='Individual'")
+                            div(v-show="time && typeses==='Individual'")
                               input#videocall(v-model="location" name="location" type="radio" value="Video Call (Zoom)")
                               label(for="videocall") &nbsp;Video Call (Zoom)
                               div
