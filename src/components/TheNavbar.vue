@@ -7,23 +7,57 @@
     <img src="../assets/logo.png" />
     <ul>
       <li class="navbar__dateAssessment">Date of Assessment: {{ dateofassessment }}</li>
-      <li class="navbar__clientName">Client name: {{ clientname }}</li>
+      <li class="navbar__clientName">Client name: {{ client_name }}</li>
     </ul>
     <h1>Day of Assessment</h1>
   </header>
 </template>
 
 <script>
+
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone"; // dependent on utc plugin
+import isToday from "dayjs/plugin/isToday";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(isToday);
+const defaultTimezone = "Asia/Singapore";
+dayjs.tz.setDefault(defaultTimezone);
+
 export default {
   data(){
     return{
-      clientname: "John Doe",
-      dateofassessment: "16/01/2023",
+      client_id: "",
+      client_name: "",
+      dateofassessment: "",
     }
   },
+  async mounted() {
+    const clientId = this.$route.query.client_id;
+    this.client_id = clientId;
+    this.dateofassessment = dayjs().format("MM-DD-YYYY hh:mm A");
+    await this.$parent.init();
+    console.log(this.$store.state)
+    await this.getClientData();
+  },
+  methods:{
+    async getClientData(){
+      let paramObj = {
+        $select:'crb5c_no,crb5c_nricno',
+        $filter: `crb5c_fow_customerid eq '${this.client_id}'`,
+      };
+      let params = new URLSearchParams(paramObj);
+      let { data: clientData } = await this.$store.state.axios.get(
+        `crb5c_fow_customers/?${params.toString()}`
+      );
+      console.log(clientData);
+      this.client_name = clientData.value[0].crb5c_no;
+    }
+  }
 }
 </script>
-
 <style scoped lang="scss">
 header {
   width: 100%;
@@ -37,7 +71,6 @@ header {
   overflow: hidden;
   /* float: left; */
 }
-
 @media screen and (max-width: 360px) {
   .navbar__dateAssessment,
   .navbar__clientName{
@@ -47,7 +80,6 @@ header {
     top: 5rem;
   }
 }
-
 @media screen and (min-width: 361px) {
   .navbar__dateAssessment,
   .navbar__clientName{
@@ -56,7 +88,6 @@ header {
     left: 20vw;
   }
 }
-
 @media screen and (min-width: 500px) {
   .navbar__dateAssessment,
   .navbar__clientName{
@@ -65,12 +96,10 @@ header {
     // display: inline-block;
     left: 26vw;
   }
-
   .navbar__dateAssessment{
     margin-right: 1rem;
   }
 }
-
 @media screen and (min-width: 580px) {
   .navbar__dateAssessment,
   .navbar__clientName{
@@ -79,12 +108,10 @@ header {
     display: inline-block;
     left: 18vw;
   }
-
   .navbar__dateAssessment{
     margin-right: 1rem;
   }
 }
-
 @media screen and (min-width: 780px) {
   .navbar__dateAssessment,
   .navbar__clientName{
@@ -93,12 +120,10 @@ header {
     display: inline-block;
     left: 27vw;
   }
-
   .navbar__dateAssessment{
     margin-right: 1rem;
   }
 }
-
 @media screen and (min-width: 780px) {
   .navbar__dateAssessment,
   .navbar__clientName{
@@ -107,12 +132,10 @@ header {
     display: inline-block;
     left: 27vw;
   }
-
   .navbar__dateAssessment{
     margin-right: 1rem;
   }
 }
-
 @media screen and (min-width: 950px) {
   .navbar__dateAssessment,
   .navbar__clientName{

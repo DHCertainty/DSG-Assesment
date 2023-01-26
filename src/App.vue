@@ -16,9 +16,12 @@ export default {
     TheNavbar,
     TheForm
   },
-  async mounted() {
-    await this.prepareAxios();
-    console.log('axios prepared')
+  data() {
+    return {
+      msalApp: null,
+      promptLogin: null,
+      logindata: null
+    }
   },
   methods: {
     async prepareAxios(){
