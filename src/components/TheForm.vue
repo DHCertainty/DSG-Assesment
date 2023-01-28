@@ -254,18 +254,23 @@ div
                           div
                             input#pm(v-model="time" name="timeSes" type="radio" value="PM")
                             label(for="pm") &nbsp;2:00 PM
-                        .row.gap(v-show="day && typeses==='Individual'")
-                          p.common.gap Time 
-                          div
-                            input.numbers#timeSession(v-model="time" name="timeSession" type="time")
                             .row.gap(v-show="time")
                               p.common.gap Location
                               div
                                 input#center(v-model="location" name="location" type="radio" value="Center")
                                 label(for="center") &nbsp;Center 
-                            div(v-show="time && typeses==='Individual'")
-                              input#videocall(v-model="location" name="location" type="radio" value="Video Call (Zoom)")
-                              label(for="videocall") &nbsp;Video Call (Zoom)
+                        .row.gap(v-show="day && typeses==='Individual'")
+                          p.common.gap Time 
+                          div
+                            input.numbers#timeSession(v-model="time" name="timeSession" type="time")
+                            .row.gap(v-show="time && typeses==='Individual'")
+                              p.common.gap Location
+                              div
+                                input#center(v-model="location" name="location" type="radio" value="Center")
+                                label(for="center") &nbsp;Center 
+                              div
+                                input#videocall(v-model="location" name="location" type="radio" value="Video Call (Zoom)")
+                                label(for="videocall") &nbsp;Video Call (Zoom)
                               div
                                 input#residence(v-model="location" name="location" type="radio" value="Residence")
                                 label(for="residence") &nbsp;Residence 
@@ -289,10 +294,10 @@ div
               .formed
                 .formed.gap
                   input#dsg1(v-model="subs1" name="subsidy1" type="checkbox" value="dsg1")
-                  label.long(for="dsg1") DSG
+                  label.long.gapped(for="dsg1") DSG
                 .gap 
                   input#dsg2(v-model="subs2" name="subsidy2" type="checkbox" value="dsg2")
-                  label.long(for="dsg2") Toteboard
+                  label.long.gapped(for="dsg2") Toteboard
                   .row.gap(v-show="subs2")
                     .col-md-2 
                       label.common Means Test Result
@@ -302,13 +307,13 @@ div
                       label.common % subsidy
                 .formed.gap
                   input#dsg3(v-model="subs3" name="subsidy3" type="checkbox" value="dsg3")
-                  label.long(for="dsg3") Others
+                  label.long.gapped(for="dsg3") Others
                   .formed.gap(v-show="subs3")
                     label.common(for="others") Specify: 
                     input.numbers-half#others(name="others" type="text")
                 .formed.gap.gapbot 
                   input#dsg4(v-model="subs4" name="subsidy4" type="checkbox" value="dsg4")
-                  label.long(for="dsg4") Amount Subsidized
+                  label.long.gapped(for="dsg4") Amount Subsidized
                   .formed.gapbot(v-show="subs4")
                     label.common(for="subsid") Amount Subsidized:
                     input.numbers-half#subsid(name="subsid" type="number" min="0")
