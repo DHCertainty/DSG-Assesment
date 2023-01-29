@@ -125,7 +125,11 @@ export default {
 </script>
 
 <style>
-
+@font-face {
+  font-family: "Montserrat";
+  src: local("Montserrat"),
+   url(../src/assets/font/Montserrat/Montserrat-VariableFont_wght.ttf) format("truetype");
+}
 
 .back{
   /* position: static; */

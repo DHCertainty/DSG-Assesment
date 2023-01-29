@@ -6,10 +6,10 @@
     />
     <img src="../assets/logo.png" />
     <ul>
-      <li class="navbar__dateAssessment">Date of Assessment: {{ dateofassessment }}</li>
-      <li class="navbar__clientName">Client name: {{ client_name }}</li>
+      <li class="navbar__dateAssessment"><span>Date of Assessment: </span>{{ dateofassessment }}</li>
+      <li class="navbar__clientName"><span>Client name: </span>{{ client_name }}</li>
     </ul>
-    <h1>Day of Assessment</h1>
+    <h1>Client Assessment</h1>
   </header>
 </template>
 
@@ -37,7 +37,7 @@ export default {
   async mounted() {
     const clientId = this.$route.query.client_id;
     this.client_id = clientId;
-    this.dateofassessment = dayjs().format("MM-DD-YYYY hh:mm A");
+    
     await this.$parent.init();
     console.log(this.$store.state)
     await this.getClientData();
@@ -53,7 +53,9 @@ export default {
         `crb5c_fow_customers/?${params.toString()}`
       );
       console.log(clientData);
+
       this.client_name = clientData.value[0].crb5c_no;
+      this.dateofassessment = dayjs().format("MM-DD-YYYY hh:mm A");
     }
   }
 }
@@ -86,6 +88,8 @@ header {
     // display: none;
     // background-color: red;
     left: 20vw;
+    font-size: 14px;
+    font-weight: bold;
   }
 }
 @media screen and (min-width: 500px) {
@@ -118,7 +122,7 @@ header {
     // display: none;
     // background-color: red;
     display: inline-block;
-    left: 27vw;
+    left: 25vw;
   }
   .navbar__dateAssessment{
     margin-right: 1rem;
@@ -130,7 +134,6 @@ header {
     // display: none;
     // background-color: red;
     display: inline-block;
-    left: 27vw;
   }
   .navbar__dateAssessment{
     margin-right: 1rem;
@@ -142,42 +145,35 @@ header {
     // display: none;
     // background-color: red;
     display: inline-block;
-    left: 30vw;
   }
-
   .navbar__dateAssessment{
     margin-right: 3rem;
   }
 }
-
 @media screen and (min-width: 1200px) {
   .navbar__dateAssessment,
   .navbar__clientName{
     // display: none;
     // background-color: red;
     display: inline-block;
-    left: 33.5vw;
   }
 
   .navbar__dateAssessment{
     margin-right: 3rem;
   }
 }
-
 h1 {
   color: black;
   position: fixed;
   font-weight: bold;
-  top: 120px;
+  top: 100px;
   font-size: 25px;
 }
-
 ul {
   list-style: none;
   font-size: 12px;
   display: inline;
 }
-
 li {
   position: relative;
   /* display: flex; */
@@ -185,16 +181,14 @@ li {
   top: 1rem;
   /* margin-right: 5vw; */
 }
-
 img {
   position: fixed;
   padding-top: 5px;
   top: 10px;
   left: 1%;
 }
-
 * {
-  font-family: Roboto;
+  font-family: 'Montserrat';
 }
 .front{
   /* position: fixed; */

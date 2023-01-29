@@ -774,7 +774,7 @@ export default {
 $base-color-purple :#50276B;
 
 * {
-  font-family: roboto;
+  font-family: 'Montserrat';
 }
 
 .container {
@@ -931,7 +931,7 @@ hr {
   margin-top: 3rem;
   margin-bottom: 2rem;
   border-width: 2px;
-  border-color: black;
+  border-color: #00000059;
   display: block;
   // max-width: 100%;
 }
