@@ -36,10 +36,11 @@ export default {
   },
   async mounted() {
     const clientId = this.$route.query.client_id;
+    console.log('receivedid:',clientId);
     this.client_id = clientId;
     
     await this.$parent.init();
-    console.log(this.$store.state)
+    console.log(this.$store.state);
     await this.getClientData();
   },
   methods:{
