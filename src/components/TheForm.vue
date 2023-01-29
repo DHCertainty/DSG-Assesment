@@ -32,7 +32,7 @@ div
             label.gapped.text-small(for="pnbtg") Played NeeuroFIT brain training game
           .container(v-show="neeuro")
             h2 Pick Games:
-            .left
+            .gap.left
               input#att(v-model="atten" name="part2ins" type="checkbox" value="att")
               label(for="att") &nbsp;Attention
               .row(v-show="atten")
@@ -72,7 +72,7 @@ div
                 .gap.col-sm-6
                   label.common.inside(for="stageof") Finished Level:
                   v-select(:options="levels")
-              .gap.left
+            .gap.left
                 input#flexi(type="checkbox" name="part2ins" v-model="flexibility" value="flexi")
                 label(for="flexi") &nbsp;Flexibility
                 .row(v-show="flexibility")
@@ -262,6 +262,7 @@ div
                         .row.gap(v-show="day && typeses==='Individual'")
                           p.common.gap Time 
                           div
+                            
                             input.numbers#timeSession(v-model="time" name="timeSession" type="time")
                             .row.gap(v-show="time && typeses==='Individual'")
                               p.common.gap Location
@@ -278,23 +279,32 @@ div
                 b-btn(v-show="location" size="md" @click="addNew") Add
 
 
-          .formed(style="margin-top: 20px")
+          .formed(style="margin-top:80px")
             label.common.gap(for="admission") Admission date:
             input.numbers-half#admission(v-model="adm" name="admission" type="date")
           hr
         section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking && this.sessions.length > 0")
-          label.common.gap Subsidy:
-          .formed.gap
-            input#no(v-model="no" name="subsidy" type="radio" value="no" @click="revert()")
-            label(for="no") &nbsp;No
-          .formed.gap.gapbot
-            input#yes(v-model="subsidy" name="subsidy" type="radio" value="yes")
-            label(for="yes") &nbsp;Yes
-            section(v-show="subsidy")
+          .row.gap
+            .col-md-1 
+              label.common.gap Subsidy:
+            .col-auto 
+              .formed.gap
+                input#no(v-model="no" name="subsidy" type="radio" value="no" @click="revert()")
+                label(for="no") &nbsp;No
+            .col-auto 
+              .formed.gap.gapbot
+                input#yes(v-model="subsidy" name="subsidy" type="radio" value="yes")
+                label(for="yes") &nbsp;Yes
+          section(v-show="subsidy")
               .formed
                 .formed.gap
                   input#dsg1(v-model="subs1" name="subsidy1" type="checkbox" value="dsg1")
                   label.long.gapped(for="dsg1") DSG
+                  .row.gap(v-show="subs1")
+                      .col-md-2 
+                        input.numbers#means(name="means" type="number" min="0")
+                      .col-md-2
+                        label.common % subsidy
                 .gap 
                   input#dsg2(v-model="subs2" name="subsidy2" type="checkbox" value="dsg2")
                   label.long.gapped(for="dsg2") Toteboard
@@ -302,7 +312,7 @@ div
                     .col-md-2 
                       label.common Means Test Result
                     .col-md-2 
-                      input.numbers#means(name="means" type="number" min="0")
+                      v-select(v-model="subsidyAmount" :options="clientdata.crb5c_citizenship == 0 ?  toteboardSG : toteboardPR")
                     .col-md-2
                       label.common % subsidy
                 .formed.gap
@@ -311,12 +321,10 @@ div
                   .formed.gap(v-show="subs3")
                     label.common(for="others") Specify: 
                     input.numbers-half#others(name="others" type="text")
-                .formed.gap.gapbot 
-                  input#dsg4(v-model="subs4" name="subsidy4" type="checkbox" value="dsg4")
-                  label.long.gapped(for="dsg4") Amount Subsidized
-                  .formed.gapbot(v-show="subs4")
-                    label.common(for="subsid") Amount Subsidized:
-                    input.numbers-half#subsid(name="subsid" type="number" min="0")
+                .formed.gapbot(v-show="subs1 || subs2 || subs3 ")
+                    label.common(for="subsid" style="justify-content:end") Amount Subsidized:
+                    .row(style="justify-content:end")
+                      input.small-input-width#subsid(name="subsid" type="number" min="0")
           hr
         section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking && this.sessions.length  > 0 && (no || subsidy)")
           label.common Applicable Fee (excluding GST):
@@ -393,6 +401,7 @@ export default {
   // emits: ["newresource"],
   data() {
     return {
+      clientdata: [],
       neeuro: false,
       atten: false,
       spatial: false,
@@ -417,6 +426,7 @@ export default {
       edulev: "",
       gp: false,
       ind: false,
+      subsidyAmount: null,
       subs1: true,
       subs2: false,
       subs3: false,
@@ -541,13 +551,22 @@ export default {
         "Red(1 point)",
       ],
       eq5dnumbers: ['0', '1', '2', '3', '4', '5'],
+      toteboardPR: ['15','30','40','50','55'],
+      toteboardSG: ['30','50','60','75','80'],
     };
   },
   compatConfig: { MODE: 3 },
+  async mounted() {
+    const component = this;
+    this.$root.$on('getFormData', function(){
+      component.getdatainform();
+    })
+  },
   methods: {
     revert() {
       this.subsidy = null;
     },
+
     addmethod() {
       this.$bvModal.show("add-session");
     },
@@ -567,7 +586,20 @@ export default {
       this.location= false;
 
       this.$bvModal.hide("add-session");
-    }
+    },
+    async getdatainform(){
+      const clientId = this.$route.query.client_id;
+      let paramObj = {
+        $select:'crb5c_no,crb5c_nricno,crb5c_citizenship',
+        $filter: `crb5c_fow_customerid eq '${clientId}'`,
+      };
+      let params = new URLSearchParams(paramObj);
+      let { data: data } = await this.$store.state.axios.get(
+        `crb5c_fow_customers/?${params.toString()}`
+      );
+      this.clientdata = data.value[0];
+      console.log('form data',this.clientdata);
+  },
   },
   watch: {
     gp(value) {
@@ -879,6 +911,16 @@ textarea {
   border-radius: 5px;
 }
 
+.small-input-width {
+  display: flex;
+  width: 20%;
+  height: 2rem;
+  font: inherit;
+  padding: 0.2rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
 select.common {
   display: flex;
   width: 100%;
@@ -915,6 +957,7 @@ textarea:focus {
 
 .gap {
   margin-top: 1rem;
+  margin-bottom: 10px
 }
 
 .gap-twice {

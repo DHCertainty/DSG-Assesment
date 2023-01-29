@@ -56,6 +56,7 @@ export default {
 
       this.client_name = clientData.value[0].crb5c_no;
       this.dateofassessment = dayjs().format("MM-DD-YYYY hh:mm A");
+      this.$root.$emit('getFormData')
     }
   }
 }
