@@ -50,7 +50,7 @@ export default ({
             }
         });
         this.$store.commit('axios', result);
-        this.$store.state.axios.get("/GlobalOptionSetDefinitions(9e739642-91c1-ec11-983e-000d3ac88352)").then(({data})=>{
+        this.$store.state.axios.get("/GlobalOptionSetDefinitions(560a1b0a-77fe-487d-840d-131c258ed1e0)").then(({data})=>{
           let rooms = {}  
           data.Options.forEach(o=>{
             rooms[o.Value] = o.Label.UserLocalizedLabel.Label;
