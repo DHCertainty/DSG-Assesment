@@ -35,7 +35,12 @@ export default {
     }
   },
   async mounted() {
-    const clientId = this.$route.query.client_id;
+    let clientId = this.$route.query.client_id;
+    if (!clientId) {
+      const url = new URLSearchParams(window.location.href);
+      const state = url.get('state');
+      clientId = state.split('|')[1];
+    }
     console.log('receivedid:',clientId);
     this.client_id = clientId;
     

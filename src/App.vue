@@ -69,6 +69,7 @@ export default {
         await this.msalApp.loginRedirect({
           scopes: [`https://${this.logindata.DATAVERSE_DOMAIN}/.default`],
           redirectUri: location.origin + "/home",
+          state:  this.$route.query.client_id
         });
         !this.$store.state.msalApp && this.msalApp
           ? this.$store.commit("msalApp", this.msalApp)
