@@ -604,7 +604,7 @@ export default {
   },
    submitassessment(){
     const payload = { 
-        crb5c_stageofdementia: this.stageof
+        crb5c_teststageof: this.stageof
      };
       const { data } = this.$store.state.axios.post(
         `/crb5c_fowassessments`,payload);
