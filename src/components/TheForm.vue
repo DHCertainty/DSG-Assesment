@@ -383,7 +383,7 @@ div
             .col-md-3
               input#cheque(name="payment" type="radio" value="cheque")
               label(for="cheque") &nbsp;Cheque
-        section.submitbtn(v-show="(no || subsidy)")
+        section.submitbtn(@click="submitassessment" )
           b-btn Submit
     <br>
     <br>
@@ -601,6 +601,14 @@ export default {
       );
       this.clientdata = data.value[0];
       console.log('form data',this.clientdata);
+  },
+   submitassessment(){
+    const payload = { 
+        crb5c_stageofdementia: this.stageof
+     };
+      const { data } = this.$store.state.axios.post(
+        `/crb5c_fowassessments`,payload);
+      console.log(data)
   },
   },
   watch: {
