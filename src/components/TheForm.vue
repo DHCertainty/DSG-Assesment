@@ -383,6 +383,8 @@ div
             .col-md-3
               input#cheque(name="payment" type="radio" value="cheque")
               label(for="cheque") &nbsp;Cheque
+        section.submitbtn(v-show="(no || subsidy)")
+          b-btn Submit
     <br>
     <br>
     <br>
@@ -823,6 +825,11 @@ $base-color-purple :#50276B;
   display: block;
   justify-content: center;
   text-align: center;
+}
+
+.submitbtn{
+  text-align: center;
+  margin-top: 60px;
 }
 
 .sm-container {
