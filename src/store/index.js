@@ -37,6 +37,9 @@ export default new Vuex.Store({
     },
     msalAccount(state, payload) {
       state.msalAccount = payload;
+    },
+    assessment_client_id(state, payload){
+      state.assessment_client_id = payload;
     }
   },
   actions: {
