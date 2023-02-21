@@ -394,7 +394,7 @@ div
             .col-md-3
               input#cheque( v-model="modeofpayment" name="payment" type="radio" value="cheque")
               label(for="cheque") &nbsp;Cheque
-        section.submitbtn(@click="submitassessment" )
+        section.submitbtn(v-if="modeofpayment" @click="submitassessment" )
           b-btn Submit
     <br>
     <br>
