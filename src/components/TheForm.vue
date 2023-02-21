@@ -632,17 +632,15 @@ export default {
       // crb5c_educationyear:
       crb5c_alternatetrailmaking: parseInt(this.vis1),
       crb5c_copycube: parseInt(this.vis2),
-      crb5c_drawclock: parseInt(this.vis3),
       crb5c_lion: parseInt(this.vis4),
       crb5c_elephant: parseInt(this.vis5),
-      crb5c_Camel: parseInt(this.vis6),
+      crb5c_camel: parseInt(this.vis6),
       crb5c_repeatforward: parseInt(this.vis7),
       crb5c_repeatbackward: parseInt(this.vis17),
       crb5c_abletotap: parseInt(this.vis8),
       crb5c_serial7subtraction: parseInt(this.vis9),
       crb5c_repeatfirstsentence: parseInt(this.vis10),
       crb5c_repeatsecondsentence: parseInt(this.vis11),
-      crb5c_fluency: parseInt(this.vis18),
       crb5c_similaritybetweentrainbicycle: parseInt(this.vis13),
       crb5c_similaritybetweenwatchruler: parseInt(this.vis14),
      };
