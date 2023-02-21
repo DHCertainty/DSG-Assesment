@@ -383,16 +383,16 @@ div
           label.common.gap Mode of Payment:
           .row 
             .col-md-3
-              input#cash(name="payment" type="radio" value="cash")
+              input#cash(v-model="modeofpayment" name="payment" type="radio" value="cash")
               label(for="cash") &nbsp;Cash
             .col-md-3
-              input#paynow(name="payment" type="radio" value="paynow")
+              input#paynow( v-model="modeofpayment" name="payment" type="radio" value="paynow")
               label(for="paynow") &nbsp;PayNow
             .col-md-3
-              input#e-bank(name="payment" type="radio" value="e-bank")
+              input#e-bank( v-model="modeofpayment" name="payment" type="radio" value="e-bank")
               label(for="e-bank") &nbsp;Internet Banking
             .col-md-3
-              input#cheque(name="payment" type="radio" value="cheque")
+              input#cheque( v-model="modeofpayment" name="payment" type="radio" value="cheque")
               label(for="cheque") &nbsp;Cheque
         section.submitbtn(@click="submitassessment" )
           b-btn Submit
@@ -414,6 +414,7 @@ export default {
   // emits: ["newresource"],
   data() {
     return {
+      modeofpayment: null,
       healthscale: null,
       totalscoreMoca: null,
       totalscoreEq: null,
@@ -627,7 +628,7 @@ export default {
       crb5c_typeofdementia: this.type,
       crb5c_stageofdementia: this.stageof,
       crb5c_latestscoreon: this.latestscore,
-      crb5c_latestscorevalue: this.latest,
+      crb5c_latestscorevalue: (this.latestscore == 'MOCA') ? this.totalscoreMoca : this.latest,
       crb5c_datedone: this.date,
       crb5c_sharedcentreobjectivesprogramme: this.checker,
       crb5c_watchedcentrevideo: this.checker2,
@@ -671,9 +672,9 @@ export default {
       crb5c_delayedrecall: this.delayedrecall,
       crb5c_fluency: this.checkfluency,
       crb5c_drawclock: this.vis3.length,
-      crb5c_languageversion: this.language
-
-
+      crb5c_languageversion: this.language,
+      crb5c_modeofpayment: this.modeofpayment,
+      crb5c_amountcollected: '$' + this.amtcollect,
      };
       const { data } = this.$store.state.axios.post(
         `/crb5c_fowassessmentforms`,payload);
