@@ -42,7 +42,7 @@ export default new Vuex.Store({
       state.assessment_client_id = payload;
     },
     assessment_client_name(state, payload){
-      state.assessment_client_id = payload;
+      state.assessment_client_name = payload;
     }
   },
   actions: {
