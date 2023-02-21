@@ -37,51 +37,51 @@ div
               label(for="att") &nbsp;Attention
               .row(v-show="atten")
                 .gap.col-sm-6
-                  label.common.inside(for="stageof") Game played:
-                  v-select(:options="game1")
+                  label.common.inside(for="stageof" ) Game played:
+                  v-select(:options="game1" v-model="attentiongame")
                 .gap.col-sm-6
-                  label.common.inside(for="stageof") Finished Level:
-                  v-select(:options="levels")
+                  label.common.inside(for="stageof" ) Finished Level:
+                  v-select(:options="levels" v-model="attentionlevel")
             .gap.left 
               input#spat(type="checkbox" name="part2ins" v-model="spatial" value="spat")
               label(for="spat") &nbsp;Spatial
               .row(v-show="spatial")
                 .gap.col-sm-6
                   label.common.inside(for="stageof") Game Played:
-                  v-select(:options="game2")
+                  v-select(:options="game2" v-model="spatialgame")
                 .gap.col-sm-6
                   label.common.inside(for="stageof") Finished Level:
-                  v-select(:options="levels")
+                  v-select(:options="levels" v-model="spatiallevel")
             .gap.left 
               input#dec(type="checkbox" name="part2ins" v-model="decision" value="dec")
               label(for="dec") &nbsp;Decision
               .row(v-show="decision")
                 .gap.col-sm-6
                   label.common.inside(for="stageof") Game Played:
-                  v-select(:options="game3")
+                  v-select(:options="game3" v-model="decisiongame")
                 .gap.col-sm-6
                   label.common.inside(for="stageof") Finished Level:
-                  v-select(:options="levels")
+                  v-select(:options="levels" v-model="decisionlevel")
             .gap.left 
               input#mem(type="checkbox" name="part2ins" v-model="memory" value="mem")
               label(for="mem") &nbsp;Memory
               .row(v-show="memory")
                 .gap.col-sm-6
                   label.common.inside(for="stageof") Game Played:
-                  v-select(:options="game4")
+                  v-select(:options="game4" v-model="memorygame")
                 .gap.col-sm-6
                   label.common.inside(for="stageof") Finished Level:
-                  v-select(:options="levels")
+                  v-select(:options="levels" v-model="memorylevel")
             .gap.left
                 input#flexi(type="checkbox" name="part2ins" v-model="flexibility" value="flexi")
                 label(for="flexi") &nbsp;Flexibility
                 .row(v-show="flexibility")
                   .gap.col-sm-6
                     label.common.inside(for="stageof") Game Played:
-                    v-select(:options="game5")
+                    v-select(:options="game5" v-model="flexibilitygame")
                   .gap.col-sm-6
                     label.common.inside(for="stageof") Finished Level:
-                    v-select(:options="levels")
+                    v-select(:options="levels" v-model="Flexibilitylevel")
           .formed.gap
             input#pttg(v-model="checker3" name="part2" type="checkbox" value="pttg")
             label.gapped.text-small(for="pttg") Played Table Top games
@@ -129,9 +129,9 @@ div
               .col-sm-6 
                 label.gap Camel:
                 v-select(v-model="vis6" :options="['0', '1']" :clearable="false")
-              p.common.gap Memory[0 Point]
-              .col-sm-6
-                input.numbers(type="text" value="0" disabled)
+              //- p.common.gap Memory[0 Point]
+              //- .col-sm-6
+              //-   input.numbers(type="text" value="0" disabled)
             .row
               p.common.gap Attention
               .col-sm-6
@@ -657,6 +657,22 @@ export default {
       crb5c_eqpaindiscomfort:parseInt(this.eq4),
       crb5c_eqanxietydepression:parseInt(this.eq5),
       crb5c_eqhealthscale: this.healthscale,
+      crb5c_neeurofitattentiongame: this.attentiongame,
+      crb5c_neeurofitattentionlevel: parseInt(this.attentionlevel),
+      crb5c_neeurofitspatialgame: this.spatialgame,
+      crb5c_neeurofitspatiallevel: parseInt(this.attentionlevel),
+      crb5c_neeurofitdecisiongame: this.decisiongame,
+      crb5c_neeurofitdecisionlevel: parseInt(this.decisionlevel),
+      crb5c_neeurofitmemorygame: this.memorygame,
+      crb5c_neeurofitmemorylevel: parseInt(this.memorylevel),
+      crb5c_neeurofitflexibilitygame: this.flexibilitygame,
+      crb5c_neeurofitflexibilitylevel: parseInt(this.flexibilitylevel),
+      crb5c_orientation: this.vis16.length,
+      crb5c_delayedrecall: this.delayedrecall,
+      crb5c_fluency: this.checkfluency,
+      crb5c_drawclock: this.vis3.length,
+      crb5c_languageversion: this.language
+
 
      };
       const { data } = this.$store.state.axios.post(
@@ -711,11 +727,13 @@ export default {
     cn(value) {
       if (value === true) {
         this.en = false;
+        this.language = 0;
       }
     },
     en(value) {
       if (value === true) {
         this.cn = false;
+        this.language = 1;
       }
     },
     edulev(value){
@@ -869,6 +887,12 @@ export default {
         return 83 - (this.normcost * (parseInt(this.subsidyAmount)/100));
       }
       return 83;
+    },
+    checkfluency(){
+      return (this.vis18 == '11' || this.vis18 == 'more than 11') ? 1 : 0;
+    },
+    delayedrecall(){
+      return (this.vis15.includes("Cannot Recall(0 point)"))? 0: this.vis15.length;
     },
     totalscore: function () {
       let length1 = this.vis3.length;
