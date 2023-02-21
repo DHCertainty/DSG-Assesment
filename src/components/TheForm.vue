@@ -619,8 +619,10 @@ export default {
       this.clientdata = data.value[0];
       console.log('form data',this.clientdata);
   },
-   submitassessment(){
-    // console.log(this.checker)
+   async submitassessment(){
+    this.totalscoreMoca = this.totalscore;
+    this.totalscoreEq = this.eq5dcounter;
+
     const payload = { 
       crb5c_typeofdementia: this.type,
       crb5c_stageofdementia: this.stageof,
@@ -646,17 +648,6 @@ export default {
       crb5c_repeatsecondsentence: parseInt(this.vis11),
       crb5c_similaritybetweentrainbicycle: parseInt(this.vis13),
       crb5c_similaritybetweenwatchruler: parseInt(this.vis14),
-     };
-      const { data } = this.$store.state.axios.post(
-        `/crb5c_fowassessmentforms`,payload);
-      console.log(data)
-
-     this.uploadEQ();
-  },
-  uploadEQ(){
-     this.totalscoreMoca = this.totalscore;
-     this.totalscoreEq = this.eq5dcounter;
-    const payload = { 
       crb5c_mocatotalscore: this.totalscoreMoca,
       crb5c_eqtotalscore: this.totalscoreEq,
       crb5c_commentsaboutclient: this.checking,
@@ -666,29 +657,7 @@ export default {
       crb5c_eqpaindiscomfort:parseInt(this.eq4),
       crb5c_eqanxietydepression:parseInt(this.eq5),
       crb5c_eqhealthscale: this.healthscale,
-      crb5c_stageofdementia: this.stageof,
-      crb5c_latestscoreon: this.latestscore,
-      crb5c_latestscorevalue: this.latest,
-      crb5c_datedone: this.date,
-      crb5c_sharedcentreobjectivesprogramme: this.checker,
-      crb5c_watchedcentrevideo: this.checker2,
-      crb5c_playedneeurofitgame: this.neeuro,
-      crb5c_educationlevel: this.edulev,
-      crb5c_clientname:this.$store.state.assessment_client_name,
-      crb5c_clientid: this.$store.state.assessment_client_id,
-      crb5c_alternatetrailmaking: parseInt(this.eq1),
-      crb5c_copycube: parseInt(this.vis2),
-      crb5c_lion: parseInt(this.vis4),
-      crb5c_elephant: parseInt(this.vis5),
-      crb5c_camel: parseInt(this.vis6),
-      crb5c_repeatforward: parseInt(this.vis7),
-      crb5c_repeatbackward: parseInt(this.vis17),
-      crb5c_abletotap: parseInt(this.vis8),
-      crb5c_serial7subtraction: parseInt(this.vis9),
-      crb5c_repeatfirstsentence: parseInt(this.vis10),
-      crb5c_repeatsecondsentence: parseInt(this.vis11),
-      crb5c_similaritybetweentrainbicycle: parseInt(this.vis13),
-      crb5c_similaritybetweenwatchruler: parseInt(this.vis14),
+
      };
       const { data } = this.$store.state.axios.post(
         `/crb5c_fowassessmentforms`,payload);
