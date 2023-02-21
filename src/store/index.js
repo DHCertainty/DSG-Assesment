@@ -40,6 +40,9 @@ export default new Vuex.Store({
     },
     assessment_client_id(state, payload){
       state.assessment_client_id = payload;
+    },
+    assessment_client_name(state, payload){
+      state.assessment_client_id = payload;
     }
   },
   actions: {

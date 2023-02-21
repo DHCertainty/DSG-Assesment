@@ -202,7 +202,7 @@ div
             .row 
               label.left.col-sm-2 Health Scale:
               .col-sm-4
-                input.numbers(type="number" min="0" max="100")
+                input.numbers(v-model="healthscale" type="number" min="0" max="100")
           hr    
         section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
           .formed
@@ -414,6 +414,9 @@ export default {
   // emits: ["newresource"],
   data() {
     return {
+      healthscale: null,
+      totalscoreMoca: null,
+      totalscoreEq: null,
       normcost: 65 , //funded by government (according to eunice)
       clientdata: [],
       neeuro: false,
@@ -617,20 +620,63 @@ export default {
       console.log('form data',this.clientdata);
   },
    submitassessment(){
-   
     // console.log(this.checker)
     const payload = { 
       crb5c_typeofdementia: this.type,
       crb5c_stageofdementia: this.stageof,
       crb5c_latestscoreon: this.latestscore,
       crb5c_latestscorevalue: this.latest,
-      // crb5c_datedone: this.,
+      crb5c_datedone: this.date,
       crb5c_sharedcentreobjectivesprogramme: this.checker,
       crb5c_watchedcentrevideo: this.checker2,
       crb5c_playedneeurofitgame: this.neeuro,
       crb5c_educationlevel: this.edulev,
-      // crb5c_educationyear:
+      crb5c_clientname:this.$store.state.assessment_client_name,
+      crb5c_clientid: this.$store.state.assessment_client_id,
       crb5c_alternatetrailmaking: parseInt(this.vis1),
+      crb5c_copycube: parseInt(this.vis2),
+      crb5c_lion: parseInt(this.vis4),
+      crb5c_elephant: parseInt(this.vis5),
+      crb5c_camel: parseInt(this.vis6),
+      crb5c_repeatforward: parseInt(this.vis7),
+      crb5c_repeatbackward: parseInt(this.vis17),
+      crb5c_abletotap: parseInt(this.vis8),
+      crb5c_serial7subtraction: parseInt(this.vis9),
+      crb5c_repeatfirstsentence: parseInt(this.vis10),
+      crb5c_repeatsecondsentence: parseInt(this.vis11),
+      crb5c_similaritybetweentrainbicycle: parseInt(this.vis13),
+      crb5c_similaritybetweenwatchruler: parseInt(this.vis14),
+     };
+      const { data } = this.$store.state.axios.post(
+        `/crb5c_fowassessmentforms`,payload);
+      console.log(data)
+
+     this.uploadEQ();
+  },
+  uploadEQ(){
+     this.totalscoreMoca = this.totalscore;
+     this.totalscoreEq = this.eq5dcounter;
+    const payload = { 
+      crb5c_mocatotalscore: this.totalscoreMoca,
+      crb5c_eqtotalscore: this.totalscoreEq,
+      crb5c_commentsaboutclient: this.checking,
+      crb5c_eqmobility: parseInt(this.eq1),
+      crb5c_eqselfcare:parseInt(this.eq2),
+      crb5c_equsualactivities:parseInt(this.eq3),
+      crb5c_eqpaindiscomfort:parseInt(this.eq4),
+      crb5c_eqanxietydepression:parseInt(this.eq5),
+      crb5c_eqhealthscale: this.healthscale,
+      crb5c_stageofdementia: this.stageof,
+      crb5c_latestscoreon: this.latestscore,
+      crb5c_latestscorevalue: this.latest,
+      crb5c_datedone: this.date,
+      crb5c_sharedcentreobjectivesprogramme: this.checker,
+      crb5c_watchedcentrevideo: this.checker2,
+      crb5c_playedneeurofitgame: this.neeuro,
+      crb5c_educationlevel: this.edulev,
+      crb5c_clientname:this.$store.state.assessment_client_name,
+      crb5c_clientid: this.$store.state.assessment_client_id,
+      crb5c_alternatetrailmaking: parseInt(this.eq1),
       crb5c_copycube: parseInt(this.vis2),
       crb5c_lion: parseInt(this.vis4),
       crb5c_elephant: parseInt(this.vis5),
