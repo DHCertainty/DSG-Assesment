@@ -92,10 +92,10 @@ div
             h2.moca.gapbot MOCA
             p.common Version:
             div
-              input#cn(v-model="cn" name="cnbx" type="checkbox" value="cn")
+              input#cn(v-model="cn" name="cnbx" type="checkbox" value="0")
               label.gapped(for="cn") Chinese 
             div
-              input#en(v-model="en" name="enbx" type="checkbox" value="en")
+              input#en(v-model="en" name="enbx" type="checkbox" value="1")
               label.gapped(for="en") English 
             p.common.gap Education Level:
             .col-sm-6
@@ -321,47 +321,58 @@ div
                   .formed.gap(v-show="subs3")
                     label.common(for="others") Specify: 
                     input.numbers-half#others(name="others" type="text")
-                .formed.gapbot(v-show="subs1 || subs2 || subs3 ")
-                    label.common(for="subsid" style="justify-content:end") Amount Subsidized:
-                    .row(style="justify-content:end")
-                      input.small-input-width#subsid(name="subsid" type="number" min="0")
+                //- .formed.gapbot(v-show="subs1 || subs2 || subs3 ")
+                //-     label.common(for="subsid" style="justify-content:end") Amount Subsidized:
+                //-     .row(style="justify-content:end")
+                //-       input.small-input-width#subsid(name="subsid" type="number" min="0")
           hr
-        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking && this.sessions.length  > 0 && (no || subsidy)")
+        section(v-show="subsidy")
           label.common Applicable Fee (excluding GST):
           .formed
             .formed.gap
               input#80(v-model="fees1" name="cbfees" type="checkbox" value="80")
-              label.gapped.text-small(for="80") Centre-based 3-HR FOW group session [$80]
+              label.gapped.text-small(for="80") Centre-based 3-HR FOW group session $80
+            .formed.gap
+              input#90(v-model="fees12" name="cbfees" type="checkbox" value="60")
+              label.gapped.text-small(for="60") Centre-based 1-HR one-to-one FOW session $60
             .formed.gap
               input#90(v-model="fees2" name="cbfees" type="checkbox" value="90")
-              label.gapped.text-small(for="90") Centre-based 1.5-HR one-to-one FOW session [$90]
+              label.gapped.text-small(for="90") Centre-based 1.5-HR one-to-one FOW session $90
+            .formed.gap
+              input#90(v-model="fees13" name="cbfees" type="checkbox" value="120")
+              label.gapped.text-small(for="120") Centre-based 2-HR one-to-one FOW session $120
             .formed.gap
               input#240(v-model="fees3" name="cbfees" type="checkbox" value="240")
-              label.gapped.text-small(for="240") Centre-based NeeuroFIT 6 months subcription [$240]
+              label.gapped.text-small(for="240") Centre-based NeeuroFIT 6 months subcription $240
             .formed.gap
-              input#sgp(v-model="fees4" name="cbfees" type="checkbox" value="sgp")
-              label.gapped.text-small(for="sgp") Centre-based 3-HR CIP trial run [S'porean]
-            .formed.gap.gapbot
-              input#prfees(v-model="fees5" name="cbfees" type="checkbox" value="prfees")
-              label.gapped.text-small(for="prfees") Centre-based 3-HR CIP trial run [PR]
-            .formed.gap
-              input#hb90(v-model="fees6" name="cbfees" type="checkbox" value="hb90")
-              label.gapped.text-small(for="hb90") Home-based 1-HR one-to-one FOW session(incl. transport) [$90]
+              input#hb90(v-model="fees6" name="cbfees" type="checkbox" value="hb90") 
+              label.gapped.text-small(for="hb90") Home-based 1-HR one-to-one FOW session(incl. transport) $40
             .formed.gap
               input#hb120(v-model="fees7" name="cbfees" type="checkbox" value="hb120")
-              label.gapped.text-small(for="hb120") Home-based 1.5-HR one-to-one FOW session(incl. transport) [$120]
+              label.gapped.text-small(for="hb120") Home-based 1.5-HR one-to-one FOW session(incl. transport) $120
             .formed.gap
               input#hb150(v-model="fees8" name="cbfees" type="checkbox" value="hb150")
-              label.gapped.text-small(for="hb150") Home-based 2-HR one-to-one FOW session(incl. transport) [$150]
+              label.gapped.text-small(for="hb150") Home-based 2-HR one-to-one FOW session(incl. transport) $120
             .formed.gap.gapbot
               input#hb90-2(v-model="fees9" name="cbfees" type="checkbox" value="hb90-2")
-              label.gapped.text-small(for="hb90-2") Home-based 1-HR FOW session via video calls [$90]
+              label.gapped.text-small(for="hb90-2") Home-based 1-HR FOW session via video calls $90
+            
+            section(v-show="subs2" style="margin-top:50px")
+              hr
+              .formed.gap
+                input#sgp(v-model="fees4" name="cbfees" type="checkbox" value="sgp") 
+                label.gapped.text-small(for="sgp") Centre-based 3-HR CIP trial run  ${{ fees4val }} 
+                  span(style="font-weight:bold") ({{ prORsg }})
+            .formed.gap
+            hr
+        section(v-show="(subsidy || no)" style="margin-top:50px")
             .formed.gap
               input#50(v-model="fees10" name="cbfees" type="checkbox" value="50")
-              label.gapped.text-small(for="50") One-time Assessment [$50]
+              label.gapped.text-small(for="50") One-time Assessment $50
             .formed.gap
               input#refund(v-model="fees11" name="cbfees" type="checkbox" value="refund")
-              label.gapped.text-small(for="refund") Refundable One-Month Deposit (4 X applicable fee)
+              label.gapped.text-small(for="refund") Refundable One-Month Deposit (4 X applicable fee) $320
+        section(v-show="(subsidy || no)" style="margin-top:50px")
           .gapright.row
             .gap.col-sm-6
               label.common(for="receipt") Official Receipt:
@@ -403,6 +414,7 @@ export default {
   // emits: ["newresource"],
   data() {
     return {
+      normcost: 65 , //funded by government (according to eunice)
       clientdata: [],
       neeuro: false,
       atten: false,
@@ -429,7 +441,7 @@ export default {
       gp: false,
       ind: false,
       subsidyAmount: null,
-      subs1: true,
+      subs1: false,
       subs2: false,
       subs3: false,
       subs4: false,
@@ -445,6 +457,8 @@ export default {
       fees9: false,
       fees10: false,
       fees11: false,
+      fees12: false,
+      fees13: false,
       cn: false,
       en: false,
       unyearSelected: false,
@@ -603,12 +617,13 @@ export default {
       console.log('form data',this.clientdata);
   },
    submitassessment(){
-    const payload = { 
-        crb5c_teststageof: this.stageof
-     };
-      const { data } = this.$store.state.axios.post(
-        `/crb5c_fowassessments`,payload);
-      console.log(data)
+    console.log(this.checker)
+    // const payload = { 
+    //   crb5c_teststageof: this.stageof
+    //  };
+    //   const { data } = this.$store.state.axios.post(
+    //     `/crb5c_fowassessments`,payload);
+    //   console.log(data)
   },
   },
   watch: {
@@ -622,34 +637,39 @@ export default {
         this.gp = false;
       }
     },
-    subs1(value) {
-      if (value === true) {
-        this.subs2 = false;
-        this.subs3 = false;
-        this.subs4 = false;
+    subsidyAmount(value){
+      if(value === true){
+        this.discount = this.subsidyAmount ? this.subsidyAmount/100 : 0;
       }
     },
-    subs2(value) {
-      if (value === true) {
-        this.subs1 = false;
-        this.subs4 = false;
-        this.subs3 = false;
-      }
-    },
-    subs3(value) {
-      if (value === true) {
-        this.subs2 = false;
-        this.subs1 = false;
-        this.subs4 = false;
-      }
-    },
-    subs4(value) {
-      if (value === true) {
-        this.subs2 = false;
-        this.subs1 = false;
-        this.subs3 = false;
-      }
-    },
+    // subs1(value) {
+    //   if (value === true) {
+    //     this.subs2 = false;
+    //     this.subs3 = false;
+    //     this.subs4 = false;
+    //   }
+    // },
+    // subs2(value) {
+    //   if (value === true) {
+    //     this.subs1 = false;
+    //     this.subs4 = false;
+    //     this.subs3 = false;
+    //   }
+    // },
+    // subs3(value) {
+    //   if (value === true) {
+    //     this.subs2 = false;
+    //     this.subs1 = false;
+    //     this.subs4 = false;
+    //   }
+    // },
+    // subs4(value) {
+    //   if (value === true) {
+    //     this.subs2 = false;
+    //     this.subs1 = false;
+    //     this.subs3 = false;
+    //   }
+    // },
     cn(value) {
       if (value === true) {
         this.en = false;
@@ -719,10 +739,15 @@ export default {
       }
     },
     fees4(value) {
+      let val = 83;
       if (value === true) {
-        this.amtcollect += 65;
+        // if(this.subsidyAmount){
+        //   console.log('math',this.normcost * (parseInt(this.subsidyAmount)/100))
+        //  val = val - (this.normcost * (parseInt(this.subsidyAmount)/100));
+        // }
+        this.amtcollect += val - (this.normcost * (parseInt(this.subsidyAmount)/100));
       } else {
-        this.amtcollect -= 65;
+        this.amtcollect -= val - (this.normcost * (parseInt(this.subsidyAmount)/100));
       }
     },
     fees5(value) {
@@ -769,13 +794,44 @@ export default {
     },
     fees11(value) {
       if (value === true) {
+        this.amtcollect += 320;
+      } else {
+        this.amtcollect -= 320;
+      }
+    },
+    fees12(value){
+      if (value === true) {
         this.amtcollect += 60;
       } else {
         this.amtcollect -= 60;
       }
     },
+    fees13(value){
+      if (value === true) {
+        this.amtcollect += 120;
+      } else {
+        this.amtcollect -= 120;
+      }
+    },
   },
   computed: {
+    prORsg(){
+      if(this.clientdata.crb5c_citizenship == 0){
+        return 'SG';
+      }
+      else if(this.clientdata.crb5c_citizenship == 1){
+        return 'PR';
+      }
+      else{
+        return 'no val';
+      }
+    },
+    fees4val(){
+      if(this.subsidyAmount){
+        return 83 - (this.normcost * (parseInt(this.subsidyAmount)/100));
+      }
+      return 83;
+    },
     totalscore: function () {
       let length1 = this.vis3.length;
       let length3 = this.vis16.length;
@@ -945,7 +1001,6 @@ select.common {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
-
 select.inside {
   display: flex;
   width: 100%;
@@ -955,7 +1010,6 @@ select.inside {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
-
 input:focus,
 textarea:focus {
   outline: none;
@@ -963,7 +1017,6 @@ textarea:focus {
   border-color: #3a0061;
   background-color: #f7ebff;
 }
-
 .formed {
   position: relative;
   /* padding-left: 90px; */
@@ -974,18 +1027,15 @@ textarea:focus {
   margin-top: 1rem;
   margin-bottom: 10px
 }
-
 .gap-twice {
   margin-top: 2rem;
 }
 .gapped {
   margin-left: 1rem;
 }
-
 .gapbot {
   margin-bottom: 2rem;
 }
-
 .left {
   text-align: left;
 }
