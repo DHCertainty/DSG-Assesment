@@ -103,10 +103,10 @@ div
               .gap(v-show="edulev")
                 p.common.gap Education Year:
                 div
-                  input#un(v-model="unyearSelected" name="unbx" type="checkbox" value="un")
+                  input#un(v-model="unyearSelected" name="unbx" type="checkbox" value="un" disabled="true")
                   label.gapped(for="un") ≤ 6 Years
                 div
-                  input#ov(v-model="ovyearSelected" name="ovbx" type="checkbox" value="ov")
+                  input#ov(v-model="ovyearSelected" name="ovbx" type="checkbox" value="ov" disabled="true")
                   label.gapped(for="ov") > 6 Years
             .row 
               p.common.gap Visuospatial/Executive
@@ -632,6 +632,7 @@ export default {
       crb5c_datedone: this.date,
       crb5c_sharedcentreobjectivesprogramme: this.checker,
       crb5c_watchedcentrevideo: this.checker2,
+      crb5c_playedtabletopgame: this.checker3,
       crb5c_playedneeurofitgame: this.neeuro,
       crb5c_educationlevel: this.edulev,
       crb5c_clientname:this.$store.state.assessment_client_name,
@@ -675,6 +676,10 @@ export default {
       crb5c_languageversion: this.language,
       crb5c_modeofpayment: this.modeofpayment,
       crb5c_amountcollected: '$' + this.amtcollect,
+      crb5c_educationyear: this.selectedyear,
+      crb5c_mocaform: this.checker4,
+      crb5c_eq5d5lform: this.checker5,
+
      };
       const { data } = this.$store.state.axios.post(
         `/crb5c_fowassessmentforms`,payload);
@@ -748,6 +753,7 @@ export default {
         this.un = true;
         this.ov = false;
         this.unpoint = 1;
+        this.selectedyear = 0;
       }
       else {
         // unchecked
@@ -759,6 +765,7 @@ export default {
         this.un = false;
         this.ov = true;
         this.unpoint = 0;
+        this.selectedyear = 1;
       }
     },
     unyearSelected(value) {
