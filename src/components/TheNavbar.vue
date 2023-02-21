@@ -44,6 +44,7 @@ export default {
     console.log('receivedid:',clientId);
     this.client_id = clientId;
     
+    
     await this.$parent.init();
     console.log(this.$store.state);
     await this.getClientData();
