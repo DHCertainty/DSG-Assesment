@@ -604,10 +604,10 @@ export default {
       this.$bvModal.hide("add-session");
     },
     async getdatainform(){
-      const clientId = this.$route.query.client_id;
+      // const clientId = this.$route.query.client_id;
       let paramObj = {
         $select:'crb5c_no,crb5c_nricno,crb5c_citizenship',
-        $filter: `crb5c_fow_customerid eq '${clientId}'`,
+        $filter: `crb5c_fow_customerid eq '${this.$root.client_id}'`,
       };
       let params = new URLSearchParams(paramObj);
       let { data: data } = await this.$store.state.axios.get(
