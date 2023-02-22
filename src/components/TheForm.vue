@@ -259,10 +259,9 @@ div
                             label(for="pm") &nbsp;2:00 PM
                             
                         .row.gap(v-show="day && typeses==='Individual'")
-                          p.common.gap Time 
+                          p.common.gap Time
                           div
-                            
-                            input.numbers#timeSession(v-model="time" name="timeSession" type="time")
+                            b-form-timepicker.numbers#timeSession(v-model="time" name="timeSession" type="time" locale="en")
                             .row.gap(v-show="time && typeses==='Individual'")
                               p.common.gap Location
                               div
@@ -329,32 +328,32 @@ div
           label.common Applicable Fee (excluding GST):
           .formed
             .formed.gap
-              input#80(v-model="fees1" name="cbfees" type="checkbox" value="80")
-              label.gapped.text-small(for="80") Centre-based 3-HR FOW group session $80
+              input#80(v-model="fees1" name="cbfees" type="checkbox" value="80" v-show="gotGroupFee  && checkCenter")
+              label.gapped.text-small(for="80" v-show="gotGroupFee") Centre-based 3-HR FOW group session $80
             .formed.gap
-              input#60(v-model="fees12" name="cbfees" type="checkbox" value="60")
-              label.gapped.text-small(for="60") Centre-based 1-HR one-to-one FOW session $60
+              input#90(v-model="fees12" name="cbfees" type="checkbox" value="60" v-show="gotIndividualFee && checkCenter")
+              label.gapped.text-small(for="60" v-show="gotIndividualFee && checkCenter") Centre-based 1-HR one-to-one FOW session $60
             .formed.gap
-              input#90(v-model="fees2" name="cbfees" type="checkbox" value="90")
-              label.gapped.text-small(for="90") Centre-based 1.5-HR one-to-one FOW session $90
+              input#90(v-model="fees2" name="cbfees" type="checkbox" value="90" v-show="gotIndividualFee && checkCenter")
+              label.gapped.text-small(for="90" v-show="gotIndividualFee && checkCenter") Centre-based 1.5-HR one-to-one FOW session $90
             .formed.gap
-              input#120(v-model="fees13" name="cbfees" type="checkbox" value="120")
-              label.gapped.text-small(for="120") Centre-based 2-HR one-to-one FOW session $120
+              input#90(v-model="fees13" name="cbfees" type="checkbox" value="120" v-show="gotIndividualFee && checkCenter")
+              label.gapped.text-small(for="120" v-show="gotIndividualFee && checkCenter") Centre-based 2-HR one-to-one FOW session $120
             .formed.gap
               input#240(v-model="fees3" name="cbfees" type="checkbox" value="240")
               label.gapped.text-small(for="240") Centre-based NeeuroFIT 6 months subcription $240
             .formed.gap
-              input#hb90(v-model="fees6" name="cbfees" type="checkbox" value="hb90") 
-              label.gapped.text-small(for="hb90") Home-based 1-HR one-to-one FOW session(incl. transport) $40
+              input#hb90(v-model="fees6" name="cbfees" type="checkbox" value="hb90" v-show="gotIndividualFee && checkResidence") 
+              label.gapped.text-small(for="hb90" v-show="gotIndividualFee && checkResidence") Home-based 1-HR one-to-one FOW session(incl. transport) $40
             .formed.gap
-              input#hb120(v-model="fees7" name="cbfees" type="checkbox" value="hb120")
-              label.gapped.text-small(for="hb120") Home-based 1.5-HR one-to-one FOW session(incl. transport) $120
+              input#hb120(v-model="fees7" name="cbfees" type="checkbox" value="hb120" v-show="gotIndividualFee && checkResidence")
+              label.gapped.text-small(for="hb120" v-show="gotIndividualFee && checkResidence") Home-based 1.5-HR one-to-one FOW session(incl. transport) $120
             .formed.gap
-              input#hb150(v-model="fees8" name="cbfees" type="checkbox" value="hb150")
-              label.gapped.text-small(for="hb150") Home-based 2-HR one-to-one FOW session(incl. transport) $120
+              input#hb150(v-model="fees8" name="cbfees" type="checkbox" value="hb150" v-show="gotIndividualFee && checkResidence")
+              label.gapped.text-small(for="hb150" v-show="gotIndividualFee && checkResidence") Home-based 2-HR one-to-one FOW session(incl. transport) $120
             .formed.gap.gapbot
-              input#hb90-2(v-model="fees9" name="cbfees" type="checkbox" value="hb90-2")
-              label.gapped.text-small(for="hb90-2") Home-based 1-HR FOW session via video calls $90
+              input#hb90-2(v-model="fees9" name="cbfees" type="checkbox" value="hb90-2" v-show="gotIndividualFee && checkZoom")
+              label.gapped.text-small(for="hb90-2" v-show="gotIndividualFee && checkZoom") Home-based 1-HR FOW session via video calls $90
             
             section(v-show="subs2" style="margin-top:50px")
               hr
@@ -417,6 +416,11 @@ export default {
   // emits: ["newresource"],
   data() {
     return {
+      checkCenter:false,
+      checkResidence:false,
+      checkZoom:false,
+      gotIndividualFee:false,
+      gotGroupFee:false,
       modeofpayment: null,
       healthscale: 0,
       totalscoreMoca: null,
@@ -588,6 +592,30 @@ export default {
     })
   },
   methods: {
+    filterFees() {
+      console.log('session',this.sessions)
+      console.log('running')
+      for (let i = 0 ; i < this.sessions.length; i++){
+        if (this.sessions[i].type == 'Individual'){
+          console.log("individual")
+          this.gotIndividualFee = true
+        } 
+        else if (this.sessions[i].type == 'Group') {
+          console.log("Group")
+          this.gotGroupFee = true
+        }
+        for (let j = 0 ; j < this.sessions.length;j++){
+          if(this.sessions[j].location=="Center"){
+            this.checkCenter=true
+          }
+          else if (this.sessions[j].location == "Residence"){
+            this.checkResidence=true
+          }else{
+            this.checkZoom=true
+          }
+        }
+      }
+    },
     revert() {
       this.subsidy = null;
     },
@@ -595,14 +623,14 @@ export default {
     addmethod() {
       this.$bvModal.show("add-session");
     },
-    addNew() {
-      this.sessions.push({
+    async addNew() {
+       this.sessions.push({
         type: this.typeses,
         day: this.day,
         time: this.time,
         location: this.location,
       });
-
+      await this.filterFees();
       console.log('after: ', this.sessions)
 
       this.typeses= false;
