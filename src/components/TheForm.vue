@@ -406,6 +406,16 @@ div
 </template>
 
 <script>
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone"; // dependent on utc plugin
+import isToday from "dayjs/plugin/isToday";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(isToday);
+const defaultTimezone = "Asia/Singapore";
+dayjs.tz.setDefault(defaultTimezone);
 import "vue-select/dist/vue-select.css";
 import vSelect from "vue-select";
 // import colors from "././scss/colors.scss";
@@ -713,7 +723,7 @@ export default {
       crb5c_mocaform: this.checker4,
       crb5c_eq5d5lform: this.checker5,
       crb5c_admissiondate: (this.adm) ? this.adm : null,
-      crb5c_dateofassessment: this.$store.state.assessment_date,
+      crb5c_dateofassessment: dayjs(this.$store.state.assessment_date).format("MM-DD-YYYY hh:mm A"),
 
      };
       const { data } = this.$store.state.axios.post(
