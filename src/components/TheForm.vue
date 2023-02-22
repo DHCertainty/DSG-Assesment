@@ -5,6 +5,7 @@ div
       section
         .row
           .col-sm-6
+            label {{ checknationality }}
             label.common.gap(for="typeof") Type of Dementia:
             v-select(v-model="type" :options="DementiaType")
           .col-sm-6
@@ -941,10 +942,13 @@ export default {
       return 0;
     },
     checknationality(){
-      if (this.clientdata.crb5c_citizenship) {
+      if (this.clientdata.crb5c_citizenship == 0) {
         return false;
       }
-      else {
+      else if(this.clientdata.crb5c_citizenship == 1) {
+        return false;
+      }
+      else{
         return true;
       }
     },
