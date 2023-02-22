@@ -941,7 +941,7 @@ export default {
       return 0;
     },
     checknationality(){
-      if (!this.clientdata.crb5c_citizenship == 0) {
+      if (this.clientdata.crb5c_citizenship) {
         return true;
       }
       else {
