@@ -155,7 +155,8 @@ div
                 label Repeat Second Sentence:
                 v-select(v-model="vis11" :options="['0', '1']" :clearable="false")
               .col-sm-6.gap
-                label Fluency(Specify how many animals):
+                label Fluency(Specify how many animals): 
+                  span(style="font-weight:bold") &nbsp; [ {{ fluencyPoints }} point ]
                 v-select(v-model="vis18" :options="specify" :clearable="false")
             .row 
               p.common.gap Abstraction
@@ -209,7 +210,7 @@ div
             label.common(for="comment") Comment/Observation about the client
             textarea#comment(name="comment" rows="3" type="text" v-model="checking")
           hr
-        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking")
+        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
           .formed
             .row
               .col-sm-3
@@ -254,11 +255,7 @@ div
                           div
                             input#pm(v-model="time" name="timeSes" type="radio" value="PM")
                             label(for="pm") &nbsp;2:00 PM
-                            .row.gap(v-show="time")
-                              p.common.gap Location
-                              div
-                                input#center(v-model="location" name="location" type="radio" value="Center")
-                                label(for="center") &nbsp;Center 
+                            
                         .row.gap(v-show="day && typeses==='Individual'")
                           p.common.gap Time 
                           div
@@ -283,7 +280,7 @@ div
             label.common.gap(for="admission") Admission date:
             input.numbers-half#admission(v-model="adm" name="admission" type="date")
           hr
-        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && checking && this.sessions.length > 0")
+        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && this.sessions.length > 0")
           .row.gap
             .col-md-1 
               label.common.gap Subsidy:
@@ -306,7 +303,7 @@ div
                       .col-md-2
                         label.common % subsidy
                 .gap 
-                  input#dsg2(v-model="subs2" name="subsidy2" type="checkbox" value="dsg2")
+                  input#dsg2(v-model="subs2" name="subsidy2" type="checkbox" value="dsg2" disabled="checknationality")
                   label.long.gapped(for="dsg2") Toteboard
                   .row.gap(v-show="subs2")
                     .col-md-2 
@@ -378,8 +375,9 @@ div
               label.common(for="receipt") Official Receipt:
               input.numbers#receipt(name="receipt" type="text")
             .gap.col-sm-6
-              label.common(for="collect") Amount Collected [in SGD($)]:
-              input.numbers#collect(v-model="amtcollect" name="collect" type="text" readonly="readonly")
+              label.common(for="collect") Amount Collected + GST [in SGD]:
+              label.common(for="collect") ${{ viewamtcollect}}
+              //- input.numbers#collect(v-model="amtcollect " name="collect" type="text" readonly="readonly")
           label.common.gap Mode of Payment:
           .row 
             .col-md-3
@@ -450,6 +448,7 @@ export default {
       subs3: false,
       subs4: false,
       amtcollect: 0,
+      amtcollectGst: 0,
       fees1: false,
       fees2: false,
       fees3: false,
@@ -537,6 +536,7 @@ export default {
       ],
       game5: ["Multitask Master", "Junction Control"],
       edulevel: [
+        "No Education",
         "Primary",
         "Secondary",
         "Pre-University",
@@ -625,7 +625,6 @@ export default {
     this.totalscoreEq = this.eq5dcounter;
 
     const payload = { 
-      crb5c_admissiondate: this.adm,
       crb5c_typeofdementia: this.type,
       crb5c_stageofdementia: this.stageof,
       crb5c_latestscoreon: this.latestscore,
@@ -680,6 +679,8 @@ export default {
       crb5c_educationyear: this.selectedyear,
       crb5c_mocaform: this.checker4,
       crb5c_eq5d5lform: this.checker5,
+      crb5c_admissiondate: this.adm,
+
      };
       const { data } = this.$store.state.axios.post(
         `/crb5c_fowassessmentforms`,payload);
@@ -743,7 +744,7 @@ export default {
       }
     },
     edulev(value){
-      if(value === "Primary" || value === "Secondary"){
+      if(value === "Primary" || value === "No Education"){
         // checked
         this.unyearSelected = true;
         // checked
@@ -800,6 +801,11 @@ export default {
         this.amtcollect += 240;
       } else {
         this.amtcollect -= 240;
+      }
+    },
+    typeses(value){
+      if(value == 'Group'){
+        this.location = 'Center';
       }
     },
     fees4(value) {
@@ -879,6 +885,20 @@ export default {
     },
   },
   computed: {
+    viewamtcollect(){
+      if (this.amtcollect > 0) {
+        return this.amtcollect * 1.08;
+      }
+      return 0;
+    },
+    checknationality(){
+      if (!this.clientdata.crb5c_citizenship == 0) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    },
     prORsg(){
       if(this.clientdata.crb5c_citizenship == 0){
         return 'SG';
@@ -901,6 +921,9 @@ export default {
     },
     delayedrecall(){
       return (this.vis15.includes("Cannot Recall(0 point)"))? 0: this.vis15.length;
+    },
+    fluencyPoints(){
+      return (this.vis18 == '11' || this.vis18 == 'more than 11') ? 1 : 0;
     },
     totalscore: function () {
       let length1 = this.vis3.length;
@@ -952,10 +975,11 @@ $base-color-purple :#50276B;
 
 .container {
   border-radius: 10px;
-  border: 1px solid #ccc;
-  padding: 1rem;
+  border: 1px solid rgb(142, 142, 142);
+  background:#f9f9f9;
+  padding: 2rem;
   margin: auto;
-  max-width: 80vw;
+  max-width: 100%;
   display: block;
   justify-content: center;
   text-align: center;
@@ -1094,7 +1118,7 @@ textarea:focus {
 }
 
 .gap {
-  margin-top: 1rem;
+  margin-top: 2rem;
   margin-bottom: 10px
 }
 .gap-twice {
