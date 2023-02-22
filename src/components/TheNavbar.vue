@@ -64,6 +64,7 @@ export default {
       this.client_name = clientData.value[0].crb5c_no;
       this.$store.commit('assessment_client_name',this.client_name);
       this.dateofassessment = dayjs().format("MM-DD-YYYY hh:mm A");
+      this.$store.commit('assessment_date',this.dateofassessment);
 
       this.$root.$emit('getFormData')
     }
