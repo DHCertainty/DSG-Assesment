@@ -203,8 +203,10 @@ div
             .row 
               label.left.col-sm-2 Health Scale:
               .col-sm-4
-                input.numbers(v-model="healthscale" type="number" min="0" max="100")
-          hr    
+                input.numbers(v-model="healthscale" type="range" min="0" max="100") 
+              .col-sm-4(style="font-size:22px;font-weight:bold;")
+                input.numberslider(v-model="healthscale" type="number" min="0" max="100" onkeydown="return event.keyCode !== 190") 
+          hr   
         section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
           .formed
             label.common(for="comment") Comment/Observation about the client
@@ -413,10 +415,10 @@ export default {
   data() {
     return {
       modeofpayment: null,
-      healthscale: null,
+      healthscale: 0,
       totalscoreMoca: null,
       totalscoreEq: null,
-      normcost: 65 , //funded by government (according to eunice)
+      normcost: 65 ,
       clientdata: [],
       neeuro: false,
       atten: false,
@@ -1063,6 +1065,17 @@ textarea {
   font: inherit;
   padding: 0.2rem;
   border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.numberslider{
+  text-align: center;
+  display: flex;
+  width: 50%;
+  height: 2rem;
+  font: inherit;
+  padding: 0.2rem;
+  border: 1px solid rgb(228, 228, 228);
   border-radius: 5px;
 }
 
