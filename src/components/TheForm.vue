@@ -203,8 +203,10 @@ div
             .row 
               label.left.col-sm-2 Health Scale:
               .col-sm-4
-                input.numbers(v-model="healthscale" type="number" min="0" max="100")
-          hr    
+                input.numbers(v-model="healthscale" type="range" min="0" max="100") 
+              .col-sm-4(style="font-size:22px;font-weight:bold;")
+                input.numberslider(v-model="healthscale" type="number" min="0" max="100" onkeydown="return event.keyCode !== 190") 
+          hr   
         section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
           .formed
             label.common(for="comment") Comment/Observation about the client
@@ -298,7 +300,7 @@ div
                   label.long.gapped(for="dsg1") DSG
                   .row.gap(v-show="subs1")
                       .col-md-2 
-                        input.numbers#means(name="means" type="number" min="0")
+                        input.numbers#means(name="means" type="number" min="20" v-model="subs1val")
                       .col-md-2
                         label.common % subsidy
                 .gap 
@@ -322,7 +324,7 @@ div
                 //-     .row(style="justify-content:end")
                 //-       input.small-input-width#subsid(name="subsid" type="number" min="0")
           hr
-        section(v-show="subsidy")
+        section(v-show="subsidy  || no")
           label.common Applicable Fee (excluding GST):
           .formed
             .formed.gap
@@ -368,14 +370,17 @@ div
             .formed.gap
               input#refund(v-model="fees11" name="cbfees" type="checkbox" value="refund")
               label.gapped.text-small(for="refund") Refundable One-Month Deposit (4 X applicable fee) $320
+          
         section(v-show="(subsidy || no)" style="margin-top:50px")
-          .gapright.row
+          .gapright.row.mt-4
             .gap.col-sm-6
               label.common(for="receipt") Official Receipt:
-              input.numbers#receipt(name="receipt" type="text")
+              b-form-file(class="mt-3" plain)
+              //- input.numbers#receipt(name="receipt" type="file")
             .gap.col-sm-6
-              label.common(for="collect") Amount Collected + GST [in SGD]:
-              label.common(for="collect") ${{ viewamtcollect}}
+              label.common.amountjustify(for="collect" ) Amount Collected + GST [in SGD]:
+              label.common.amountjustify(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
+            hr
               //- input.numbers#collect(v-model="amtcollect " name="collect" type="text" readonly="readonly")
           label.common.gap Mode of Payment:
           .row 
@@ -417,10 +422,10 @@ export default {
       gotIndividualFee:false,
       gotGroupFee:false,
       modeofpayment: null,
-      healthscale: null,
+      healthscale: 0,
       totalscoreMoca: null,
       totalscoreEq: null,
-      normcost: 65 , //funded by government (according to eunice)
+      normcost: 65 ,
       clientdata: [],
       neeuro: false,
       atten: false,
@@ -703,7 +708,7 @@ export default {
       crb5c_drawclock: this.vis3.length,
       crb5c_languageversion: this.language,
       crb5c_modeofpayment: this.modeofpayment,
-      crb5c_amountcollected: '$' + this.amtcollect,
+      crb5c_amountcollected: '$' + this.viewamtcollect.toFixed(2),
       crb5c_educationyear: this.selectedyear,
       crb5c_mocaform: this.checker4,
       crb5c_eq5d5lform: this.checker5,
@@ -733,9 +738,11 @@ export default {
     },
     // subs1(value) {
     //   if (value === true) {
-    //     this.subs2 = false;
-    //     this.subs3 = false;
-    //     this.subs4 = false;
+    //     let discountval = 0
+    //     if(this.subs1val){
+    //       discountval = this.subs1val/100;
+    //     }
+    //     this.viewamtcollect
     //   }
     // },
     // subs2(value) {
@@ -1091,6 +1098,21 @@ textarea {
   font: inherit;
   padding: 0.2rem;
   border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.amountjustify{
+  justify-content: right;
+  margin-right: 30px;
+}
+.numberslider{
+  text-align: center;
+  display: flex;
+  width: 50%;
+  height: 2rem;
+  font: inherit;
+  padding: 0.2rem;
+  border: 1px solid rgb(228, 228, 228);
   border-radius: 5px;
 }
 

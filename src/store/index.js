@@ -31,7 +31,6 @@ export default new Vuex.Store({
     sessionId(state, payload) {
       state.sessionId = payload;
     },
-
     clientId(state, payload) {
       state.clientId = payload;
     },
