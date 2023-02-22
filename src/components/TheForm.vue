@@ -712,7 +712,8 @@ export default {
       crb5c_educationyear: this.selectedyear,
       crb5c_mocaform: this.checker4,
       crb5c_eq5d5lform: this.checker5,
-      crb5c_admissiondate: this.adm,
+      crb5c_admissiondate: (this.adm) ? this.adm : null,
+      crb5c_dateofassessment: this.$store.state.assessment_date,
 
      };
       const { data } = this.$store.state.axios.post(

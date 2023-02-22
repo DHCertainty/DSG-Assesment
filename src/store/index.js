@@ -42,6 +42,9 @@ export default new Vuex.Store({
     },
     assessment_client_name(state, payload){
       state.assessment_client_name = payload;
+    },
+    assessment_date(state, payload){
+      state.assessment_date = payload;
     }
   },
   actions: {
