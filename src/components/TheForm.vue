@@ -332,13 +332,13 @@ div
               input#80(v-model="fees1" name="cbfees" type="checkbox" value="80")
               label.gapped.text-small(for="80") Centre-based 3-HR FOW group session $80
             .formed.gap
-              input#90(v-model="fees12" name="cbfees" type="checkbox" value="60")
+              input#60(v-model="fees12" name="cbfees" type="checkbox" value="60")
               label.gapped.text-small(for="60") Centre-based 1-HR one-to-one FOW session $60
             .formed.gap
               input#90(v-model="fees2" name="cbfees" type="checkbox" value="90")
               label.gapped.text-small(for="90") Centre-based 1.5-HR one-to-one FOW session $90
             .formed.gap
-              input#90(v-model="fees13" name="cbfees" type="checkbox" value="120")
+              input#120(v-model="fees13" name="cbfees" type="checkbox" value="120")
               label.gapped.text-small(for="120") Centre-based 2-HR one-to-one FOW session $120
             .formed.gap
               input#240(v-model="fees3" name="cbfees" type="checkbox" value="240")
