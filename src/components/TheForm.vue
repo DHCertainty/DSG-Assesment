@@ -935,17 +935,17 @@ export default {
   },
   computed: {
     viewamtcollect(){
-      if (this.amtcollect > 0) {
+      if (this.amtcollect > 0) { 
         return this.amtcollect * 1.08;
       }
       return 0;
     },
     checknationality(){
       if (this.clientdata.crb5c_citizenship) {
-        return true;
+        return false;
       }
       else {
-        return false;
+        return true;
       }
     },
     prORsg(){
