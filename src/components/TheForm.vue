@@ -729,6 +729,9 @@ export default {
       const { data } = this.$store.state.axios.post(
         `/crb5c_fowassessmentforms`,payload);
       console.log(data)
+      alert('Client Assessment is successfully submitted!')
+
+
   },
   },
   watch: {
