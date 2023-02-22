@@ -304,7 +304,7 @@ div
                       .col-md-2
                         label.common % subsidy
                 .gap 
-                  input#dsg2(v-model="subs2" name="subsidy2" type="checkbox" value="dsg2" disabled="checknationality")
+                  input#dsg2(v-model="subs2" name="subsidy2" type="checkbox" value="dsg2" :disabled="checknationality")
                   label.long.gapped(for="dsg2") Toteboard
                   .row.gap(v-show="subs2")
                     .col-md-2 
