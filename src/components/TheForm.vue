@@ -5,7 +5,6 @@ div
       section
         .row
           .col-sm-6
-            label {{ checknationality }}
             label.common.gap(for="typeof") Type of Dementia:
             v-select(v-model="type" :options="DementiaType")
           .col-sm-6
