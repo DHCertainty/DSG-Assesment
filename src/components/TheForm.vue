@@ -328,55 +328,62 @@ div
           label.common Applicable Fee (excluding GST):
           .formed
             .formed.gap
-              input#80(v-model="fees1" name="cbfees" type="checkbox" value="80" v-show="gotGroupFee  && checkCenter")
+              input#80(v-model="totalGST" name="cbfees" type="checkbox" value="80" v-show="gotGroupFee  && checkCenter")
               label.gapped.text-small(for="80" v-show="gotGroupFee") Centre-based 3-HR FOW group session $80
             .formed.gap
-              input#60(v-model="fees12" name="cbfees" type="checkbox" value="60" v-show="gotIndividualFee && checkCenter")
+              input#60(v-model="totalGST" name="cbfees" type="checkbox" value="60" v-show="gotIndividualFee && checkCenter")
               label.gapped.text-small(for="60" v-show="gotIndividualFee && checkCenter") Centre-based 1-HR one-to-one FOW session $60
             .formed.gap
-              input#90(v-model="fees2" name="cbfees" type="checkbox" value="90" v-show="gotIndividualFee && checkCenter")
+              input#90(v-model="totalGST" name="cbfees" type="checkbox" value="90" v-show="gotIndividualFee && checkCenter")
               label.gapped.text-small(for="90" v-show="gotIndividualFee && checkCenter") Centre-based 1.5-HR one-to-one FOW session $90
             .formed.gap
-              input#120(v-model="fees13" name="cbfees" type="checkbox" value="120" v-show="gotIndividualFee && checkCenter")
+              input#120(v-model="totalGST" name="cbfees" type="checkbox" value="120" v-show="gotIndividualFee && checkCenter")
               label.gapped.text-small(for="120" v-show="gotIndividualFee && checkCenter") Centre-based 2-HR one-to-one FOW session $120
             .formed.gap
-              input#240(v-model="fees3" name="cbfees" type="checkbox" value="240")
+              input#240(v-model="totalGST" name="cbfees" type="checkbox" value="240")
               label.gapped.text-small(for="240") Centre-based NeeuroFIT 6 months subcription $240
             .formed.gap
-              input#hb90(v-model="fees6" name="cbfees" type="checkbox" value="hb90" v-show="gotIndividualFee && checkResidence") 
+              input#hb90(v-model="totalGST" name="cbfees" type="checkbox" value="40" v-show="gotIndividualFee && checkResidence") 
               label.gapped.text-small(for="hb90" v-show="gotIndividualFee && checkResidence") Home-based 1-HR one-to-one FOW session(incl. transport) $40
             .formed.gap
-              input#hb120(v-model="fees7" name="cbfees" type="checkbox" value="hb120" v-show="gotIndividualFee && checkResidence")
+              input#hb120(v-model="totalGST" name="cbfees" type="checkbox" value="120" v-show="gotIndividualFee && checkResidence")
               label.gapped.text-small(for="hb120" v-show="gotIndividualFee && checkResidence") Home-based 1.5-HR one-to-one FOW session(incl. transport) $120
             .formed.gap
-              input#hb150(v-model="fees8" name="cbfees" type="checkbox" value="hb150" v-show="gotIndividualFee && checkResidence")
+              input#hb150(v-model="totalGST" name="cbfees" type="checkbox" value="150" v-show="gotIndividualFee && checkResidence")
               label.gapped.text-small(for="hb150" v-show="gotIndividualFee && checkResidence") Home-based 2-HR one-to-one FOW session(incl. transport) $120
             .formed.gap.gapbot
-              input#hb90-2(v-model="fees9" name="cbfees" type="checkbox" value="hb90-2" v-show="gotIndividualFee && checkZoom")
+              input#hb90-2(v-model="totalGST" name="cbfees" type="checkbox" value="90" v-show="gotIndividualFee && checkZoom")
               label.gapped.text-small(for="hb90-2" v-show="gotIndividualFee && checkZoom") Home-based 1-HR FOW session via video calls $90
             
             section(v-show="subs2" style="margin-top:50px")
               hr
               .formed.gap
-                input#sgp(v-model="fees4" name="cbfees" type="checkbox" value="sgp") 
+                input#sgp(v-model="totalGST" name="cbfees" type="checkbox" :value="fees4val") 
                 label.gapped.text-small(for="sgp") Centre-based 3-HR CIP trial run  ${{ fees4val }} 
                   span(style="font-weight:bold") ({{ prORsg }})
             .formed.gap
             hr
         section(v-show="(subsidy || no)" style="margin-top:50px")
             .formed.gap
-              input#50(v-model="fees10" name="cbfees" type="checkbox" value="50")
+              input#50(v-model="totalGST" name="cbfees" type="checkbox" value="50")
               label.gapped.text-small(for="50") One-time Assessment $50
             .formed.gap
-              input#refund(v-model="fees11" name="cbfees" type="checkbox" value="refund")
+              input#refund(v-model="totalNoGST" name="cbfees" type="checkbox" value="320")
               label.gapped.text-small(for="refund") Refundable One-Month Deposit (4 X applicable fee) $320
           
         section(v-show="(subsidy || no)" style="margin-top:50px")
           .gapright.row.mt-4
             .gap.col-sm-6
               label.common(for="receipt") Official Receipt:
-              b-form-file(class="mt-3" plain)
-              //- input.numbers#receipt(name="receipt" type="file")
+              .gap.col-sm-6
+              label Upload receipt:
+              .d-flex.mx-1
+                b-form-file(class="mt-3" plain)
+              .gap.col-sm-6
+              label(style="font-weight:bold") OR
+              .gap.col-sm-6
+              label Reference ID:
+              input.numbers#receipt(name="receipt" type="text")
             .gap.col-sm-6
               label.common.amountjustify(for="collect" ) Amount Collected + GST [in SGD]:
               label.common.amountjustify(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
@@ -426,6 +433,7 @@ export default {
   // emits: ["newresource"],
   data() {
     return {
+      gstval: 1.08,
       checkCenter:false,
       checkResidence:false,
       checkZoom:false,
@@ -466,21 +474,23 @@ export default {
       subs2: false,
       subs3: false,
       subs4: false,
-      amtcollect: 0,
-      amtcollectGst: 0,
-      fees1: false,
-      fees2: false,
-      fees3: false,
-      fees4: false,
-      fees5: false,
-      fees6: false,
-      fees7: false,
-      fees8: false,
-      fees9: false,
-      fees10: false,
-      fees11: false,
-      fees12: false,
-      fees13: false,
+      // amtcollect: 0,
+      // amtcollectGst: 0,
+      totalGST:[] ,
+      totalNoGST: [],
+      // fees1: [],
+      // fees2: false,
+      // fees3: false,
+      // fees4: false,
+      // fees5: false,
+      // fees6: false,
+      // fees7: false,
+      // fees8: false,
+      // fees9: false,
+      // fees10: false,
+      // fees11: false,
+      // fees12: false,
+      // fees13: false,
       cn: false,
       en: false,
       unyearSelected: false,
@@ -831,112 +841,118 @@ export default {
         this.unyearSelected = false;
       }
     },
-    fees1(value) {
-      if (value === true) {
-        this.amtcollect += 80;
-      } else {
-        this.amtcollect -= 80;
-      }
-    },
-    fees2(value) {
-      if (value === true) {
-        this.amtcollect += 90;
-      } else {
-        this.amtcollect -= 90;
-      }
-    },
-    fees3(value) {
-      if (value === true) {
-        this.amtcollect += 240;
-      } else {
-        this.amtcollect -= 240;
-      }
-    },
-    typeses(value){
-      if(value == 'Group'){
-        this.location = 'Center';
-      }
-    },
-    fees4(value) {
-      let val = 83;
-      if (value === true) {
-        // if(this.subsidyAmount){
-        //   console.log('math',this.normcost * (parseInt(this.subsidyAmount)/100))
-        //  val = val - (this.normcost * (parseInt(this.subsidyAmount)/100));
-        // }
-        this.amtcollect += val - (this.normcost * (parseInt(this.subsidyAmount)/100));
-      } else {
-        this.amtcollect -= val - (this.normcost * (parseInt(this.subsidyAmount)/100));
-      }
-    },
-    fees5(value) {
-      if (value === true) {
-        this.amtcollect += 85;
-      } else {
-        this.amtcollect -= 85;
-      }
-    },
-    fees6(value) {
-      if (value === true) {
-        this.amtcollect += 90;
-      } else {
-        this.amtcollect -= 90;
-      }
-    },
-    fees7(value) {
-      if (value === true) {
-        this.amtcollect += 120;
-      } else {
-        this.amtcollect -= 120;
-      }
-    },
-    fees8(value) {
-      if (value === true) {
-        this.amtcollect += 150;
-      } else {
-        this.amtcollect -= 150;
-      }
-    },
-    fees9(value) {
-      if (value === true) {
-        this.amtcollect += 90;
-      } else {
-        this.amtcollect -= 90;
-      }
-    },
-    fees10(value) {
-      if (value === true) {
-        this.amtcollect += 50;
-      } else {
-        this.amtcollect -= 50;
-      }
-    },
-    fees11(value) {
-      if (value === true) {
-        this.amtcollect += 320;
-      } else {
-        this.amtcollect -= 320;
-      }
-    },
-    fees12(value){
-      if (value === true) {
-        this.amtcollect += 60;
-      } else {
-        this.amtcollect -= 60;
-      }
-    },
-    fees13(value){
-      if (value === true) {
-        this.amtcollect += 120;
-      } else {
-        this.amtcollect -= 120;
-      }
-    },
+    // fees1(value) {
+    //   console.log(this.fees1)
+    //   if (value === true) {
+    //     this.amtcollect += 80;
+    //   } else {
+    //     this.amtcollect -= 80;
+    //   }
+    // },
+    // fees2(value) {
+    //   if (value === true) {
+    //     this.amtcollect += 90;
+    //   } else {
+    //     this.amtcollect -= 90;
+    //   }
+    // },
+    // fees3(value) {
+    //   if (value === true) {
+    //     this.amtcollect += 240;
+    //   } else {
+    //     this.amtcollect -= 240;
+    //   }
+    // },
+    // typeses(value){
+    //   if(value == 'Group'){
+    //     this.location = 'Center';
+    //   }
+    // },
+    // fees4(value) {
+    //   let val = 83;
+    //   if (value === true) {
+    //     // if(this.subsidyAmount){
+    //     //   console.log('math',this.normcost * (parseInt(this.subsidyAmount)/100))
+    //     //  val = val - (this.normcost * (parseInt(this.subsidyAmount)/100));
+    //     // }
+    //     this.amtcollect += val - (this.normcost * (parseInt(this.subsidyAmount)/100));
+    //   } else {
+    //     this.amtcollect -= val - (this.normcost * (parseInt(this.subsidyAmount)/100));
+    //   }
+    // },
+    // fees5(value) {
+    //   if (value === true) {
+    //     this.amtcollect += 85;
+    //   } else {
+    //     this.amtcollect -= 85;
+    //   }
+    // },
+    // fees6(value) {
+    //   if (value === true) {
+    //     this.amtcollect += 90;
+    //   } else {
+    //     this.amtcollect -= 90;
+    //   }
+    // },
+    // fees7(value) {
+    //   if (value === true) {
+    //     this.amtcollect += 120;
+    //   } else {
+    //     this.amtcollect -= 120;
+    //   }
+    // },
+    // fees8(value) {
+    //   if (value === true) {
+    //     this.amtcollect += 150;
+    //   } else {
+    //     this.amtcollect -= 150;
+    //   }
+    // },
+    // fees9(value) {
+    //   if (value === true) {
+    //     this.amtcollect += 90;
+    //   } else {
+    //     this.amtcollect -= 90;
+    //   }
+    // },
+    // fees10(value) {
+    //   if (value === true) {
+    //     this.amtcollect += 50;
+    //   } else {
+    //     this.amtcollect -= 50;
+    //   }
+    // },
+    // fees11(value) {
+    //   if (value === true) {
+    //     this.amtcollect += 320;
+    //   } else {
+    //     this.amtcollect -= 320;
+    //   }
+    // },
+    // fees12(value){
+    //   if (value === true) {
+    //     this.amtcollect += 60;
+    //   } else {
+    //     this.amtcollect -= 60;
+    //   }
+    // },
+    // fees13(value){
+    //   if (value === true) {
+    //     this.amtcollect += 120;
+    //   } else {
+    //     this.amtcollect -= 120;
+    //   }
+    // },
   },
   computed: {
     viewamtcollect(){
-      if (this.amtcollect > 0) { 
-        return this.amtcollect * 1.08;
+      if (this.totalGST.length || this.totalNoGST.length) { 
+        const val = this.totalGST.reduce(( sum, num) => parseInt(sum) + (parseInt(num)*1.08), 0);
+        let val2 = 0
+        if (this.totalNoGST.length) {
+          val2 = parseInt(this.totalNoGST[0]);
+        }
+        return val + val2 ;
       }
       return 0;
     },
