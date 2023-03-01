@@ -863,11 +863,11 @@ export default {
     //     this.amtcollect -= 240;
     //   }
     // },
-    // typeses(value){
-    //   if(value == 'Group'){
-    //     this.location = 'Center';
-    //   }
-    // },
+    typeses(value){
+      if(value == 'Group'){
+        this.location = 'Center';
+      }
+    },
     // fees4(value) {
     //   let val = 83;
     //   if (value === true) {
