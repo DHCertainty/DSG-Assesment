@@ -758,7 +758,8 @@ export default {
       const { data } = this.$store.state.axios.post(
         `/crb5c_fowassessmentforms`,payload);
       console.log(data)
-      alert('Client Assessment is successfully submitted!')
+      alert('Client Assessment is successfully submitted!');
+      window.close();
   },
   },
   watch: {
@@ -964,7 +965,6 @@ export default {
   computed: {
     viewamtcollect(){
       if (this.totalGST.length || this.totalNoGST.length) { 
-        
         const val = this.totalGST.reduce(( sum, num) => parseInt(sum) + (parseInt(num)*1.08), 0);
         let val2 = 0;
         
