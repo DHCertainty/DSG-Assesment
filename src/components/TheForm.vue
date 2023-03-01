@@ -301,8 +301,10 @@ div
                   .row.gap(v-show="subs1")
                       .col-md-2 
                         input.numbers#means(name="means" type="number" min="20" v-model="subs1val")
+                      .col-md-2 
+                        b-form-select.numbers(v-model="dsgsubsidy" :options="subsidyoptions")
                       .col-md-2
-                        label.common % subsidy
+                        label.common subsidy
                 .gap 
                   input#dsg2(v-model="subs2" name="subsidy2" type="checkbox" value="dsg2" :disabled="checknationality")
                   label.long.gapped(for="dsg2") Toteboard
@@ -383,7 +385,7 @@ div
               label(style="font-weight:bold") OR
               .gap.col-sm-6
               label Reference ID:
-              input.numbers#receipt(name="receipt" type="text")
+              input.numbers#receipt(name="receipt" type="text" v-model="referenceid")
             .gap.col-sm-6
               label.common.amountjustify(for="collect" ) Amount Collected + GST [in SGD]:
               label.common.amountjustify(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
@@ -493,6 +495,7 @@ export default {
       // fees13: false,
       cn: false,
       en: false,
+      referenceid: null,
       unyearSelected: false,
       ovyearSelected: false,
       un: false,
@@ -525,6 +528,10 @@ export default {
       eq3: 0,
       eq4: 0,
       eq5: 0,
+      subsidyoptions:[
+        "%",
+        "$"
+      ],
       DementiaType: [
         "Alzheimer’s Disease",
         "Vascular Dementia",
@@ -612,6 +619,18 @@ export default {
     })
   },
   methods: {
+    checkdsgsubsidy(val,val2){
+      if(this.subs1 && this.subs1val && this.dsgsubsidy == '$'){
+          return this.subs1val;
+        }
+
+      if (this.subs1 && this.subs1val && this.dsgsubsidy == '%') {
+          return (val + val2) * this.subs1val/100;
+        }
+      else{
+        return 0;
+      }
+    },
     filterFees() {
       console.log('session',this.sessions)
       console.log('running')
@@ -733,15 +752,13 @@ export default {
       crb5c_mocaform: this.checker4,
       crb5c_eq5d5lform: this.checker5,
       crb5c_admissiondate: (this.adm) ? this.adm : null,
-      crb5c_dateofassessment: dayjs(this.$store.state.assessment_date).format("MM-DD-YYYY hh:mm A"),
-
+      crb5c_referenceid: this.referenceid,
+      crb5c_dateofassessment: dayjs(this.$store.state.assessment_date).format("MM-DD-YYYY"),
      };
       const { data } = this.$store.state.axios.post(
         `/crb5c_fowassessmentforms`,payload);
       console.log(data)
       alert('Client Assessment is successfully submitted!')
-
-
   },
   },
   watch: {
@@ -947,12 +964,17 @@ export default {
   computed: {
     viewamtcollect(){
       if (this.totalGST.length || this.totalNoGST.length) { 
+        
         const val = this.totalGST.reduce(( sum, num) => parseInt(sum) + (parseInt(num)*1.08), 0);
-        let val2 = 0
+        let val2 = 0;
+        
         if (this.totalNoGST.length) {
           val2 = parseInt(this.totalNoGST[0]);
         }
-        return val + val2 ;
+
+        const dsgsubsidiyval = this.checkdsgsubsidy(val,val2);
+
+        return val + val2 - dsgsubsidiyval;
       }
       return 0;
     },
