@@ -6,10 +6,18 @@
     />
     <img src="../assets/logo.png" />
     <ul>
-      <li class="navbar__dateAssessment"><span>Date of Assessment: </span>{{ dateofassessment }}</li>
-      <li class="navbar__clientName"><span>Client name: </span>{{ client_name }}</li>
+      <li class="navbar__dateAssessment"><button class="timeEdit" v-b-modal.modal-time-change >Edit</button> Date of Assessment: <span style="font-weight:bold">{{ dateofassessment }}</span></li>
+      
+      <li class="navbar__clientName">Client name:<span style="font-weight:bold">{{ client_name }}</span></li>
     </ul>
     <h1>Client Assessment</h1>
+
+    <b-modal id="modal-time-change" hide-footer hide-header ref="modal-time-change">
+    <p class="my-4">Pick a time</p>
+    <b-form-datepicker id="datepicker" v-model="edit_time" class="mb-2"></b-form-datepicker>
+    <div style="text-align:center;margin-top: 30px;margin-bottom: 20px;"><b-button @click="editTime">Change date</b-button></div>
+    
+  </b-modal>
   </header>
 </template>
 
@@ -29,6 +37,7 @@ dayjs.tz.setDefault(defaultTimezone);
 export default {
   data(){
     return{
+      edit_time:null,
       client_id: "",
       client_name: "",
       dateofassessment: "",
@@ -59,14 +68,18 @@ export default {
       let { data: clientData } = await this.$store.state.axios.get(
         `crb5c_fow_customers/?${params.toString()}`
       );
-      console.log(clientData);
-
+      // console.log(clientData);
       this.client_name = clientData.value[0].crb5c_no;
       this.$store.commit('assessment_client_name',this.client_name);
-      this.dateofassessment = dayjs().format("MM-DD-YYYY hh:mm A");
+      this.dateofassessment = dayjs().format("MM-DD-YYYY");
       this.$store.commit('assessment_date',this.dateofassessment);
 
       this.$root.$emit('getFormData')
+    },
+    editTime(){
+      this.dateofassessment = dayjs(this.edit_time).format("MM-DD-YYYY");
+      this.$store.commit('assessment_date',this.dateofassessment);
+      this.$refs['modal-time-change'].hide()
     }
   }
 }
@@ -100,7 +113,7 @@ header {
     // background-color: red;
     left: 20vw;
     font-size: 14px;
-    font-weight: bold;
+    font-weight: normal;
   }
 }
 @media screen and (min-width: 500px) {
@@ -204,5 +217,11 @@ img {
 .front{
   /* position: fixed; */
   z-index: 1;
+}
+
+.timeEdit{
+  background: rgba(255, 255, 255, 0);
+  border: none;
+  color: rgb(140, 63, 211);
 }
 </style>
