@@ -791,7 +791,7 @@ export default {
         `/crb5c_fowassessmentforms`,payload);
       console.log(data)
       alert('Client Assessment is successfully submitted!');
-      window.close();
+      // window.close();
   },
   },
   watch: {
