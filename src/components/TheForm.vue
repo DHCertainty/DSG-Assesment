@@ -11,16 +11,35 @@ div
             label.common.gap(for="stageof") Stage of Dementia:
             v-select(v-model="stageof" :options="DementiaStage")
         .row
-          .col-sm-3 
-            label.common.gap(for="score") Latest score on:
-            v-select(v-model="latestscore" :options="['AMT', 'MMSE', 'MOCA']")
-          .col-sm-3.gap
-            input.numbers.gap-twice#score(v-model="latest" type="number" min="0" :disabled="!latestscore")
           .col-sm-6
-            label.common.gap(for="score") Date Done:
+            label.common.gap(for="score") Latest score on:
+
+            .row.center
+              .col-2
+                input#AMT(type="checkbox" v-model="isAMT" value="AMT")
+                label(for="AMT") &nbsp;AMT
+              .col-2
+                input#MMSE(type="checkbox" v-model="isMMSE" value="MMSE")
+                label(for="MMSE") &nbsp;MMSE
+              .col-2 
+                input#MOCA(type="checkbox" v-model="isMOCA" value="MOCA")
+                label(for="MOCA") &nbsp;MOCA
+              
+
+            .row.center
+              .col-2(v-if="isAMT") 
+                  input.checkbox#score(v-model="amtVal" type="number" min="0" )
+              .col-2(v-if="isMMSE")
+                  input.checkbox#score(v-model="mmseVal" type="number" min="0")
+              .col-2(v-if="isMOCA")
+                input.checkbox#score(v-model="mocaVal" type="number" min="0")
+            
+
+          .col-sm-6
+            label.common.gap(for="score") Date Done in hospital:
             input.numbers#score(v-model="date" name="score" type="date")
         hr
-        section(v-show="type && stageof && latest && latestscore && date")
+        section(v-show="type && stageof && date && (isAMT || isMOCA || isMMSE)")
           .formed.gap
             input#sacop(v-model="checker" type="checkbox" value="sacop" name="part2")
             label.gapped.text-small(for="sacop") Shared about Centre's objectives & program
@@ -207,12 +226,12 @@ div
               .col-sm-4(style="font-size:22px;font-weight:bold;")
                 input.numberslider(v-model="healthscale" type="number" min="0" max="100" onkeydown="return event.keyCode !== 190") 
           hr   
-        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
+        section(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
           .formed
             label.common(for="comment") Comment/Observation about the client
             textarea#comment(name="comment" rows="3" type="text" v-model="checking")
           hr
-        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
+        section(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
           .formed
             .row
               .col-sm-3
@@ -281,7 +300,7 @@ div
             label.common.gap(for="admission") Admission date:
             input.numbers-half#admission(v-model="adm" name="admission" type="date")
           hr
-        section(v-show="type && stageof && latest && latestscore && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && this.sessions.length > 0")
+        section(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && this.sessions.length > 0")
           .row.gap
             .col-md-1 
               label.common.gap Subsidy:
@@ -435,6 +454,12 @@ export default {
   // emits: ["newresource"],
   data() {
     return {
+      isAMT: false,
+      isMOCA: false,
+      isMMSE: false,
+      mmseVal: 0,
+      amtVal: 0,
+      mocaVal: 0,
       gstval: 1.08,
       checkCenter:false,
       checkResidence:false,
@@ -462,9 +487,9 @@ export default {
       no: null,
       checking: "",
       sessions: [],
-      latestscore: "",
+      // latestscore: "",
       adm: "",
-      latest: "0",
+      // latest: "0",
       type: "",
       stageof: "",
       date: "",
@@ -657,6 +682,10 @@ export default {
     },
     revert() {
       this.subsidy = null;
+      this.subs1 = false;
+      this.subs2 = null;
+      this.subs1val = 0;
+
     },
 
     addmethod() {
@@ -699,8 +728,8 @@ export default {
     const payload = { 
       crb5c_typeofdementia: this.type,
       crb5c_stageofdementia: this.stageof,
-      crb5c_latestscoreon: this.latestscore,
-      crb5c_latestscorevalue: (this.latestscore == 'MOCA') ? this.totalscoreMoca : this.latest,
+      // crb5c_latestscoreon: this.latestscore,
+      // crb5c_latestscorevalue: (this.latestscore == 'MOCA') ? this.totalscoreMoca : this.latest,
       crb5c_datedone: this.date,
       crb5c_sharedcentreobjectivesprogramme: this.checker,
       crb5c_watchedcentrevideo: this.checker2,
@@ -754,6 +783,9 @@ export default {
       crb5c_admissiondate: (this.adm) ? this.adm : null,
       crb5c_referenceid: this.referenceid,
       crb5c_dateofassessment: dayjs(this.$store.state.assessment_date).format("MM-DD-YYYY"),
+      crb5c_mocascore: (this.isMOCA) ? this.mocaVal : 0,
+      crb5c_amtscore: (this.isAMT) ? this.amtVal : 0,
+      crb5c_mmsescore: (this.isMMSE) ? this.mmseVal : 0,
      };
       const { data } = this.$store.state.axios.post(
         `/crb5c_fowassessmentforms`,payload);
@@ -763,6 +795,7 @@ export default {
   },
   },
   watch: {
+
     gp(value) {
       if( value === true) {
         this.ind = false;
@@ -965,7 +998,7 @@ export default {
   computed: {
     viewamtcollect(){
       if (this.totalGST.length || this.totalNoGST.length) { 
-        const val = this.totalGST.reduce(( sum, num) => parseInt(sum) + (parseInt(num)*1.08), 0);
+        const val = this.totalGST.reduce(( sum, num) => parseInt(sum) + parseInt(num), 0);
         let val2 = 0;
         
         if (this.totalNoGST.length) {
@@ -974,7 +1007,7 @@ export default {
 
         const dsgsubsidiyval = this.checkdsgsubsidy(val,val2);
 
-        return val + val2 - dsgsubsidiyval;
+        return (val + val2 - dsgsubsidiyval) * 1.08;
       }
       return 0;
     },
@@ -1156,6 +1189,19 @@ textarea {
   border-radius: 5px;
 }
 
+.checkbox {
+  display: flex;
+  height: 2rem;
+  width: 125px;
+  font: inherit;
+  margin-bottom: 10px;
+  padding: 0.2rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+
+
 .amountjustify{
   justify-content: right;
   margin-right: 30px;
@@ -1249,5 +1295,9 @@ hr {
 }
 .moca {
   font-weight: bold;
+}
+
+.center{
+  gap: 60px;
 }
 </style>
