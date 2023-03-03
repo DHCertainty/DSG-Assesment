@@ -351,31 +351,31 @@ div
           .formed
             .formed.gap
               input#80(v-model="totalGST" name="cbfees" type="checkbox" value="80" v-show="gotGroupFee  && checkCenter && !subs2")
-              label.gapped.text-small(for="80" v-show="gotGroupFee") Centre-based 3-HR FOW group session $80
+              label.gapped.text-small(for="80" v-show="gotGroupFee && !subs2") Centre-based 3-HR FOW group session $80
             .formed.gap
               input#60(v-model="totalGST" name="cbfees" type="checkbox" value="60" v-show="gotIndividualFee && checkCenter && !subs2")
-              label.gapped.text-small(for="60" v-show="gotIndividualFee && checkCenter") Centre-based 1-HR one-to-one FOW session $60
+              label.gapped.text-small(for="60" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 1-HR one-to-one FOW session $60
             .formed.gap
               input#90(v-model="totalGST" name="cbfees" type="checkbox" value="90" v-show="gotIndividualFee && checkCenter && !subs2")
-              label.gapped.text-small(for="90" v-show="gotIndividualFee && checkCenter") Centre-based 1.5-HR one-to-one FOW session $90
+              label.gapped.text-small(for="90" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 1.5-HR one-to-one FOW session $90
             .formed.gap
               input#120(v-model="totalGST" name="cbfees" type="checkbox" value="120" v-show="gotIndividualFee && checkCenter && !subs2")
-              label.gapped.text-small(for="120" v-show="gotIndividualFee && checkCenter") Centre-based 2-HR one-to-one FOW session $120
+              label.gapped.text-small(for="120" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 2-HR one-to-one FOW session $120
             .formed.gap
-              input#240(v-model="totalGST" name="cbfees" type="checkbox" value="240")
-              label.gapped.text-small(for="240") Centre-based NeeuroFIT 6 months subcription $240
+              input#240(v-model="totalGST" name="cbfees" type="checkbox" value="240" v-show="!subs2")
+              label.gapped.text-small(for="240" v-show="!subs2") Centre-based NeeuroFIT 6 months subcription $240
             .formed.gap
               input#hb90(v-model="totalGST" name="cbfees" type="checkbox" value="40" v-show="gotIndividualFee && checkResidence && !subs2") 
-              label.gapped.text-small(for="hb90" v-show="gotIndividualFee && checkResidence") Home-based 1-HR one-to-one FOW session(incl. transport) $40
+              label.gapped.text-small(for="hb90" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 1-HR one-to-one FOW session(incl. transport) $40
             .formed.gap
               input#hb120(v-model="totalGST" name="cbfees" type="checkbox" value="120" v-show="gotIndividualFee && checkResidence && !subs2")
-              label.gapped.text-small(for="hb120" v-show="gotIndividualFee && checkResidence") Home-based 1.5-HR one-to-one FOW session(incl. transport) $120
+              label.gapped.text-small(for="hb120" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 1.5-HR one-to-one FOW session(incl. transport) $120
             .formed.gap
               input#hb150(v-model="totalGST" name="cbfees" type="checkbox" value="150" v-show="gotIndividualFee && checkResidence && !subs2")
-              label.gapped.text-small(for="hb150" v-show="gotIndividualFee && checkResidence") Home-based 2-HR one-to-one FOW session(incl. transport) $120
+              label.gapped.text-small(for="hb150" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 2-HR one-to-one FOW session(incl. transport) $120
             .formed.gap.gapbot
               input#hb90-2(v-model="totalGST" name="cbfees" type="checkbox" value="90" v-show="gotIndividualFee && checkZoom && !subs2")
-              label.gapped.text-small(for="hb90-2" v-show="gotIndividualFee && checkZoom") Home-based 1-HR FOW session via video calls $90
+              label.gapped.text-small(for="hb90-2" v-show="gotIndividualFee && checkZoom && !subs2") Home-based 1-HR FOW session via video calls $90
             
             section(v-show="subs2" style="margin-top:50px")
               hr
