@@ -5,12 +5,11 @@
       rel="stylesheet"
     />
     <img src="../assets/logo.png" />
-    <ul>
+    <ul style="margin-top: 20px;">
       <li class="navbar__dateAssessment"><button class="timeEdit" v-b-modal.modal-time-change >Edit</button> Date of Assessment: <span style="font-weight:bold">{{ dateofassessment }}</span></li>
       
       <li class="navbar__clientName">Client name:<span style="font-weight:bold">{{ client_name }}</span></li>
     </ul>
-    <h1>Client Assessment</h1>
 
     <b-modal id="modal-time-change" hide-footer hide-header ref="modal-time-change">
     <p class="my-4">Pick a time</p>
@@ -87,7 +86,8 @@ export default {
 <style scoped lang="scss">
 header {
   width: 100%;
-  height: 10rem;
+  height: 6rem;
+  margin-bottom: 30px;
   display: flex;
   justify-content: center;
   /* text-align: center; */
@@ -209,7 +209,7 @@ img {
   position: fixed;
   padding-top: 5px;
   top: 10px;
-  left: 1%;
+  left: 2%;
 }
 * {
   font-family: 'Montserrat';

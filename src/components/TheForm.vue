@@ -128,18 +128,35 @@ div
                 div
                   input#ov(v-model="ovyearSelected" name="ovbx" type="checkbox" value="ov" disabled="true")
                   label.gapped(for="ov") > 6 Years
-            .row 
-              p.common.gap Visuospatial/Executive
+            .row
+              p.common.gap.mb-4 Visuospatial/Executive
+              
               .col-sm-6 
-                label Alternating Trail Making:
-                v-select(v-model="vis1" :options="['0', '1']" :clearable="false") 
+                .row.mb-4
+                  img.image_container_number(src="/form-images/number.jpeg")
+                .row
+                  label Alternating Trail Making:
+                  v-select(v-model="vis1" :options="['0', '1']" :clearable="false")
+                
               .col-sm-6 
-                label Copy Cube:
-                v-select(v-model="vis2" :options="['0', '1']" :clearable="false") 
+                .row.mb-4
+                  img.image_container_cube(src="/form-images/cube.jpeg")
+                .row
+                  label Copy Cube:
+                  v-select(v-model="vis2" :options="['0', '1']" :clearable="false") 
+
+
               label.gap Draw Clock(Ten past eleven) [3 Points]
               v-select(multiple v-model="vis3" :options="dclock" :clearable="false") 
             .row 
               p.common.gap Naming
+                .row.center_items_row.mb-4
+                  .col-auto
+                    img(@click="pick_answer_naming('4')").image_container_lion(:src=" vis4 == '1' ? '/form-images/lion_correct.png': '/form-images/lion.png'")
+                  .col-auto 
+                    img(@click="pick_answer_naming('5')").image_container_elephant(:src=" vis5 == '1' ? '/form-images/elephant_correct.png': '/form-images/elephant.png'")
+                  .col-auto
+                    img(@click="pick_answer_naming('6')").image_container_camel(:src=" vis6 == '1' ? '/form-images/camel_correct.png': '/form-images/camel.png'")
               .col-sm-6 
                 label Lion:
                 v-select(v-model="vis4" :options="['0', '1']" :clearable="false")
@@ -186,7 +203,7 @@ div
               .col-sm-6 
                 label Similarity between watch - ruler:
                 v-select(v-model="vis14" :options="['0', '1']" :clearable="false")
-            p.common.gap Delayed Recall[5 Points]
+            p.common.gap Delayed Recall [5 Points]
             v-select(multiple v-model="vis15" :options="Delayed")
             p.common.gap Orientation
             v-select(multiple v-model="vis16" :options="['Date', 'Month', 'Year', 'Day', 'Place', 'Country']")
@@ -794,6 +811,13 @@ export default {
       alert('Client Assessment is successfully submitted!');
       window.close();
   },
+  pick_answer_naming(val){
+      if(this[`vis${val}`] == '0'){
+          this[`vis${val}`] = '1';
+          return;
+      }
+        this[`vis${val}`] = '0';
+    },
   },
   watch: {
 
@@ -893,6 +917,7 @@ export default {
         this.unyearSelected = false;
       }
     },
+    
     // fees1(value) {
     //   console.log(this.fees1)
     //   if (value === true) {
@@ -1001,14 +1026,11 @@ export default {
       if (this.totalGST.length || this.totalNoGST.length) { 
         const val = this.totalGST.reduce(( sum, num) => parseInt(sum) + parseInt(num), 0);
         let val2 = 0;
-        
         if (this.totalNoGST.length) {
           val2 = parseInt(this.totalNoGST[0]);
         }
-
         const dsgsubsidiyval = this.checkdsgsubsidy(val,val2);
-
-        return (val + val2 - dsgsubsidiyval) * 1.08;
+        return (val + val2 - dsgsubsidiyval) ;
       }
       return 0;
     },
@@ -1100,7 +1122,7 @@ $base-color-purple :#50276B;
 .container {
   border-radius: 10px;
   border: 1px solid rgb(142, 142, 142);
-  background:#f9f9f9;
+  background:#ffffff;
   padding: 2rem;
   margin: auto;
   max-width: 100%;
@@ -1296,6 +1318,39 @@ hr {
 }
 .moca {
   font-weight: bold;
+}
+
+.image_container_number{
+    width: 315px;
+    margin: auto;
+}
+
+.image_container_lion{
+    width: 265px;
+    margin: auto;
+    -moz-transform: scale(-1, -1);
+    -o-transform: scale(-1, -1);
+    -webkit-transform: scale(-1, -1);
+    transform: scale(-1, 1);
+}
+
+.image_container_elephant{
+    width: 260px;
+    margin: auto;
+}
+
+.image_container_camel{
+    width: 230px;
+    margin: auto;
+}
+
+.image_container_cube{
+    width: 286px;
+    margin: auto;
+}
+
+.center_items_row{
+  justify-content: center;
 }
 
 .center{
