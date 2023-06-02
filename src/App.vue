@@ -136,4 +136,10 @@ export default {
   /* position: static; */
   z-index: 0;
 }
+
+.close{
+  border: 0;
+  background-color: #fff;
+}
+
 </style>

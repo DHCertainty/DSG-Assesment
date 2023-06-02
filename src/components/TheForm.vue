@@ -337,7 +337,7 @@ div
               b-card 
                 li.ma-4()
                   | {{ses.type}} , {{ ses.day }} {{ ses.time }} ( {{ ses.location }} )
-            b-modal#add-session(size="lg" title="Add Session" centered)         
+            b-modal#add-session(size="md" title="Add Session" scrollable centered)         
               p.common Type 
                 div
                   input#group(v-model="typeses" name="typeSes" type="radio" value="Group")
@@ -427,18 +427,82 @@ div
                 input#sgp.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" :value="fees4val") 
                 label.gapped.text-small(for="sgp") Centre-based 3-HR CIP trial run  ${{ fees4val }} 
                   span(style="font-weight:bold") ({{ prORsg }})
-              .formed.gap
-                  b-card
-                    label.common.gap(for="admission") 1st Session date:
-                    input.numbers-half#admission(v-model="firSession" name="admission" type="date")
+              .formed.gap.border.border-1(style="border-radius: 0.5rem;")
+                b-row.p-3
+                  b-col.col-6
+                    b-row
+                      b-col
+                        b-row
+                          b-col
+                            label.common.gap Public Holiday:
+                            p(v-if="listPublicHolidayCurrentMonth" v-for="publicHoliday in listPublicHolidayCurrentMonth" :key="publicHoliday._id")
+                              | {{ formatDatePublicHoliday(publicHoliday.date) }} - {{ publicHoliday.holiday }}
+                            p(v-if="!listPublicHolidayCurrentMonth")
+                              | No Public Holiday for this month
+                    b-row
+                      b-col
+                        b-row
+                          b-col
+                            label.common.gap(for="dsgOffday") DSG Offday
+                        b-row
+                          b-col
+                            label.common(for="dsgOffday") Start date:
+                        b-row
+                          b-col
+                            input.numbers-half#admission(v-model="dsgOffDay.startDate" name="dsgOffday" type="date")
+                        b-row
+                          b-col
+                            label.common.gap End date:
+                        b-row 
+                          b-col
+                            input.numbers-half#admission(v-model="dsgOffDay.endDate" name="dsgOffday" type="date")
+                        b-row
+                          b-col.gap
+                            b-button(@click="addDSGOffday")
+                              | Add Offday
+                        b-row(v-if="dsgOffDay.listDay.length !== 0")
+                          b-col
+                            b-row.mb-2.align-items-center(v-for="holiday in dsgOffDay.listDay" :key="holiday.id")
+                              b-col.col-8
+                                p.my-auto
+                                  | {{ formatDSFOffDayContent(holiday.startDate, holiday.endDate) }}
+                              b-col.col-4
+                                b-button(variant="danger" @click="removeDSGOffDay(holiday.id)")
+                                  | Remove
+                  b-col.col-6
+                    b-row
+                      b-col
+                        b-row
+                          b-col
+                            label.common.gap(for="admission") 1st Session date:
+                        b-row
+                          b-col
+                            input.numbers-half#admission(v-model="firSession" name="admission" type="date")
+                        b-row
+                          b-col
+                            label.common.gap(for="admission") 2nd Session date:
+                        b-row
+                          b-col
+                            input.numbers-half#admission(v-model="secSession" name="admission" type="date")
+                        b-row
+                          b-col
+                            b-btn.gap(@click="CIPtotal") Calculate
+                        b-row
+                          b-col.d-flex.justify-content-end.align-items-center(style="font-size: 20px;")
+                            label(v-show="totalforCIP") ${{totalforCIP}} for {{ CIPdays }} session
 
-                    label.common.gap(for="admission") 2nd Session date:
-                    input.numbers-half#admission(v-model="secSession" name="admission" type="date")
 
-                    b-btn.mt-3(@click="CIPtotal") Calculate
-            
-                    div(style="text-align: right;width: 100%;font-size: 20px;")
-                      label(v-show="totalforCIP") ${{totalforCIP}} for {{ CIPdays }} session
+                //- b-card
+                //-   label.common.gap(for="admission") 1st Session date:
+                //-   input.numbers-half#admission(v-model="firSession" name="admission" type="date")
+
+                //-   label.common.gap(for="admission") 2nd Session date:
+                //-   input.numbers-half#admission(v-model="secSession" name="admission" type="date")
+
+                //-   b-btn.mt-3(@click="CIPtotal") Calculate
+          
+                //-   div(style="text-align: right;width: 100%;font-size: 20px;")
+                //-     label(v-show="totalforCIP") ${{totalforCIP}} for {{ CIPdays }} session
 
               
             hr
@@ -517,6 +581,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone"; // dependent on utc plugin
 import isToday from "dayjs/plugin/isToday";
+import axios from 'axios';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -533,6 +598,12 @@ export default {
   // emits: ["newresource"],
   data() {
     return {
+      listPublicHolidayCurrentMonth: null,
+      dsgOffDay: {
+        startDate: null,
+        endDate: null,
+        listDay: [],
+      },
       totalforCIP: 0,
       CIPdays: '',
       isAMT: false,
@@ -725,44 +796,96 @@ export default {
       component.getdatainform();
     })
 
-    const response = await fetch('https://data.gov.sg/api/action/datastore_search?resource_id=98aa24ef-954d-4f76-b733-546e0fcf1d0a&');
-    const data = await response.json();
-    console.log('pubic holiday list',data.result.records)
-    
+    const listPublicHoliday = await this.getSGPublicHoliday();
+    this.listPublicHolidayCurrentMonth = this.getPublicHolidayCurrentMonth(listPublicHoliday).length === 0 ? null : this.getPublicHolidayCurrentMonth(listPublicHoliday);
+    console.log(this.listPublicHolidayCurrentMonth);
+
   },
   methods: {
-    CIPtotal(){
+    async getSGPublicHoliday(){
+      const LINK = 'https://data.gov.sg/api/action/datastore_search?resource_id=98aa24ef-954d-4f76-b733-546e0fcf1d0a&';
+      const { data } = await axios.get(LINK);
+      return data.result.records;
+
+    },
+    getPublicHolidayCurrentMonth(listPublicHoliday){
+      return listPublicHoliday.filter(item => {
+        const itemMonth = this.formatDatePublicHoliday(item.date).split('/')[1];
+        const currentMonth = (dayjs().month() + 1) + '';
+
+        return itemMonth === currentMonth;
+      });
+
+    },
+    formatDatePublicHoliday(date){
+      const DATE_FORMAT = 'D/M/YYYY';
+      return dayjs(date).format(DATE_FORMAT);
+
+    },
+    addDSGOffday(){
+      // TODO: check if date already inside the list or not
+      
+      if(!this.dsgOffDay.startDate || !this.dsgOffDay.endDate){
+        return;
+      }
+
+      this.dsgOffDay.listDay.push({
+        id: Math.floor(Math.random() * Date.now()) + '',
+        startDate: this.dsgOffDay.startDate,
+        endDate: this.dsgOffDay.endDate,
+      });
+
+      this.dsgOffDay.startDate = null;
+      this.dsgOffDay.endDate = null;
+
+    },
+    removeDSGOffDay(id){
+      this.dsgOffDay.listDay = this.dsgOffDay.listDay.filter(item => item.id !== id);
+
+    },
+    formatDSFOffDayContent(startDate, endDate){
+      if(startDate === endDate){
+        return `${this.formatDatePublicHoliday(startDate)} - Monday`;
+      }
+
+      return `${this.formatDatePublicHoliday(startDate)} - Monday until ${this.formatDatePublicHoliday(endDate)} - Monday`;
+
+    },
+    async CIPtotal(){
       if (this.firSession && this.secSession)  {
         let day = 0;   
         let day2 = 0; 
-        let whatday = dayjs(this.firSession).day()
-        let whatday2 = dayjs(this.secSession).day()
-        const start = new Date(dayjs(this.firSession).format('MM-DD-YYYY'));
-        const end = new Date(dayjs(this.firSession).endOf('month').format('MM-DD-YYYY'))
-        let loop = new Date(start);
-        while (loop <= end) {
-          if (loop.getDay() == whatday) {
-              day++;    
+        let whatday = dayjs(this.firSession).day();
+        let whatday2 = dayjs(this.secSession).day();
+        const startDate = new Date(dayjs(this.firSession).format('MM-DD-YYYY'));
+        const endDate = new Date(dayjs(this.firSession).endOf('month').format('MM-DD-YYYY'))
+        let loop = new Date(startDate);
+
+        while (loop <= endDate) {
+          if (loop.getDay() === whatday) {
+            day++;
           }
           let newDate = loop.setDate(loop.getDate() + 1);
           loop = new Date(newDate);
-      }
+        }
 
-      const start2 = new Date(dayjs(this.secSession).format('MM-DD-YYYY'));
-        const end2 = new Date(dayjs(this.secSession).endOf('month').format('MM-DD-YYYY'))
-        let loop2 = new Date(start2);
-        while (loop2 <= end2) {
-          if (loop2.getDay() == whatday2) {
-              day2++;    
+        const startDate2 = new Date(dayjs(this.secSession).format('MM-DD-YYYY'));
+        const endDate2 = new Date(dayjs(this.secSession).endOf('month').format('MM-DD-YYYY'))
+        let loop2 = new Date(startDate2);
+
+        while (loop2 <= endDate2) {
+          if (loop2.getDay() === whatday2) {
+            day2++;
           }
           let newDate = loop2.setDate(loop2.getDate() + 1);
           loop2 = new Date(newDate);
-      }
+        }
 
-      console.log(day + day2) ;
-      this.totalforCIP = 83*(day+day2);
-      this.CIPdays = day+day2;
-    }
+        const totalDay = day + day2;
+        console.log(totalDay) ;
+        this.totalforCIP = 83 * (totalDay);
+        this.CIPdays = day + day2;
+      }
     
     },
     checkdsgsubsidy(val,val2){

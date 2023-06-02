@@ -1,8 +1,18 @@
 {
-  "hosting": {
-    "amplifyhosting": {
-      "service": "amplifyhosting",
-      "type": "cicd"
+  "api": {
+    "assessmentapi": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "dsgassessment"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
     }
   },
   "function": {
@@ -12,18 +22,42 @@
       "service": "Lambda"
     }
   },
-  "api": {
-    "assessmentapi": {
-      "service": "API Gateway",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
+  "hosting": {
+    "amplifyhosting": {
+      "service": "amplifyhosting",
+      "type": "cicd"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_dsgassessment_deploymentBucketName": {
+      "usedBy": [
         {
           "category": "function",
-          "resourceName": "dsgassessment",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
+          "resourceName": "dsgassessment"
+        }
+      ]
+    },
+    "AMPLIFY_function_dsgassessment_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "dsgassessment"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_appId": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_type": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
         }
       ]
     }
