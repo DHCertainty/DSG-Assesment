@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head> </head>
+  <body>
+    <div class="content_holder">
+        <div class="postal_input">
+            <p class="input_label">Start Postal Code:</p>
+            <p class="input_label">Destination Postal Code:</p>
+        </div>
+        <div class="postal_input2">
+            <p><input class="input_holder" value="" id="start" /></p>
+            <p><input class="input_holder" value="" id="end" /></p>
+        </div>
+        <div class="postal_btn">
+            <button id="search" class="button_purple">Check distance</button>
+        </div>
+    </div>
+    <iframe class="map_frame" id="iframe" height="500" width="500"></iframe>
+
+    <script>
+      const btn = document.getElementById("search");
+      btn.onclick = () => {
+        const start = document.getElementById("start").value;
+        const end = document.getElementById("end").value;
+        const iframe = document.querySelector("#iframe");
+        iframe.src = `https://maps.google.com/maps?saddr=Singapore ${start}&daddr=Singapore ${end}&ie=UTF8&output=embed&mode=driving`;
+      };
+      btn.click();
+    </script>
+    <style lang="scss" scoped>
+        .map_frame{
+            width: 100%;
+        }
+
+        .input_label{
+            margin-top: 20px;
+        }
+
+        .input_holder{
+            border: 1px solid #c4bdbd;
+            border-radius: 10px;
+            height: 25px;
+            text-align: center;
+            width: 170px;
+        }
+
+        .postal_input{
+            width: 15%;
+        }
+        .postal_input2{
+            width: 20%;
+        }
+
+        .postal_btn{
+            width: 60%;
+            margin: auto;
+        }
+
+        .content_holder{
+            display: flex;
+            margin: 10px;
+            font-family: sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .button_purple{
+            background: rgb(118, 80, 137);
+            color: white;
+            font-weight: bold;
+            border: none;
+            width: 140px;
+            height: 45px;
+            border-radius: 10px;
+        }
+    </style>
+  </body>
+</html>

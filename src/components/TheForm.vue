@@ -1,5 +1,7 @@
 <template lang="pug">
 div
+  //- div.progress.mb-4
+  //-   div.progress-bar.progressbarstyle(role="progressbar" style="width: 100%;height:30px;position:fixed;z-index: 1;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100") 25%
   .container-xxl
     form
       section
@@ -16,106 +18,116 @@ div
 
             .row.center
               .col-2
-                input#AMT(type="checkbox" v-model="isAMT" value="AMT")
+                input#AMT.checkbox_circle(type="checkbox" v-model="isAMT" value="AMT")
                 label(for="AMT") &nbsp;AMT
                 .row.center
                   .col-2(v-if="isAMT") 
                       input.checkbox#score(v-model="amtVal" type="number" min="0" )
               .col-2
-                input#MMSE(type="checkbox" v-model="isMMSE" value="MMSE")
+                input#MMSE.checkbox_circle(type="checkbox" v-model="isMMSE" value="MMSE")
                 label(for="MMSE") &nbsp;MMSE
                 .row.center 
                   .col-2(v-if="isMMSE")
                     input.checkbox#score(v-model="mmseVal" type="number" min="0")
               .col-2 
-                input#MOCA(type="checkbox" v-model="isMOCA" value="MOCA")
+                input#MOCA.checkbox_circle(type="checkbox" v-model="isMOCA" value="MOCA")
                 label(for="MOCA") &nbsp;MOCA
                 .row.center
                   .col-2(v-if="isMOCA")
                     input.checkbox#score(v-model="mocaVal" type="number" min="0")
-              
-
-
           .col-sm-6
             label.common.gap(for="score") Date Done in hospital:
             input.numbers#score(v-model="date" name="score" type="date")
         hr
+
+
+
+        // General questions
         section(v-show="type && stageof && date && (isAMT || isMOCA || isMMSE)")
+          label.mt-4(style="font-size: 17px;font-weight: bold;") General:
           .formed.gap
-            input#sacop(v-model="checker" type="checkbox" value="sacop" name="part2")
+            input#sacop.checkbox_circle(v-model="checker" type="checkbox" value="sacop" name="part2")
             label.gapped.text-small(for="sacop") Shared about Centre's objectives & program
           .formed.gap
-            input#wcv(v-model="checker2" name="part2" type="checkbox" value="wcv")
+            input#wcv.checkbox_circle(v-model="checker2" name="part2" type="checkbox" value="wcv")
             label.gapped.text-small(for="wcv") Watched Centre's video
+          
           .formed.gap
-            input#pnbtg(name="the-pnbtg" value="pnbtg" type="checkbox" v-model="neeuro")
+            input#pttg.checkbox_circle(v-model="checker3" name="part2" type="checkbox" value="pttg")
+            label.gapped.text-small(for="pttg") Played Table Top games
+
+
+
+          // Survey questions
+          label.mt-5(style="font-size: 17px;font-weight: bold;") Games & Surveys:
+          .formed.gap
+            input#pnbtg.checkbox_circle(name="the-pnbtg" value="pnbtg" type="checkbox" v-model="neeuro")
             label.gapped.text-small(for="pnbtg") Played NeeuroFIT brain training game
-          .container(v-show="neeuro")
-            h2 Pick Games:
+          .container.my-4(v-show="neeuro")
+            h2 NeeuroFit Games:
             .gap.left
-              input#att(v-model="atten" name="part2ins" type="checkbox" value="att")
-              label(for="att") &nbsp;Attention
-              .row(v-show="atten")
+              input#att.checkbox_circle(v-model="atten" name="part2ins" type="checkbox" value="att")
+              label.my-2.font_bold(for="att") &nbsp;Attention
+              .row.px-5(v-show="atten")
                 .gap.col-sm-6
-                  label.common.inside(for="stageof" ) Game played:
+                  label(for="stageof" ) Game played:
                   v-select(:options="game1" v-model="attentiongame")
                 .gap.col-sm-6
-                  label.common.inside(for="stageof" ) Finished Level:
+                  label(for="stageof" ) Finished Level:
                   v-select(:options="levels" v-model="attentionlevel")
             .gap.left 
-              input#spat(type="checkbox" name="part2ins" v-model="spatial" value="spat")
-              label(for="spat") &nbsp;Spatial
-              .row(v-show="spatial")
+              input#spat.checkbox_circle(type="checkbox" name="part2ins" v-model="spatial" value="spat")
+              label.my-2.font_bold(for="spat") &nbsp;Spatial
+              .row.px-5(v-show="spatial")
                 .gap.col-sm-6
-                  label.common.inside(for="stageof") Game Played:
+                  label(for="stageof") Game Played:
                   v-select(:options="game2" v-model="spatialgame")
                 .gap.col-sm-6
-                  label.common.inside(for="stageof") Finished Level:
+                  label(for="stageof") Finished Level:
                   v-select(:options="levels" v-model="spatiallevel")
             .gap.left 
-              input#dec(type="checkbox" name="part2ins" v-model="decision" value="dec")
-              label(for="dec") &nbsp;Decision
-              .row(v-show="decision")
+              input#dec.checkbox_circle(type="checkbox" name="part2ins" v-model="decision" value="dec")
+              label.my-2.font_bold(for="dec") &nbsp;Decision
+              .row.px-5(v-show="decision")
                 .gap.col-sm-6
-                  label.common.inside(for="stageof") Game Played:
+                  label(for="stageof") Game Played:
                   v-select(:options="game3" v-model="decisiongame")
                 .gap.col-sm-6
-                  label.common.inside(for="stageof") Finished Level:
+                  label(for="stageof") Finished Level:
                   v-select(:options="levels" v-model="decisionlevel")
             .gap.left 
-              input#mem(type="checkbox" name="part2ins" v-model="memory" value="mem")
-              label(for="mem") &nbsp;Memory
-              .row(v-show="memory")
+              input#mem.checkbox_circle(type="checkbox" name="part2ins" v-model="memory" value="mem")
+              label.my-2.font_bold(for="mem") &nbsp;Memory
+              .row.px-5(v-show="memory")
                 .gap.col-sm-6
-                  label.common.inside(for="stageof") Game Played:
+                  label(for="stageof") Game Played:
                   v-select(:options="game4" v-model="memorygame")
                 .gap.col-sm-6
-                  label.common.inside(for="stageof") Finished Level:
+                  label(for="stageof") Finished Level:
                   v-select(:options="levels" v-model="memorylevel")
             .gap.left
-                input#flexi(type="checkbox" name="part2ins" v-model="flexibility" value="flexi")
-                label(for="flexi") &nbsp;Flexibility
-                .row(v-show="flexibility")
+                input#flexi.checkbox_circle(type="checkbox" name="part2ins" v-model="flexibility" value="flexi")
+                label.my-2.font_bold(for="flexi") &nbsp;Flexibility
+                .row.px-5(v-show="flexibility")
                   .gap.col-sm-6
-                    label.common.inside(for="stageof") Game Played:
+                    label(for="stageof") Game Played:
                     v-select(:options="game5" v-model="flexibilitygame")
                   .gap.col-sm-6
-                    label.common.inside(for="stageof") Finished Level:
+                    label(for="stageof") Finished Level:
                     v-select(:options="levels" v-model="Flexibilitylevel")
+
+          //MOCA form     
           .formed.gap
-            input#pttg(v-model="checker3" name="part2" type="checkbox" value="pttg")
-            label.gapped.text-small(for="pttg") Played Table Top games
-          .formed.gap
-            input#mocaform(v-model="checker4" name="mocaform" type="checkbox" value="mocaform")
+            input#mocaform.checkbox_circle(v-model="checker4" name="mocaform" type="checkbox" value="mocaform")
             label.gapped.text-small(for="mocaform") MOCA form
           .container.left.gap(v-show="checker4")
             h2.moca.gapbot MOCA
             p.common Version:
             div
-              input#cn(v-model="cn" name="cnbx" type="checkbox" value="0")
+              input#cn.checkbox_circle(v-model="cn" name="cnbx" type="checkbox" value="0")
               label.gapped(for="cn") Chinese 
             div
-              input#en(v-model="en" name="enbx" type="checkbox" value="1")
+              input#en.checkbox_circle(v-model="en" name="enbx" type="checkbox" value="1")
               label.gapped(for="en") English 
             p.common.gap Education Level:
             .col-sm-6
@@ -123,24 +135,24 @@ div
               .gap(v-show="edulev")
                 p.common.gap Education Year:
                 div
-                  input#un(v-model="unyearSelected" name="unbx" type="checkbox" value="un" disabled="true")
+                  input#un.checkbox_circle(v-model="unyearSelected" name="unbx" type="checkbox" value="un" disabled="true")
                   label.gapped(for="un") ≤ 6 Years
                 div
-                  input#ov(v-model="ovyearSelected" name="ovbx" type="checkbox" value="ov" disabled="true")
+                  input#ov.checkbox_circle(v-model="ovyearSelected" name="ovbx" type="checkbox" value="ov" disabled="true")
                   label.gapped(for="ov") > 6 Years
             .row
               p.common.gap.mb-4 Visuospatial/Executive
               
               .col-sm-6 
                 .row.mb-4
-                  img.image_container_number(src="/form-images/number.jpeg")
+                  img(@click="pick_answer_naming('1')").image_container_number(src="/form-images/number.jpeg")
                 .row
                   label Alternating Trail Making:
                   v-select(v-model="vis1" :options="['0', '1']" :clearable="false")
                 
               .col-sm-6 
                 .row.mb-4
-                  img.image_container_cube(src="/form-images/cube.jpeg")
+                  img(@click="pick_answer_naming('2')").image_container_cube(src="/form-images/cube.jpeg")
                 .row
                   label Copy Cube:
                   v-select(v-model="vis2" :options="['0', '1']" :clearable="false") 
@@ -209,7 +221,7 @@ div
             v-select(multiple v-model="vis16" :options="['Date', 'Month', 'Year', 'Day', 'Place', 'Country']")
             p.common.gap Total Score: {{ totalscore }}
           .formed.gap
-            input#eq5d(v-model="checker5" name="eq5d" type="checkbox" value="eq5d")
+            input#eq5d.checkbox_circle(v-model="checker5" name="eq5d" type="checkbox" value="eq5d")
             label.gapped.text-small(for="eq5d") EQ-5D-5L form
           .container.gap(v-show="checker5")
             h2.moca.gapbot EQ-5D-5L
@@ -243,23 +255,87 @@ div
                 input.numbers(v-model="healthscale" type="range" min="0" max="100") 
               .col-sm-4(style="font-size:22px;font-weight:bold;")
                 input.numberslider(v-model="healthscale" type="number" min="0" max="100" onkeydown="return event.keyCode !== 190") 
-          hr   
-        section(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
+          //- hr   
+        section.mt-5(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
           .formed
             label.common(for="comment") Comment/Observation about the client
             textarea#comment(name="comment" rows="3" type="text" v-model="checking")
           hr
+          
         section(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
+          .row.gap
+            .col-md-2 
+              label.common.gap Fee & Payment:
+                //- .col-auto 
+                //-   .formed.gap
+                //-     input#no(v-model="no" name="subsidy" type="radio" value="no" @click="revert()")
+                //-     label(for="no") &nbsp;No
+                //- .col-auto 
+                //-   .formed.gap.gapbot
+                //-     input#yes( v-model="subsidy" name="subsidy" type="radio" value="yes")
+                    label(for="yes") &nbsp;Yes
+
+          .centerCheckbox
+            input#subsidytoggle.checkbox_circle(v-b-toggle.subsidy_box type="checkbox")
+            label(for="subsidytoggle").m-3.subsidy_label Subsidy included
+                
+          //- b-button.mb-3(v-b-toggle.subsidy_box @click="checkSubsidy") Subsidy Included
+          //-   label(v-show="") yes
+
+          b-collapse#subsidy_box
+            b-card
+              section
+                  .formed
+                    .formed.gap
+                      input#dsg1.checkbox_circle(v-model="subs1" name="subsidy1" type="checkbox" value="dsg1")
+                      label.long.gapped(for="dsg1") DSG
+                      .row.gap(v-show="subs1")
+                          .col-md-2 
+                            input.numbers#means(name="means" type="number" min="20" v-model="subs1val")
+                          .col-md-2 
+                            b-form-select.numbers(v-model="dsgsubsidy" :options="subsidyoptions")
+                          .col-md-2
+                            label.common subsidy
+                    .gap 
+                      input#dsg2.checkbox_circle(v-model="subs2" name="subsidy2" type="checkbox" value="dsg2" :disabled="checknationality")
+                      label.long.gapped(for="dsg2") Toteboard
+                      .row.gap(v-show="subs2")
+                        .col-md-2 
+                          label.common Means Test Result
+                        .col-md-2 
+                          v-select(v-model="subsidyAmount" :options="clientdata.crb5c_citizenship == 0 ?  toteboardSG : toteboardPR")
+                        .col-md-2
+                          label.common % subsidy
+                    .formed.gap.mb-4
+                      input#dsg3.checkbox_circle(v-model="subs3" name="subsidy3" type="checkbox" value="dsg3" disabled)
+                      label.long.gapped(for="dsg3") Others
+                      .formed.gap(v-show="subs3")
+                        label.common(for="others") Specify: 
+                        input.numbers-half#others(name="others" type="text")
+                    //- .formed.gapbot(v-show="subs1 || subs2 || subs3 ")
+                    //-     label.common(for="subsid" style="justify-content:end") Amount Subsidized:
+                    //-     .row(style="justify-content:end")
+                    //-       input.small-input-width#subsid(name="subsid" type="number" min="0")
+              //- hr
+
+
+
+              //- v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)"
+        section.mt-5()
           .formed
             .row
               .col-sm-3
                 label.common(for="session") Session Recommended: 
               .col     
                 b-btn#add-btn(@click="addmethod") + Add Session 
+            
             div.my-4(v-if="this.sessions.length === 0")
-              p.common.gap No Session Selected
+              b-card
+                p.common.gap No Session Selected
+            
             ul.my-4(v-for="ses in sessions" key="ses.id")
-              li()
+              b-card 
+                li.ma-4()
                   | {{ses.type}} , {{ ses.day }} {{ ses.time }} ( {{ ses.location }} )
             b-modal#add-session(size="lg" title="Add Session" centered)         
               p.common Type 
@@ -313,104 +389,75 @@ div
               template(#modal-footer="{ok}")
                 b-btn(v-show="location" size="md" @click="addNew") Add
 
+                //- v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)"
+        section.mt-5()
+          label.common Applicable Fee (excluding GST):
+          .formed
+            .formed.gap
+              input#80.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="80" v-show="gotGroupFee  && checkCenter && !subs2")
+              label.gapped.text-small(for="80" v-show="gotGroupFee && !subs2") Centre-based 3-HR FOW group session $80
+            .formed.gap
+              input#60.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="60" v-show="gotIndividualFee && checkCenter && !subs2")
+              label.gapped.text-small(for="60" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 1-HR one-to-one FOW session $60
+            .formed.gap
+              input#90.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="90" v-show="gotIndividualFee && checkCenter && !subs2")
+              label.gapped.text-small(for="90" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 1.5-HR one-to-one FOW session $90
+            .formed.gap
+              input#120.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="120" v-show="gotIndividualFee && checkCenter && !subs2")
+              label.gapped.text-small(for="120" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 2-HR one-to-one FOW session $120
+            .formed.gap
+              input#240.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="240" v-show="!subs2")
+              label.gapped.text-small(for="240" v-show="!subs2") Centre-based NeeuroFIT 6 months subcription $240
+            .formed.gap
+              input#hb90.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="40" v-show="gotIndividualFee && checkResidence && !subs2") 
+              label.gapped.text-small(for="hb90" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 1-HR one-to-one FOW session(incl. transport) $40
+            .formed.gap
+              input#hb120.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="120" v-show="gotIndividualFee && checkResidence && !subs2")
+              label.gapped.text-small(for="hb120" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 1.5-HR one-to-one FOW session(incl. transport) $120
+            .formed.gap
+              input#hb150.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="150" v-show="gotIndividualFee && checkResidence && !subs2")
+              label.gapped.text-small(for="hb150" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 2-HR one-to-one FOW session(incl. transport) $120
+            .formed.gap.gapbot
+              input#hb90-2.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="90" v-show="gotIndividualFee && checkZoom && !subs2")
+              label.gapped.text-small(for="hb90-2" v-show="gotIndividualFee && checkZoom && !subs2") Home-based 1-HR FOW session via video calls $90
+            
+            section(style="margin-top:50px")
+              hr
+              .formed.gap
+                input#sgp.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" :value="fees4val") 
+                label.gapped.text-small(for="sgp") Centre-based 3-HR CIP trial run  ${{ fees4val }} 
+                  span(style="font-weight:bold") ({{ prORsg }})
+              .formed.gap
+                  b-card
+                    label.common.gap(for="admission") 1st Session date:
+                    input.numbers-half#admission(v-model="firSession" name="admission" type="date")
 
+                    label.common.gap(for="admission") 2nd Session date:
+                    input.numbers-half#admission(v-model="secSession" name="admission" type="date")
+
+                    b-btn.mt-3(@click="CIPtotal") Calculate
+            
+                    div(style="text-align: right;width: 100%;font-size: 20px;")
+                      label(v-show="totalforCIP") ${{totalforCIP}} for {{ CIPdays }} session
+
+              
+            hr
+        
           .formed(style="margin-top:80px")
             label.common.gap(for="admission") Admission date:
             input.numbers-half#admission(v-model="adm" name="admission" type="date")
           hr
-        section(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5) && this.sessions.length > 0")
-          .row.gap
-            .col-md-1 
-              label.common.gap Subsidy:
-            .col-auto 
-              .formed.gap
-                input#no(v-model="no" name="subsidy" type="radio" value="no" @click="revert()")
-                label(for="no") &nbsp;No
-            .col-auto 
-              .formed.gap.gapbot
-                input#yes(v-model="subsidy" name="subsidy" type="radio" value="yes")
-                label(for="yes") &nbsp;Yes
-          section(v-show="subsidy")
-              .formed
-                .formed.gap
-                  input#dsg1(v-model="subs1" name="subsidy1" type="checkbox" value="dsg1")
-                  label.long.gapped(for="dsg1") DSG
-                  .row.gap(v-show="subs1")
-                      .col-md-2 
-                        input.numbers#means(name="means" type="number" min="20" v-model="subs1val")
-                      .col-md-2 
-                        b-form-select.numbers(v-model="dsgsubsidy" :options="subsidyoptions")
-                      .col-md-2
-                        label.common subsidy
-                .gap 
-                  input#dsg2(v-model="subs2" name="subsidy2" type="checkbox" value="dsg2" :disabled="checknationality")
-                  label.long.gapped(for="dsg2") Toteboard
-                  .row.gap(v-show="subs2")
-                    .col-md-2 
-                      label.common Means Test Result
-                    .col-md-2 
-                      v-select(v-model="subsidyAmount" :options="clientdata.crb5c_citizenship == 0 ?  toteboardSG : toteboardPR")
-                    .col-md-2
-                      label.common % subsidy
-                .formed.gap
-                  input#dsg3(v-model="subs3" name="subsidy3" type="checkbox" value="dsg3")
-                  label.long.gapped(for="dsg3") Others
-                  .formed.gap(v-show="subs3")
-                    label.common(for="others") Specify: 
-                    input.numbers-half#others(name="others" type="text")
-                //- .formed.gapbot(v-show="subs1 || subs2 || subs3 ")
-                //-     label.common(for="subsid" style="justify-content:end") Amount Subsidized:
-                //-     .row(style="justify-content:end")
-                //-       input.small-input-width#subsid(name="subsid" type="number" min="0")
-          hr
-        section(v-show="subsidy  || no")
-          label.common Applicable Fee (excluding GST):
-          .formed
-            .formed.gap
-              input#80(v-model="totalGST" name="cbfees" type="checkbox" value="80" v-show="gotGroupFee  && checkCenter && !subs2")
-              label.gapped.text-small(for="80" v-show="gotGroupFee && !subs2") Centre-based 3-HR FOW group session $80
-            .formed.gap
-              input#60(v-model="totalGST" name="cbfees" type="checkbox" value="60" v-show="gotIndividualFee && checkCenter && !subs2")
-              label.gapped.text-small(for="60" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 1-HR one-to-one FOW session $60
-            .formed.gap
-              input#90(v-model="totalGST" name="cbfees" type="checkbox" value="90" v-show="gotIndividualFee && checkCenter && !subs2")
-              label.gapped.text-small(for="90" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 1.5-HR one-to-one FOW session $90
-            .formed.gap
-              input#120(v-model="totalGST" name="cbfees" type="checkbox" value="120" v-show="gotIndividualFee && checkCenter && !subs2")
-              label.gapped.text-small(for="120" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 2-HR one-to-one FOW session $120
-            .formed.gap
-              input#240(v-model="totalGST" name="cbfees" type="checkbox" value="240" v-show="!subs2")
-              label.gapped.text-small(for="240" v-show="!subs2") Centre-based NeeuroFIT 6 months subcription $240
-            .formed.gap
-              input#hb90(v-model="totalGST" name="cbfees" type="checkbox" value="40" v-show="gotIndividualFee && checkResidence && !subs2") 
-              label.gapped.text-small(for="hb90" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 1-HR one-to-one FOW session(incl. transport) $40
-            .formed.gap
-              input#hb120(v-model="totalGST" name="cbfees" type="checkbox" value="120" v-show="gotIndividualFee && checkResidence && !subs2")
-              label.gapped.text-small(for="hb120" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 1.5-HR one-to-one FOW session(incl. transport) $120
-            .formed.gap
-              input#hb150(v-model="totalGST" name="cbfees" type="checkbox" value="150" v-show="gotIndividualFee && checkResidence && !subs2")
-              label.gapped.text-small(for="hb150" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 2-HR one-to-one FOW session(incl. transport) $120
-            .formed.gap.gapbot
-              input#hb90-2(v-model="totalGST" name="cbfees" type="checkbox" value="90" v-show="gotIndividualFee && checkZoom && !subs2")
-              label.gapped.text-small(for="hb90-2" v-show="gotIndividualFee && checkZoom && !subs2") Home-based 1-HR FOW session via video calls $90
-            
-            section(v-show="subs2" style="margin-top:50px")
-              hr
-              .formed.gap
-                input#sgp(v-model="totalGST" name="cbfees" type="checkbox" :value="fees4val") 
-                label.gapped.text-small(for="sgp") Centre-based 3-HR CIP trial run  ${{ fees4val }} 
-                  span(style="font-weight:bold") ({{ prORsg }})
-            .formed.gap
-            hr
         section(v-show="(subsidy || no)" style="margin-top:50px")
             .formed.gap
-              input#50(v-model="totalGST" name="cbfees" type="checkbox" value="50")
+              input#50.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="50")
               label.gapped.text-small(for="50") One-time Assessment $50
             .formed.gap
-              input#refund(v-model="totalNoGST" name="cbfees" type="checkbox" value="320")
+              input#refund.checkbox_circle(v-model="totalNoGST" name="cbfees" type="checkbox" value="320")
               label.gapped.text-small(for="refund") Refundable One-Month Deposit (4 X applicable fee) $320
-          
-        section(v-show="(subsidy || no)" style="margin-top:50px")
+        
+        //Payment type
+              //- v-show="(subsidy || no)"
+        section( style="margin-top:50px")
           .gapright.row.mt-4
             .gap.col-sm-6
               label.common(for="receipt") Official Receipt:
@@ -430,20 +477,34 @@ div
               //- input.numbers#collect(v-model="amtcollect " name="collect" type="text" readonly="readonly")
           label.common.gap Mode of Payment:
           .row 
-            .col-md-3
-              input#cash(v-model="modeofpayment" name="payment" type="radio" value="cash")
-              label(for="cash") &nbsp;Cash
-            .col-md-3
-              input#paynow( v-model="modeofpayment" name="payment" type="radio" value="paynow")
-              label(for="paynow") &nbsp;PayNow
-            .col-md-3
-              input#e-bank( v-model="modeofpayment" name="payment" type="radio" value="e-bank")
-              label(for="e-bank") &nbsp;Internet Banking
-            .col-md-3
-              input#cheque( v-model="modeofpayment" name="payment" type="radio" value="cheque")
-              label(for="cheque") &nbsp;Cheque
-        section.submitbtn(v-if="modeofpayment" @click="submitassessment" )
-          b-btn Submit
+            .col-md-auto
+              label(for="cash") 
+                div(:class="(this.modeofpayment == 'cash') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
+                  input#cash(v-model="modeofpayment" name="payment" type="radio" value="cash")
+                  |&nbsp;&nbsp;Cash
+                  img.checkboxImg.mx-3(src="/form-images/money.png")
+            .col-md-auto
+              label(for="paynow") 
+                div(:class="(this.modeofpayment == 'paynow') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
+                  input#paynow( v-model="modeofpayment" name="payment" type="radio" value="paynow") 
+                  |&nbsp;&nbsp;PayNow
+                  img.mx-3.my-2(src="/form-images/paynow_logo.png" style="width:100px")
+            .col-md-auto
+              label(for="e-bank") 
+                div(:class="(this.modeofpayment == 'e-bank') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
+                  input#e-bank( v-model="modeofpayment" name="payment" type="radio" value="e-bank")
+                  |&nbsp;&nbsp;Internet Banking
+                  img.checkboxImg.mx-3(src="/form-images/money_transfer.png")
+            .col-md-auto
+              label(for="cheque")
+                div(:class="(this.modeofpayment == 'cheque') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
+                  input#cheque( v-model="modeofpayment" name="payment" type="radio" value="cheque")
+                  |&nbsp;&nbsp;Cheque
+                  img.checkboxImg.mx-3(src="/form-images/cheque.png")
+
+        // Submit button 
+        section.submitbtn(v-if="modeofpayment" @click="submitassessment")
+          b-btn(style="background: #917093;font-size: 17px;width: 20%;") Submit
     <br>
     <br>
     <br>
@@ -472,6 +533,8 @@ export default {
   // emits: ["newresource"],
   data() {
     return {
+      totalforCIP: 0,
+      CIPdays: '',
       isAMT: false,
       isMOCA: false,
       isMMSE: false,
@@ -515,6 +578,7 @@ export default {
       gp: false,
       ind: false,
       subsidyAmount: null,
+      firSession: null,
       subs1: false,
       subs2: false,
       subs3: false,
@@ -660,8 +724,47 @@ export default {
     this.$root.$on('getFormData', function(){
       component.getdatainform();
     })
+
+    const response = await fetch('https://data.gov.sg/api/action/datastore_search?resource_id=98aa24ef-954d-4f76-b733-546e0fcf1d0a&');
+    const data = await response.json();
+    console.log('pubic holiday list',data.result.records)
+    
   },
   methods: {
+    CIPtotal(){
+      if (this.firSession && this.secSession)  {
+        let day = 0;   
+        let day2 = 0; 
+        let whatday = dayjs(this.firSession).day()
+        let whatday2 = dayjs(this.secSession).day()
+        const start = new Date(dayjs(this.firSession).format('MM-DD-YYYY'));
+        const end = new Date(dayjs(this.firSession).endOf('month').format('MM-DD-YYYY'))
+        let loop = new Date(start);
+        while (loop <= end) {
+          if (loop.getDay() == whatday) {
+              day++;    
+          }
+          let newDate = loop.setDate(loop.getDate() + 1);
+          loop = new Date(newDate);
+      }
+
+      const start2 = new Date(dayjs(this.secSession).format('MM-DD-YYYY'));
+        const end2 = new Date(dayjs(this.secSession).endOf('month').format('MM-DD-YYYY'))
+        let loop2 = new Date(start2);
+        while (loop2 <= end2) {
+          if (loop2.getDay() == whatday2) {
+              day2++;    
+          }
+          let newDate = loop2.setDate(loop2.getDate() + 1);
+          loop2 = new Date(newDate);
+      }
+
+      console.log(day + day2) ;
+      this.totalforCIP = 83*(day+day2);
+      this.CIPdays = day+day2;
+    }
+    
+    },
     checkdsgsubsidy(val,val2){
       if(this.subs1 && this.subs1val && this.dsgsubsidy == '$'){
           return this.subs1val;
@@ -705,7 +808,20 @@ export default {
       this.subs1val = 0;
 
     },
-
+    runSecondSession(){ 
+        let day2 = 0; 
+        const start = new Date(dayjs(this.secSession).format('MM-DD-YYYY'));
+        const end = new Date(dayjs(this.secSession).endOf('month').format('MM-DD-YYYY'))
+        let loop = new Date(start);
+        while (loop <= end) {
+          if (loop.getDay() == 3) {
+              day2++;    
+          }
+          let newDate = loop.setDate(loop.getDate() + 1);
+          loop = new Date(newDate);
+      }
+      return day2;
+    },
     addmethod() {
       this.$bvModal.show("add-session");
     },
@@ -818,6 +934,9 @@ export default {
       }
         this[`vis${val}`] = '0';
     },
+    checkSubsidy(){
+      console.log("running")
+    }
   },
   watch: {
 
@@ -1030,7 +1149,11 @@ export default {
           val2 = parseInt(this.totalNoGST[0]);
         }
         const dsgsubsidiyval = this.checkdsgsubsidy(val,val2);
+        console.log( val+val2 - dsgsubsidiyval)
+        console.log(this.totalNoGST)
+
         return (val + val2 - dsgsubsidiyval) ;
+        
       }
       return 0;
     },
@@ -1116,7 +1239,7 @@ export default {
 $base-color-purple :#50276B;
 
 * {
-  font-family: 'Montserrat';
+  // font-family: 'Montserrat';
 }
 
 .container {
@@ -1125,15 +1248,15 @@ $base-color-purple :#50276B;
   background:#ffffff;
   padding: 2rem;
   margin: auto;
-  max-width: 100%;
   display: block;
   justify-content: center;
   text-align: center;
 }
 
 .submitbtn{
-  text-align: center;
+  text-align:right;
   margin-top: 60px;
+  
 }
 
 .sm-container {
@@ -1355,5 +1478,55 @@ hr {
 
 .center{
   gap: 60px;
+}
+
+.font_bold{
+  font-weight: bold;
+}
+.checkboxSelection{
+  border: 1.5px solid #d3d3d3;
+  border-radius: 5px;
+  padding: 25px;
+  margin: 5px;
+  height: 100px;
+}
+
+.checkboxSelectionSelected{
+  border: 3px solid #b183d7;
+  border-radius: 5px;
+  padding: 25px;
+  margin: 5px;
+  height: 100px;
+}
+
+.checkboxImg{
+  width: 50px;
+}
+
+.header_title{
+  background: #502b73;
+  padding: 10px;
+  text-align: center;
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+}
+.centerCheckbox{
+  font-size: 16px;
+  display: inline-flex;
+}
+
+.progressbarstyle{
+  background: rgb(118, 80, 137); 
+}
+
+.checkbox_circle{
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;  
+  margin: auto;   
+  border-color: transparent !important;   
+  opacity: 0.65;
+  transition: all 0.5s;
 }
 </style>

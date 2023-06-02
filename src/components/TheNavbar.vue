@@ -4,6 +4,7 @@
       href="https://fonts.googleapis.com/css?family=Roboto"
       rel="stylesheet"
     />
+    
     <img src="../assets/logo.png" />
     <ul style="margin-top: 20px;">
       <li class="navbar__dateAssessment"><button class="timeEdit" v-b-modal.modal-time-change >Edit</button> Date of Assessment: <span style="font-weight:bold">{{ dateofassessment }}</span></li>
@@ -15,9 +16,14 @@
     <p class="my-4">Pick a time</p>
     <b-form-datepicker id="datepicker" v-model="edit_time" class="mb-2"></b-form-datepicker>
     <div style="text-align:center;margin-top: 30px;margin-bottom: 20px;"><b-button @click="editTime">Change date</b-button></div>
+
     
   </b-modal>
+  
   </header>
+  
+
+
 </template>
 
 <script>
@@ -43,6 +49,7 @@ export default {
     }
   },
   async mounted() {
+        
     let clientId = this.$route.query.client_id;
     if (!clientId) {
       const url = new URLSearchParams(window.location.href);
@@ -56,6 +63,8 @@ export default {
     await this.$parent.init();
     console.log(this.$store.state);
     await this.getClientData();
+
+   
   },
   methods:{
     async getClientData(){
@@ -87,11 +96,10 @@ export default {
 header {
   width: 100%;
   height: 6rem;
-  margin-bottom: 30px;
   display: flex;
   justify-content: center;
   /* text-align: center; */
-  background-color: #f6f6f6;
+  background-color: #ffffff;
   position: sticky;
   top: 0;
   overflow: hidden;
