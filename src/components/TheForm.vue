@@ -797,8 +797,9 @@ export default {
     })
 
     const listPublicHoliday = await this.getSGPublicHoliday();
+    console.log('listPublicHoliday: ', listPublicHoliday);
     this.listPublicHolidayCurrentMonth = this.getPublicHolidayCurrentMonth(listPublicHoliday).length === 0 ? null : this.getPublicHolidayCurrentMonth(listPublicHoliday);
-    console.log(this.listPublicHolidayCurrentMonth);
+    console.log('listPublicHolidayCurrentMonth: ', this.listPublicHolidayCurrentMonth);
 
   },
   methods: {
@@ -854,17 +855,51 @@ export default {
     async CIPtotal(){
       if (this.firSession && this.secSession)  {
         let day = 0;   
-        let day2 = 0; 
+        let day2 = 0;
+
+        const publicHolidayCount = {
+          copylistPublicHolidayCurrentMonthOne: this.listPublicHolidayCurrentMonth,
+          copylistPublicHolidayCurrentMonthTwo: this.listPublicHolidayCurrentMonth,
+          day1: 0,
+          day2: 0,
+        };
+
+        const calculatePublicHoliday = (day, whatDayIndex) => {
+          if(publicHolidayCount.copylistPublicHolidayCurrentMonthOne && publicHolidayCount.copylistPublicHolidayCurrentMonthTwo){
+            const listDate = day === '1' ? publicHolidayCount.copylistPublicHolidayCurrentMonthOne : publicHolidayCount.copylistPublicHolidayCurrentMonthTwo;
+            const dayIncluded = listDate.filter(item => dayjs(item.date).day() === whatDayIndex);
+
+            if(dayIncluded.length !== 0){
+              if(day === '1'){
+                publicHolidayCount.day1++
+              }
+              if(day === '2'){
+                publicHolidayCount.day2++
+              }
+            }
+
+            if(day === '1'){
+              publicHolidayCount.copylistPublicHolidayCurrentMonthOne = listDate.filter(item => item === dayIncluded);
+            }
+            if(day === '2'){
+              publicHolidayCount.copylistPublicHolidayCurrentMonthTwo = listDate.filter(item => item === dayIncluded);
+            }
+          }
+        }
+
         let whatday = dayjs(this.firSession).day();
         let whatday2 = dayjs(this.secSession).day();
         const startDate = new Date(dayjs(this.firSession).format('MM-DD-YYYY'));
-        const endDate = new Date(dayjs(this.firSession).endOf('month').format('MM-DD-YYYY'))
+        const endDate = new Date(dayjs(this.firSession).endOf('month').format('MM-DD-YYYY'));
         let loop = new Date(startDate);
 
         while (loop <= endDate) {
           if (loop.getDay() === whatday) {
             day++;
           }
+
+          calculatePublicHoliday('1', whatday);
+
           let newDate = loop.setDate(loop.getDate() + 1);
           loop = new Date(newDate);
         }
@@ -873,18 +908,25 @@ export default {
         const endDate2 = new Date(dayjs(this.secSession).endOf('month').format('MM-DD-YYYY'))
         let loop2 = new Date(startDate2);
 
+        console.log('loop2:', loop2, 'endDate2:', endDate2)
         while (loop2 <= endDate2) {
+          console.log('inside loop2....');
+
           if (loop2.getDay() === whatday2) {
             day2++;
           }
+
+          calculatePublicHoliday('2', whatday2);
+
           let newDate = loop2.setDate(loop2.getDate() + 1);
           loop2 = new Date(newDate);
         }
 
-        const totalDay = day + day2;
-        console.log(totalDay) ;
+        console.log(endDate)
+        console.log(publicHolidayCount);
+        const totalDay = day + day2 - (publicHolidayCount.day1 || 0) - (publicHolidayCount.day2 || 0);
         this.totalforCIP = 83 * (totalDay);
-        this.CIPdays = day + day2;
+        this.CIPdays = totalDay;
       }
     
     },
