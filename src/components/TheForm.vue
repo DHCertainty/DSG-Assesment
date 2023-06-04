@@ -333,10 +333,14 @@ div
               b-card
                 p.common.gap No Session Selected
             
-            ul.my-4(v-for="ses in sessions" key="ses.id")
-              b-card 
-                li.ma-4()
-                  | {{ses.type}} , {{ ses.day }} {{ ses.time }} ( {{ ses.location }} )
+            div.my-4.p-3.border(style="border-radius: 0.5rem;")
+              p.ma-4(v-for="ses in sessions" :key="ses.id")
+                | {{ses.type}} - {{ ses.day }} {{ ses.time }} ( {{ ses.location }} )
+
+            //- ul.my-4(v-for="ses in sessions" key="ses.id")
+            //-   b-card 
+            //-     li.ma-4()
+            //-       | {{ses.type}} , {{ ses.day }} {{ ses.time }} ( {{ ses.location }} )
             b-modal#add-session(size="md" title="Add Session" scrollable centered)         
               p.common Type 
                 div
@@ -479,7 +483,7 @@ div
                           b-col
                             b-btn.gap(@click="CIPtotal") Calculate
                         b-row
-                          b-col.d-flex.justify-content-end.align-items-center(style="font-size: 20px;")
+                          b-col.d-flex.justify-content-end.align-items-end(style="font-size: 20px;")
                             label(v-show="totalforCIP") ${{totalforCIP}} for {{ CIPdays }} session
 
 
@@ -1013,6 +1017,8 @@ export default {
       this.$bvModal.show("add-session");
     },
     async addNew() {
+      // FIX: add guard clauses
+
        this.sessions.push({
         type: this.typeses,
         day: this.day,
