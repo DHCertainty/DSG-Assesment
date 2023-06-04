@@ -820,8 +820,7 @@ export default {
 
     },
     addDSGOffday(){
-      // TODO: check if date already inside the list or not
-      
+      // TODO: add date difference, if negative, do guard clause or give error alert
       if(!this.dsgOffDay.date){
         return;
       }
@@ -1017,7 +1016,9 @@ export default {
       this.$bvModal.show("add-session");
     },
     async addNew() {
-      // FIX: add guard clauses
+      if(!this.typeses || !this.day || !this.time || !this.location){
+        return;
+      }
 
        this.sessions.push({
         type: this.typeses,
@@ -1025,6 +1026,7 @@ export default {
         time: this.time,
         location: this.location,
       });
+
       await this.filterFees();
       console.log('after: ', this.sessions)
 
@@ -1034,6 +1036,10 @@ export default {
       this.location= false;
 
       this.$bvModal.hide("add-session");
+
+    },
+    groupingSessionRecommended(){
+      // TODO: grouping session recommended after ended
     },
     async getdatainform(){
       const clientId = this.$store.state.assessment_client_id;
