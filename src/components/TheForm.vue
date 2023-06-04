@@ -443,19 +443,10 @@ div
                       b-col
                         b-row
                           b-col
-                            label.common.gap(for="dsgOffday") DSG Offday
+                            label.common.gap(for="dsgOffday") DSG Offday:
                         b-row
                           b-col
-                            label.common(for="dsgOffday") Start date:
-                        b-row
-                          b-col
-                            input.numbers-half#admission(v-model="dsgOffDay.startDate" name="dsgOffday" type="date")
-                        b-row
-                          b-col
-                            label.common.gap End date:
-                        b-row 
-                          b-col
-                            input.numbers-half#admission(v-model="dsgOffDay.endDate" name="dsgOffday" type="date")
+                            input.numbers-half#admission(v-model="dsgOffDay.date" name="dsgOffday" type="date")
                         b-row
                           b-col.gap
                             b-button(@click="addDSGOffday")
@@ -465,7 +456,7 @@ div
                             b-row.mb-2.align-items-center(v-for="holiday in dsgOffDay.listDay" :key="holiday.id")
                               b-col.col-8
                                 p.my-auto
-                                  | {{ formatDSFOffDayContent(holiday.startDate, holiday.endDate) }}
+                                  | {{ formatDSFOffDayContent(holiday.date) }}
                               b-col.col-4
                                 b-button(variant="danger" @click="removeDSGOffDay(holiday.id)")
                                   | Remove
@@ -600,6 +591,7 @@ export default {
     return {
       listPublicHolidayCurrentMonth: null,
       dsgOffDay: {
+        date: null,
         startDate: null,
         endDate: null,
         listDay: [],
@@ -826,30 +818,29 @@ export default {
     addDSGOffday(){
       // TODO: check if date already inside the list or not
       
-      if(!this.dsgOffDay.startDate || !this.dsgOffDay.endDate){
+      if(!this.dsgOffDay.date){
         return;
       }
 
       this.dsgOffDay.listDay.push({
         id: Math.floor(Math.random() * Date.now()) + '',
-        startDate: this.dsgOffDay.startDate,
-        endDate: this.dsgOffDay.endDate,
+        date: this.dsgOffDay.date,
       });
 
-      this.dsgOffDay.startDate = null;
-      this.dsgOffDay.endDate = null;
+      this.dsgOffDay.date = null;
 
     },
     removeDSGOffDay(id){
       this.dsgOffDay.listDay = this.dsgOffDay.listDay.filter(item => item.id !== id);
 
     },
-    formatDSFOffDayContent(startDate, endDate){
-      if(startDate === endDate){
-        return `${this.formatDatePublicHoliday(startDate)} - Monday`;
+    formatDSFOffDayContent(dateParent){
+      const getDayNameBasedOnDate = (dateChild) => {
+        const listNameDay = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        return listNameDay.at(dayjs(dateChild).day());
       }
 
-      return `${this.formatDatePublicHoliday(startDate)} - Monday until ${this.formatDatePublicHoliday(endDate)} - Monday`;
+      return `${this.formatDatePublicHoliday(dateParent)} - ${getDayNameBasedOnDate(dateParent)}`;
 
     },
     async CIPtotal(){
@@ -863,6 +854,15 @@ export default {
           day1: 0,
           day2: 0,
         };
+
+        const dsgOffDayCount = {
+          copylistDSGOffday: this.dsgOffDay.listDay.map(({date}) => ({date})),
+          day: 0,
+        }
+
+        const setAgainCopylistDSGOffday = () => {
+          dsgOffDayCount.copylistDSGOffday = this.dsgOffDay.listDay.map(({date}) => ({date}));
+        }
 
         const calculatePublicHoliday = (day, whatDayIndex) => {
           if(publicHolidayCount.copylistPublicHolidayCurrentMonthOne && publicHolidayCount.copylistPublicHolidayCurrentMonthTwo){
@@ -887,6 +887,25 @@ export default {
           }
         }
 
+        const calculateDSGOffday = (whatDayIndex) => {
+          if(dsgOffDayCount.copylistDSGOffday.length){
+            if(dsgOffDayCount.copylistDSGOffday.every(item => item.date !== null)){
+              const listDate = dsgOffDayCount.copylistDSGOffday;
+              const dayIncluded = listDate.filter(item => dayjs(item.date).day() === whatDayIndex); 
+
+              if(dayIncluded.length !== 0){
+                dsgOffDayCount.day++
+              }
+
+              dsgOffDayCount.copylistDSGOffday = listDate.filter(item => dayjs(item.date).day() !== whatDayIndex);
+
+            }
+
+          }
+
+        }
+
+
         let whatday = dayjs(this.firSession).day();
         let whatday2 = dayjs(this.secSession).day();
         const startDate = new Date(dayjs(this.firSession).format('MM-DD-YYYY'));
@@ -899,10 +918,13 @@ export default {
           }
 
           calculatePublicHoliday('1', whatday);
+          calculateDSGOffday(whatday);
 
           let newDate = loop.setDate(loop.getDate() + 1);
           loop = new Date(newDate);
         }
+
+        setAgainCopylistDSGOffday();
 
         const startDate2 = new Date(dayjs(this.secSession).format('MM-DD-YYYY'));
         const endDate2 = new Date(dayjs(this.secSession).endOf('month').format('MM-DD-YYYY'))
@@ -917,14 +939,14 @@ export default {
           }
 
           calculatePublicHoliday('2', whatday2);
+          calculateDSGOffday(whatday2);
 
           let newDate = loop2.setDate(loop2.getDate() + 1);
           loop2 = new Date(newDate);
         }
 
-        console.log(endDate)
-        console.log(publicHolidayCount);
-        const totalDay = day + day2 - (publicHolidayCount.day1 || 0) - (publicHolidayCount.day2 || 0);
+
+        const totalDay = day + day2 - (publicHolidayCount.day1 || 0) - (publicHolidayCount.day2 || 0) - (dsgOffDayCount.day || 0);
         this.totalforCIP = 83 * (totalDay);
         this.CIPdays = totalDay;
       }
