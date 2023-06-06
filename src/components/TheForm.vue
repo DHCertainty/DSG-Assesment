@@ -950,7 +950,7 @@ export default {
 
 
         const totalDay = day + day2 - (publicHolidayCount.day1 || 0) - (publicHolidayCount.day2 || 0) - (dsgOffDayCount.day || 0);
-        this.totalforCIP = this.fees4val * (totalDay);
+        this.totalforCIP = this.fees4val() * (totalDay);
         this.CIPdays = totalDay;
       }
     
