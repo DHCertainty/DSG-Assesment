@@ -280,7 +280,7 @@ div
             label(for="subsidytoggle").m-3.subsidy_label Subsidy included
                 
           //- b-button.mb-3(v-b-toggle.subsidy_box @click="checkSubsidy") Subsidy Included
-          //-   label(v-show="") yes
+          //-   label(v-show=x"") yes
 
           b-collapse#subsidy_box
             b-card
@@ -320,8 +320,8 @@ div
 
 
 
-              //- v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)"
-        section.mt-5()
+        
+        section.mt-5(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
           .formed
             .row
               .col-sm-3
@@ -393,8 +393,8 @@ div
               template(#modal-footer="{ok}")
                 b-btn(v-show="location" size="md" @click="addNew") Add
 
-                //- v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)"
-        section.mt-5()
+        
+        section.mt-5(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
           label.common Applicable Fee (excluding GST):
           .formed
             .formed.gap
@@ -515,8 +515,8 @@ div
               label.gapped.text-small(for="refund") Refundable One-Month Deposit (4 X applicable fee) $320
         
         //Payment type
-              //- v-show="(subsidy || no)"
-        section( style="margin-top:50px")
+              //-"
+        section(style="margin-top:50px"  v-show="(subsidy || no)")
           .gapright.row.mt-4
             .gap.col-sm-6
               label.common(for="receipt") Official Receipt:
@@ -950,7 +950,7 @@ export default {
 
 
         const totalDay = day + day2 - (publicHolidayCount.day1 || 0) - (publicHolidayCount.day2 || 0) - (dsgOffDayCount.day || 0);
-        this.totalforCIP = this.fees4val() * (totalDay);
+        this.totalforCIP = this.fees4val * (totalDay);
         this.CIPdays = totalDay;
       }
     
