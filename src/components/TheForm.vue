@@ -1129,9 +1129,8 @@ div
         crb5c_cip1stsessionformat: this.firstSesFormat,
         crb5c_cip2ndsessionformat: this.secondSesFormat,
        };
-
        const payloadClient ={
-        crb5c_cipmember: this.isCIP ? 1 : 0,
+        crb5c_cipmember: (this.isCIP) ? 1 : 0,
        }
 
        console.log(this.isCIP)
