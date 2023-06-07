@@ -1126,8 +1126,8 @@ div
         crb5c_mmsescore: (this.isMMSE) ? this.mmseVal : 0,
         crb5c_cip1stsession:  this.firSession,
         crb5c_cip2ndsession: this.secSession,
-        crb5c_cip1stsessionformat: this.firstSesFormat,
-        crb5c_cip2ndsessionformat: this.secondSesFormat,
+        // crb5c_cip1stsessionformat: this.firstSesFormat,
+        // crb5c_cip2ndsessionformat: this.secondSesFormat,
        };
        const payloadClient ={
         crb5c_cipmember: (this.isCIP) ? 1 : 0,
@@ -1139,6 +1139,7 @@ div
           `/crb5c_fowassessmentforms`,payload);
         console.log(data)
 
+        console.log(this.$store.state.assessment_client_id)
         const { client } = this.$store.state.axios.patch(
           `/crb5c_fow_customers(${this.$store.state.assessment_client_id})`,payloadClient);
         console.log(client)
