@@ -1129,24 +1129,24 @@ div
         // crb5c_cip1stsessionformat: this.firstSesFormat,
         // crb5c_cip2ndsessionformat: this.secondSesFormat,
        };
-       const payloadClient ={
-        crb5c_cipmember: (this.isCIP) ? 1 : 0,
-       }
+      //  const payloadClient ={
+      //   crb5c_cipmember: (this.isCIP) ? 1 : 0,
+      //  }
 
-       console.log(this.isCIP)
+      //  console.log(this.isCIP)
 
         const { data } = this.$store.state.axios.post(
           `/crb5c_fowassessmentforms`,payload);
         console.log(data)
 
-        console.log(this.$store.state.assessment_client_id)
-        const { client } = this.$store.state.axios.patch(
-          `/crb5c_fow_customers(${this.$store.state.assessment_client_id})`,payloadClient);
-        console.log(client)
+        // console.log(this.$store.state.assessment_client_id)
+        // const { client } = this.$store.state.axios.patch(
+        //   `/crb5c_fow_customers(${this.$store.state.assessment_client_id})`,payloadClient);
+        // console.log(client)
 
         alert('Client Assessment is successfully submitted!');
         
-        // window.close();
+        window.close();
     },
     pick_answer_naming(val){
         if(this[`vis${val}`] == '0'){
@@ -1383,7 +1383,7 @@ div
  
       },
       calculateCipCost(){
-        return this.totalforCIP ? (this.totalforCIP - this.fees4val)*1.08 : 0;
+        return this.totalforCIP ? (this.totalforCIP)*1.08 : 0;
       },
       viewamtcollect(){
         let GSTtotal = this.totalofGST;
