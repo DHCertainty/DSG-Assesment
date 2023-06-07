@@ -495,7 +495,7 @@ div
                   //-   div(style="text-align: right;width: 100%;font-size: 20px;")
                   //-     label(v-show="totalforCIP") ${{totalforCIP}} for {{ CIPdays }} session
             
-            hr
+          
           section(v-show="this.sessions.length" style="margin-top:50px")
               label.common Additional fee:
               .formed.gap
@@ -950,7 +950,6 @@ div
             loop2 = new Date(newDate);
           }
   
-  
           const totalDay = day + day2 - (publicHolidayCount.day1 || 0) - (publicHolidayCount.day2 || 0) - (dsgOffDayCount.day || 0);
           this.totalforCIP = this.fees4val * (totalDay);
           this.CIPdays = totalDay;
@@ -1344,13 +1343,17 @@ div
         return 0;
  
       },
+      calculateCipCost(){
+        return this.totalforCIP - this.fees4val ? this.totalforCIP : 0;
+      },
       viewamtcollect(){
         let GSTtotal = this.totalofGST;
         let NoGstTotal = this.totalofNoGST;
         let dsgsubsidiyval = this.checkdsgsubsidy(GSTtotal,NoGstTotal);
+        let cipCost = this.calculateCipCost;
           // console.log( val+val2 - dsgsubsidiyval)
           // console.log(this.totalNoGST)
-          return (GSTtotal + NoGstTotal - dsgsubsidiyval);
+          return (GSTtotal + NoGstTotal - dsgsubsidiyval + cipCost);
       },
       checknationality(){
         if (this.clientdata.crb5c_citizenship == 0) {
