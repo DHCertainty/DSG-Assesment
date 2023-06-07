@@ -423,7 +423,7 @@ div
               .formed.gap.gapbot
                 input#hb90-2.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="90" v-show="gotIndividualFee && checkZoom && !subs2")
                 label.gapped.text-small(for="hb90-2" v-show="gotIndividualFee && checkZoom && !subs2") Home-based 1-HR FOW session via video calls $90
-              .formed.gap()
+              .formed.gap(v-show="subs2")
                   input#sgp.checkbox_circle( v-model="isCIP" name="cbfees" type="checkbox" :value="1") 
                   label.gapped.text-small(for="sgp") Centre-based 3-HR CIP trial run  ${{ fees4val }} 
                     span(style="font-weight:bold") ({{ prORsg }})
