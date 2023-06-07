@@ -424,10 +424,10 @@ div
                 input#hb90-2.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="90" v-show="gotIndividualFee && checkZoom && !subs2")
                 label.gapped.text-small(for="hb90-2" v-show="gotIndividualFee && checkZoom && !subs2") Home-based 1-HR FOW session via video calls $90
               .formed.gap()
-                  input#sgp.checkbox_circle( v-model="isCIP" name="cbfees" type="checkbox" :value="fees4val") 
+                  input#sgp.checkbox_circle( v-model="isCIP" name="cbfees" type="checkbox" :value="1") 
                   label.gapped.text-small(for="sgp") Centre-based 3-HR CIP trial run  ${{ fees4val }} 
                     span(style="font-weight:bold") ({{ prORsg }})
-              .formed.gap.border.border-1(style="border-radius: 0.5rem;")
+              .formed.gap.border.border-1(style="border-radius: 0.5rem;" v-show="isCIP")
                   b-row.p-3
                     b-col.col-6
                       b-row
@@ -598,8 +598,8 @@ div
           listDay: [],
         },
         isCIP: 0,
-        firstSesFormat: null,
-        secondSesFormat: null,
+        firstSesFormat: 0,
+        secondSesFormat: 0,
         totalforCIP: 0,
         CIPdays: '',
         isAMT: false,
@@ -1133,6 +1133,9 @@ div
        const payloadClient ={
         crb5c_cipmember: this.isCIP ? 1 : 0,
        }
+
+       console.log(this.isCIP)
+
         const { data } = this.$store.state.axios.post(
           `/crb5c_fowassessmentforms`,payload);
         console.log(data)
@@ -1380,7 +1383,7 @@ div
  
       },
       calculateCipCost(){
-        return this.totalforCIP - this.fees4val ? this.totalforCIP : 0;
+        return this.totalforCIP ? (this.totalforCIP - this.fees4val)*1.08 : 0;
       },
       viewamtcollect(){
         let GSTtotal = this.totalofGST;
