@@ -1146,7 +1146,7 @@ div
 
         alert('Client Assessment is successfully submitted!');
         
-        window.close();
+        // window.close();
     },
     pick_answer_naming(val){
         if(this[`vis${val}`] == '0'){
