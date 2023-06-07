@@ -423,11 +423,11 @@ div
               .formed.gap.gapbot
                 input#hb90-2.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="90" v-show="gotIndividualFee && checkZoom && !subs2")
                 label.gapped.text-small(for="hb90-2" v-show="gotIndividualFee && checkZoom && !subs2") Home-based 1-HR FOW session via video calls $90
-              .formed.gap(v-if="subs2")
-                  input#sgp.checkbox_circle( v-model="totalGST" name="cbfees" type="checkbox" :value="fees4val") 
+              .formed.gap()
+                  input#sgp.checkbox_circle( name="cbfees" type="checkbox" :value="fees4val") 
                   label.gapped.text-small(for="sgp") Centre-based 3-HR CIP trial run  ${{ fees4val }} 
                     span(style="font-weight:bold") ({{ prORsg }})
-              .formed.gap.border.border-1(style="border-radius: 0.5rem;" v-if="totalGST.includes(fees4val)")
+              .formed.gap.border.border-1(style="border-radius: 0.5rem;")
                   b-row.p-3
                     b-col.col-6
                       b-row
@@ -443,14 +443,14 @@ div
                         b-col
                           b-row
                             b-col
-                              label.common.gap(for="dsgOffday") DSG Offday:
+                              label.common.gap(for="dsgOffday") DSG Off day:
                           b-row
                             b-col
                               input.numbers-half#admission(v-model="dsgOffDay.date" name="dsgOffday" type="date")
                           b-row
                             b-col.gap
                               b-button(@click="addDSGOffday")
-                                | Add Offday
+                                | Add Off day
                           b-row(v-if="dsgOffDay.listDay.length !== 0")
                             b-col
                               b-row.mb-2.align-items-center(v-for="holiday in dsgOffDay.listDay" :key="holiday.id")
@@ -465,13 +465,19 @@ div
                         b-col
                           b-row
                             b-col
-                              label.common.gap(for="admission") 1st Session date:
+                              label.common.gap(for="admission") 1st Session date: [{{ firstSesDay(this.firSession) }}]
+                                span(v-show="this.firSession").mx-3
+                                  b-form-checkbox(switch v-model="firstSesFormat" value=0) 
+                                    span.mx-1 {{ is1stAM }}
                           b-row
                             b-col
                               input.numbers-half#admission(v-model="firSession" name="admission" type="date")
                           b-row
                             b-col
-                              label.common.gap(for="admission") 2nd Session date:
+                              label.common.gap(for="admission") 2nd Session date: [{{ secondSesDay(this.secSession) }}]
+                                span(v-show="this.secSession").mx-3
+                                  b-form-checkbox(switch v-model="SecondSesFormat" value=0)
+                                    span.mx-1 {{ is2ndAM }}
                           b-row
                             b-col
                               input.numbers-half#admission(v-model="secSession" name="admission" type="date")
@@ -591,6 +597,8 @@ div
           endDate: null,
           listDay: [],
         },
+        firstSesFormat: null,
+        SecondSesFormat: null,
         totalforCIP: 0,
         CIPdays: '',
         isAMT: false,
@@ -637,6 +645,7 @@ div
         ind: false,
         subsidyAmount: null,
         firSession: null,
+        secSession: null,
         subs1: false,
         subs2: false,
         subs3: false,
@@ -790,6 +799,12 @@ div
   
     },
     methods: {
+      firstSesDay(date){
+        return date ? dayjs(this.firSession).format('dddd') : 'None';
+      },
+      secondSesDay(date){
+        return date ? dayjs(this.secSession).format('dddd') : 'None';
+      },
       checkdsgsubsidy(val,val2){
         if((val || val2) && this.subs1 && this.subs1val && this.dsgsubsidy == '$'){
             return this.subs1val;
@@ -1329,6 +1344,12 @@ div
       // },
     },
     computed: {
+      is1stAM(){
+        return this.firstSesFormat == 0 ? 'AM' : 'PM';
+      },
+      is2ndAM(){
+        return this.SecondSesFormat == 0 ? 'AM' : 'PM';
+      },
       totalofGST(){
         if (this.totalGST.length) {
           let val = this.totalGST.reduce((sum, num) => parseInt(sum) + parseInt(num), 0);
@@ -1353,7 +1374,7 @@ div
         let cipCost = this.calculateCipCost;
           // console.log( val+val2 - dsgsubsidiyval)
           // console.log(this.totalNoGST)
-          return (GSTtotal + NoGstTotal - dsgsubsidiyval + cipCost);
+          return (GSTtotal + cipCost + NoGstTotal - dsgsubsidiyval );
       },
       checknationality(){
         if (this.clientdata.crb5c_citizenship == 0) {
