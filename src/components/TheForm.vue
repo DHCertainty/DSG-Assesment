@@ -424,7 +424,7 @@ div
                 input#hb90-2.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="90" v-show="gotIndividualFee && checkZoom && !subs2")
                 label.gapped.text-small(for="hb90-2" v-show="gotIndividualFee && checkZoom && !subs2") Home-based 1-HR FOW session via video calls $90
               .formed.gap()
-                  input#sgp.checkbox_circle( name="cbfees" type="checkbox" :value="fees4val") 
+                  input#sgp.checkbox_circle( v-model="isCIP" name="cbfees" type="checkbox" :value="fees4val") 
                   label.gapped.text-small(for="sgp") Centre-based 3-HR CIP trial run  ${{ fees4val }} 
                     span(style="font-weight:bold") ({{ prORsg }})
               .formed.gap.border.border-1(style="border-radius: 0.5rem;")
@@ -476,7 +476,7 @@ div
                             b-col
                               label.common.gap(for="admission") 2nd Session date: [{{ secondSesDay(this.secSession) }}]
                                 span(v-show="this.secSession").mx-3
-                                  b-form-checkbox(switch v-model="SecondSesFormat" value=0)
+                                  b-form-checkbox(switch v-model="secondSesFormat" value=0)
                                     span.mx-1 {{ is2ndAM }}
                           b-row
                             b-col
@@ -597,8 +597,9 @@ div
           endDate: null,
           listDay: [],
         },
+        isCIP: 0,
         firstSesFormat: null,
-        SecondSesFormat: null,
+        secondSesFormat: null,
         totalforCIP: 0,
         CIPdays: '',
         isAMT: false,
@@ -1123,11 +1124,25 @@ div
         crb5c_mocascore: (this.isMOCA) ? this.mocaVal : 0,
         crb5c_amtscore: (this.isAMT) ? this.amtVal : 0,
         crb5c_mmsescore: (this.isMMSE) ? this.mmseVal : 0,
+        crb5c_cip1stsession:  this.firSession,
+        crb5c_cip2ndsession: this.secSession,
+        crb5c_cip1stsessionformat: this.firstSesFormat,
+        crb5c_cip2ndsessionformat: this.secondSesFormat,
        };
+
+       const payloadClient ={
+        crb5c_cipmember: this.isCIP ? 1 : 0,
+       }
         const { data } = this.$store.state.axios.post(
           `/crb5c_fowassessmentforms`,payload);
         console.log(data)
+
+        const { client } = this.$store.state.axios.patch(
+          `/crb5c_fow_customers(${this.$store.state.assessment_client_id})`,payloadClient);
+        console.log(client)
+
         alert('Client Assessment is successfully submitted!');
+        
         window.close();
     },
     pick_answer_naming(val){
@@ -1348,7 +1363,7 @@ div
         return this.firstSesFormat == 0 ? 'AM' : 'PM';
       },
       is2ndAM(){
-        return this.SecondSesFormat == 0 ? 'AM' : 'PM';
+        return this.secondSesFormat == 0 ? 'AM' : 'PM';
       },
       totalofGST(){
         if (this.totalGST.length) {
