@@ -527,7 +527,7 @@ div
                 label Reference ID:
                 input.numbers#receipt(name="receipt" type="text" v-model="referenceid")
               .gap.col-sm-6
-                label.common.amountjustify(for="collect" ) Amount Collected + GST [SGD]:
+                label.common.amountjustify(for="collect" ) Amount to be Collected + GST [SGD]:
                 label.common.amountjustify(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
               hr
                 //- input.numbers#collect(v-model="amtcollect " name="collect" type="text" readonly="readonly")
