@@ -71,50 +71,50 @@ div
                 .row.px-5(v-show="atten")
                   .gap.col-sm-6
                     label(for="stageof" ) Game played:
-                    v-select(:options="game1" v-model="attentiongame")
+                    v-select(:options="game1" v-model="attentionObj.attentiongame")
                   .gap.col-sm-6
                     label(for="stageof" ) Finished Level:
-                    v-select(:options="levels" v-model="attentionlevel")
+                    v-select(:options="levels" v-model="attentionObj.attentionlevel")
               .gap.left 
                 input#spat.checkbox_circle(type="checkbox" name="part2ins" v-model="spatial" value="spat")
                 label.my-2.font_bold(for="spat") &nbsp;Spatial
                 .row.px-5(v-show="spatial")
                   .gap.col-sm-6
                     label(for="stageof") Game Played:
-                    v-select(:options="game2" v-model="spatialgame")
+                    v-select(:options="game2" v-model="spatialObj.spatialgame")
                   .gap.col-sm-6
                     label(for="stageof") Finished Level:
-                    v-select(:options="levels" v-model="spatiallevel")
+                    v-select(:options="levels" v-model="spatialObj.spatiallevel")
               .gap.left 
                 input#dec.checkbox_circle(type="checkbox" name="part2ins" v-model="decision" value="dec")
                 label.my-2.font_bold(for="dec") &nbsp;Decision
                 .row.px-5(v-show="decision")
                   .gap.col-sm-6
                     label(for="stageof") Game Played:
-                    v-select(:options="game3" v-model="decisiongame")
+                    v-select(:options="game3" v-model="decisionObj.decisiongame")
                   .gap.col-sm-6
                     label(for="stageof") Finished Level:
-                    v-select(:options="levels" v-model="decisionlevel")
+                    v-select(:options="levels" v-model="decisionObj.decisionlevel")
               .gap.left 
                 input#mem.checkbox_circle(type="checkbox" name="part2ins" v-model="memory" value="mem")
                 label.my-2.font_bold(for="mem") &nbsp;Memory
                 .row.px-5(v-show="memory")
                   .gap.col-sm-6
                     label(for="stageof") Game Played:
-                    v-select(:options="game4" v-model="memorygame")
+                    v-select(:options="game4" v-model="memoryObj.memorygame")
                   .gap.col-sm-6
                     label(for="stageof") Finished Level:
-                    v-select(:options="levels" v-model="memorylevel")
+                    v-select(:options="levels" v-model="memoryObj.memorylevel")
               .gap.left
                   input#flexi.checkbox_circle(type="checkbox" name="part2ins" v-model="flexibility" value="flexi")
                   label.my-2.font_bold(for="flexi") &nbsp;Flexibility
                   .row.px-5(v-show="flexibility")
                     .gap.col-sm-6
                       label(for="stageof") Game Played:
-                      v-select(:options="game5" v-model="flexibilitygame")
+                      v-select(:options="game5" v-model="flexibilityObj.flexibilitygame")
                     .gap.col-sm-6
                       label(for="stageof") Finished Level:
-                      v-select(:options="levels" v-model="Flexibilitylevel")
+                      v-select(:options="levels" v-model="flexibilityObj.Flexibilitylevel")
   
             //MOCA form     
             .formed.gap
@@ -511,6 +511,35 @@ div
                 input#refund.checkbox_circle(v-model="totalNoGST" name="cbfees" type="checkbox" value="320")
                 label.gapped.text-small(for="refund") Refundable One-Month Deposit (4 X applicable fee) $320
           
+          section.bg-warning()
+            b-row
+              b-col.col-12
+                b-form-checkbox(v-model="transport.isIncluded" name="Transport Included" switch)
+                  | Transport Included
+            b-row.my-2
+              b-col.col-12
+                b-row.align-items-center
+                  b-col.col-2
+                    label
+                      | Start Postal Code: 
+                  b-col.col-2
+                    b-form-input(v-model="transport.startPostalCode")
+            b-row.my-2
+              b-col.col-12
+                b-row.align-items-center
+                  b-col.col-2
+                    label
+                      | Destination Postal Code: 
+                  b-col.col-2
+                    b-form-input(v-model="transport.destinationPostalCode")
+            b-row.my-4
+              b-col.col-3
+                b-button(style="background-color: rgb(118, 80, 137); color: #fff; font-weight: bold; border-radius: 0.625rem" @click="checkDistanceTransport")
+                  | Check distance
+            b-row
+              b-col.col-12
+                iframe(style="width: 100%;" id="iframe" height="500" width="500" :src="transport.iframeSrc")
+
           //Payment type
                 //-"
           section(style="margin-top:50px"  v-show="this.sessions.length")
@@ -597,6 +626,28 @@ div
           endDate: null,
           listDay: [],
         },
+        attentionObj: {
+          attentiongame: null,
+          attentionlevel: null,
+        },
+        spatialObj: {
+          spatialgame: null,
+          spatiallevel: null,
+        },
+        decisionObj: {
+          decisiongame: null,
+          decisionlevel: null,
+        },
+        memoryObj: {
+          memorygame: null,
+          memorylevel: null,
+        },
+        flexibilityObj:{
+          flexibilitygame: null,
+          Flexibilitylevel: null,
+        },
+        subs1val: null,
+        dsgsubsidy: null,
         isCIP: 0,
         firstSesFormat: 0,
         secondSesFormat: 0,
@@ -784,6 +835,12 @@ div
         eq5dnumbers: ['0', '1', '2', '3', '4', '5'],
         toteboardPR: ['15','30','40','50','55'],
         toteboardSG: ['30','50','60','75','80'],
+        transport: {
+          isIncluded: false,
+          startPostalCode: null,
+          destinationPostalCode: null,
+          iframeSrc: 'https://www.google.com/maps/place/Singapore',
+        },
       };
     },
     compatConfig: { MODE: 3 },
@@ -1098,16 +1155,16 @@ div
         crb5c_eqpaindiscomfort:parseInt(this.eq4),
         crb5c_eqanxietydepression:parseInt(this.eq5),
         crb5c_eqhealthscale: this.healthscale,
-        crb5c_neeurofitattentiongame: this.attentiongame,
-        crb5c_neeurofitattentionlevel: parseInt(this.attentionlevel),
-        crb5c_neeurofitspatialgame: this.spatialgame,
-        crb5c_neeurofitspatiallevel: parseInt(this.attentionlevel),
-        crb5c_neeurofitdecisiongame: this.decisiongame,
-        crb5c_neeurofitdecisionlevel: parseInt(this.decisionlevel),
-        crb5c_neeurofitmemorygame: this.memorygame,
-        crb5c_neeurofitmemorylevel: parseInt(this.memorylevel),
-        crb5c_neeurofitflexibilitygame: this.flexibilitygame,
-        crb5c_neeurofitflexibilitylevel: parseInt(this.flexibilitylevel),
+        crb5c_neeurofitattentiongame: this.attentionObj.attentiongame,
+        crb5c_neeurofitattentionlevel: parseInt(this.attentionObj.attentionlevel),
+        crb5c_neeurofitspatialgame: this.spatialObj.spatialgame,
+        crb5c_neeurofitspatiallevel: parseInt(this.attentionObj.attentionlevel),
+        crb5c_neeurofitdecisiongame: this.decisionObj.decisiongame,
+        crb5c_neeurofitdecisionlevel: parseInt(this.decisionObj.decisionlevel),
+        crb5c_neeurofitmemorygame: this.memoryObj.memorygame,
+        crb5c_neeurofitmemorylevel: parseInt(this.memoryObj.memorylevel),
+        crb5c_neeurofitflexibilitygame: this.flexibilityObj.flexibilitygame,
+        crb5c_neeurofitflexibilitylevel: parseInt(this.flexibilityObj.Flexibilitylevel),
         crb5c_orientation: this.vis16.length,
         crb5c_delayedrecall: this.delayedrecall,
         crb5c_fluency: this.checkfluency,
@@ -1148,7 +1205,7 @@ div
         
         window.close();
     },
-    pick_answer_naming(val){
+      pick_answer_naming(val){
         if(this[`vis${val}`] == '0'){
             this[`vis${val}`] = '1';
             return;
@@ -1157,7 +1214,20 @@ div
       },
       checkSubsidy(){
         console.log("running")
-      }
+      },
+      checkDistanceTransport(){
+        // if(!this.transport.startPostalCode || !this.transport.destinationPostalCode){
+        //   return;
+        // }
+
+        // console.log(this.transport.startPostalCode);
+        // console.log(this.transport.destinationPostalCode);
+
+        console.log('Hello')
+
+        // this.transport.iframeSrc = `https://maps.google.com/maps?saddr=Singapore${this.transport.startPostalCode}&daddr=Singapore${this.transport.destinationPostalCode}&ie=UTF8&output=embed&mode=driving`;
+
+      },
     },
     watch: {
   
