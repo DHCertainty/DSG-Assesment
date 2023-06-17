@@ -259,7 +259,7 @@ div
           section.mt-5(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
             .formed
               label.common(for="comment") Comment/Observation about the client
-              textarea#comment(name="comment" rows="3" type="text" v-model="checking")
+              textarea#comment.p-2(name="comment" rows="3" type="text" placeholder="Comment about the client" v-model="checking")
             hr
                     
             //- b-button.mb-3(v-b-toggle.subsidy_box @click="checkSubsidy") Subsidy Included
@@ -391,6 +391,45 @@ div
                       //-     .row(style="justify-content:end")
                       //-       input.small-input-width#subsid(name="subsid" type="number" min="0")
                 //- hr
+                b-row(v-if="subs2")
+                  b-col.col-12
+                    b-row
+                      b-col.col-12.my-3.d-flex.align-items-center(style="gap: 1rem;")
+                        switches(v-model="transport.isIncluded" theme="bootstrap" color="success")
+                        span
+                          | Transport Included
+                    b-collapse(id="transport-included-section" v-model="transport.isIncluded")
+                      b-row.my-2
+                        b-col.col-12
+                          b-row.align-items-center
+                            b-col.col-2
+                              label
+                                | Start Postal Code:
+                            b-col.col-2
+                              b-form-input(v-model="transport.startPostalCode" type="number" placeholder="Enter postal code")
+                      b-row
+                        b-col.col-12
+                          b-row.align-items-center
+                            b-col.col-2
+                              label
+                                | Destination Postal Code:
+                            b-col.col-2
+                              b-form-input(v-model="transport.destinationPostalCode" type="number" placeholder="Enter postal code")
+                      b-row.my-4
+                        b-col.col-3
+                          b-button(style="background-color: rgb(118, 80, 137); color: #fff; font-weight: bold; border-radius: 0.625rem" @click="checkDistanceTransport")
+                            | Check distance
+                      b-row.my-2
+                        b-col.col-12
+                          iframe(style="width: 100%;" id="iframe" height="500" width="500" :src="transport.iframeSrc")
+                      b-row.my-4
+                        b-col.col-12
+                          b-row.align-items-center
+                            b-col.col-2
+                              label
+                                | Amount to be paid:
+                            b-col.col-2
+                              b-form-input(v-model="transport.amountToBePaid" placeholder="Amount")
 
 
           section.mt-5(v-show="this.sessions.length")
@@ -510,35 +549,6 @@ div
               .formed.gap
                 input#refund.checkbox_circle(v-model="totalNoGST" name="cbfees" type="checkbox" value="320")
                 label.gapped.text-small(for="refund") Refundable One-Month Deposit (4 X applicable fee) $320
-          
-          section.bg-warning()
-            b-row
-              b-col.col-12
-                b-form-checkbox(v-model="transport.isIncluded" name="Transport Included" switch)
-                  | Transport Included
-            b-row.my-2
-              b-col.col-12
-                b-row.align-items-center
-                  b-col.col-2
-                    label
-                      | Start Postal Code: 
-                  b-col.col-2
-                    b-form-input(v-model="transport.startPostalCode")
-            b-row.my-2
-              b-col.col-12
-                b-row.align-items-center
-                  b-col.col-2
-                    label
-                      | Destination Postal Code: 
-                  b-col.col-2
-                    b-form-input(v-model="transport.destinationPostalCode")
-            b-row.my-4
-              b-col.col-3
-                b-button(style="background-color: rgb(118, 80, 137); color: #fff; font-weight: bold; border-radius: 0.625rem" @click="checkDistanceTransport")
-                  | Check distance
-            b-row
-              b-col.col-12
-                iframe(style="width: 100%;" id="iframe" height="500" width="500" :src="transport.iframeSrc")
 
           //Payment type
                 //-"
@@ -611,11 +621,15 @@ div
   dayjs.tz.setDefault(defaultTimezone);
   import "vue-select/dist/vue-select.css";
   import vSelect from "vue-select";
+  import Switches from 'vue-switches';
   // import colors from "././scss/colors.scss";
   export default {
     // Deselect,
     // OpenIndicator,
-    components: { vSelect },
+    components: { 
+      vSelect,
+      Switches,
+    },
     // emits: ["newresource"],
     data() {
       return {
@@ -838,7 +852,9 @@ div
         transport: {
           isIncluded: false,
           startPostalCode: null,
-          destinationPostalCode: null,
+          destinationPostalCode: '330046',
+          amountToBePaid: null,
+          fixedFee: 49,
           iframeSrc: 'https://www.google.com/maps/place/Singapore',
         },
       };
@@ -1216,14 +1232,18 @@ div
         console.log("running")
       },
       checkDistanceTransport(){
-        // if(!this.transport.startPostalCode || !this.transport.destinationPostalCode){
-        //   return;
-        // }
+        if(!this.transport.startPostalCode || !this.transport.destinationPostalCode){
+          alert('Please specify start and destination postal code');
+          return;
+        }
 
-        // console.log(this.transport.startPostalCode);
-        // console.log(this.transport.destinationPostalCode);
+        if(this.transport.startPostalCode.length !== 6 || this.transport.destinationPostalCode.length !== 6){
+          alert('Please enter valid postal code');
+          return;
+        }
 
-        console.log('Hello')
+        console.log(this.transport.startPostalCode);
+        console.log(this.transport.destinationPostalCode);
 
         // this.transport.iframeSrc = `https://maps.google.com/maps?saddr=Singapore${this.transport.startPostalCode}&daddr=Singapore${this.transport.destinationPostalCode}&ie=UTF8&output=embed&mode=driving`;
 
@@ -1547,6 +1567,13 @@ div
   
   * {
     // font-family: 'Montserrat';
+  }
+
+  // Remove input number Arrows/Spinners css
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
   
   .container {
