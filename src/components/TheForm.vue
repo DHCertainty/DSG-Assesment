@@ -145,14 +145,14 @@ div
                 
                 .col-sm-6 
                   .row.mb-4
-                    img(@click="pick_answer_naming('1')").image_container_number(src="/form-images/number.jpeg")
+                    img(@click="pick_answer_naming('1')").image_container_number(src="/form-images/number.png")
                   .row
                     label Alternating Trail Making:
                     v-select(v-model="vis1" :options="['0', '1']" :clearable="false")
                   
                 .col-sm-6 
                   .row.mb-4
-                    img(@click="pick_answer_naming('2')").image_container_cube(src="/form-images/cube.jpeg")
+                    img(@click="pick_answer_naming('2')").image_container_cube(src="/form-images/cube.png")
                   .row
                     label Copy Cube:
                     v-select(v-model="vis2" :options="['0', '1']" :clearable="false") 
@@ -429,7 +429,7 @@ div
                               label
                                 | Amount to be paid:
                             b-col.col-2
-                              b-form-input(v-model="transport.amountToBePaid" placeholder="Amount")
+                              b-form-input(v-model="transport.amountToBePaid" type="number" placeholder="Amount")
 
 
           section.mt-5(v-show="this.sessions.length")
@@ -855,7 +855,7 @@ div
           destinationPostalCode: '330046',
           amountToBePaid: null,
           fixedFee: 49,
-          iframeSrc: 'https://www.google.com/maps/place/Singapore',
+          iframeSrc: 'https://maps.google.com/maps?saddr=Singapore&ie=UTF8&output=embed&mode=driving',
         },
       };
     },
@@ -1245,7 +1245,7 @@ div
         console.log(this.transport.startPostalCode);
         console.log(this.transport.destinationPostalCode);
 
-        this.transport.iframeSrc = `https://maps.google.com/maps?saddr=Singapore${this.transport.startPostalCode}&daddr=Singapore${this.transport.destinationPostalCode}&ie=UTF8&output=embed&mode=driving`;
+        this.transport.iframeSrc = `https://maps.google.com/maps?saddr=Singapore ${this.transport.startPostalCode}&daddr=Singapore ${this.transport.destinationPostalCode}&ie=UTF8&output=embed&mode=driving`;
 
       },
       async getAndSetClientTransportPostalCode(){
@@ -1261,10 +1261,8 @@ div
           );
           const postalCode = data.value[0];
           console.log('Client postal code: ', postalCode);
-  
-          if(postalCode){
-            this.transport.startPostalCode = postalCode;
-          }
+
+          return postalCode;
           
         } catch (error) {
           console.error(error);
@@ -1477,7 +1475,7 @@ div
         async handler(value){
           if(value.isIncluded){
             if(!value.startPostalCode){
-              await this.getAndSetClientTransportPostalCode();
+              this.transport.startPostalCode = await this.getAndSetClientTransportPostalCode();
               return;
             }
             
