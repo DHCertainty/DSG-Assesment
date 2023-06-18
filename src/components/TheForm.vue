@@ -1245,9 +1245,32 @@ div
         console.log(this.transport.startPostalCode);
         console.log(this.transport.destinationPostalCode);
 
-        // this.transport.iframeSrc = `https://maps.google.com/maps?saddr=Singapore${this.transport.startPostalCode}&daddr=Singapore${this.transport.destinationPostalCode}&ie=UTF8&output=embed&mode=driving`;
+        this.transport.iframeSrc = `https://maps.google.com/maps?saddr=Singapore${this.transport.startPostalCode}&daddr=Singapore${this.transport.destinationPostalCode}&ie=UTF8&output=embed&mode=driving`;
 
       },
+      async getAndSetClientTransportPostalCode(){
+        try {
+          const clientId = this.$store.state.assessment_client_id;
+          const paramObj = {
+            $select:'crb5c_postcode',
+            $filter: `crb5c_fow_customerid eq '${clientId}'`,
+          };
+          const params = new URLSearchParams(paramObj);
+          const { data } = await this.$store.state.axios.get(
+            `crb5c_fow_customers/?${params.toString()}`
+          );
+          const postalCode = data.value[0];
+          console.log('Client postal code: ', postalCode);
+  
+          if(postalCode){
+            this.transport.startPostalCode = postalCode;
+          }
+          
+        } catch (error) {
+          console.error(error);
+        }
+
+      }
     },
     watch: {
   
@@ -1450,6 +1473,18 @@ div
       //     this.amtcollect -= 120;
       //   }
       // },
+      transport: {
+        async handler(value){
+          if(value.isIncluded){
+            if(!value.startPostalCode){
+              await this.getAndSetClientTransportPostalCode();
+              return;
+            }
+            
+          }
+        },
+        deep: true,
+      }
     },
     computed: {
       is1stAM(){
