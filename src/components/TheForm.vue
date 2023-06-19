@@ -397,7 +397,7 @@ div
                       b-col.col-12.my-3.d-flex.align-items-center(style="gap: 1rem;")
                         switches(v-model="transport.isIncluded" theme="bootstrap" color="success")
                         span
-                          | Transport Included
+                          | Transport Included ${{  transport.fixedFee * (1 - ((subsidyAmount ?? 0) / 100)) }}
                     b-collapse(id="transport-included-section" v-model="transport.isIncluded")
                       b-row.my-2
                         b-col.col-12
@@ -427,7 +427,7 @@ div
                           b-row.align-items-center
                             b-col.col-2
                               label
-                                | Amount to be paid:
+                                | Additional Fee:
                             b-col.col-2
                               b-form-input(v-model="transport.amountToBePaid" type="number" placeholder="Amount")
 
@@ -1480,6 +1480,11 @@ div
             }
             
           }
+
+          if(!value.isIncluded){
+            this.transport.amountToBePaid = null;
+          }
+
         },
         deep: true,
       }
@@ -1513,9 +1518,11 @@ div
         let NoGstTotal = this.totalofNoGST;
         let dsgsubsidiyval = this.checkdsgsubsidy(GSTtotal,NoGstTotal);
         let cipCost = this.calculateCipCost;
+        const transportFee = this.transport.isIncluded ? (this.transport.fixedFee * (1 - (this.subsidyAmount ?? 0) / 100)) : 0;
+        const transportAdditionalFee = this.transport.amountToBePaid ?? 0;
           // console.log( val+val2 - dsgsubsidiyval)
           // console.log(this.totalNoGST)
-          return (GSTtotal + cipCost + NoGstTotal - dsgsubsidiyval );
+          return (GSTtotal + cipCost + NoGstTotal - dsgsubsidiyval ) + (transportFee + transportAdditionalFee);
       },
       checknationality(){
         if (this.clientdata.crb5c_citizenship == 0) {
