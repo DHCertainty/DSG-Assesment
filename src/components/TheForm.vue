@@ -1259,7 +1259,7 @@ div
           const { data } = await this.$store.state.axios.get(
             `crb5c_fow_customers/?${params.toString()}`
           );
-          const postalCode = data.value[0];
+          const postalCode = data.value[0].crb5c_postcode;
           console.log('Client postal code: ', postalCode);
 
           return postalCode;
