@@ -393,11 +393,11 @@ div
                 //- hr
                 b-row(v-if="subs2")
                   b-col.col-12
-                    b-row
-                      b-col.col-12.my-3.d-flex.align-items-center(style="gap: 1rem;")
-                        switches(v-model="transport.isIncluded" theme="bootstrap" color="success")
-                        span
-                          | Transport Included ${{  transport.fixedFee * (1 - ((subsidyAmount ?? 0) / 100)) }}
+                    b-row.align-items-center
+                      b-col.col-12.my-3
+                        input.checkbox_circle(id="transport-checkbox" v-model="transport.isIncluded" name="transport-checkbox" type="checkbox")
+                        label.long.gapped(for="transport-checkbox")
+                          | Transport Included ${{  (transport.fixedFee * (1 - ((subsidyAmount ?? 0) / 100))).toFixed(2) }}
                     b-collapse(id="transport-included-section" v-model="transport.isIncluded")
                       b-row.my-2
                         b-col.col-12
@@ -414,7 +414,7 @@ div
                               label
                                 | Destination Postal Code:
                             b-col.col-2
-                              b-form-input(v-model="transport.destinationPostalCode" type="number" placeholder="Enter postal code")
+                              b-form-input(v-model="transport.destinationPostalCode" type="number" placeholder="Enter postal code" disabled)
                       b-row.my-4
                         b-col.col-3
                           b-button(style="background-color: rgb(118, 80, 137); color: #fff; font-weight: bold; border-radius: 0.625rem" @click="checkDistanceTransport")
@@ -621,14 +621,12 @@ div
   dayjs.tz.setDefault(defaultTimezone);
   import "vue-select/dist/vue-select.css";
   import vSelect from "vue-select";
-  import Switches from 'vue-switches';
   // import colors from "././scss/colors.scss";
   export default {
     // Deselect,
     // OpenIndicator,
     components: { 
       vSelect,
-      Switches,
     },
     // emits: ["newresource"],
     data() {
@@ -852,7 +850,7 @@ div
         transport: {
           isIncluded: false,
           startPostalCode: null,
-          destinationPostalCode: '330046',
+          destinationPostalCode: '339914',
           amountToBePaid: null,
           fixedFee: 49,
           iframeSrc: 'https://maps.google.com/maps?saddr=Singapore&ie=UTF8&output=embed&mode=driving',
