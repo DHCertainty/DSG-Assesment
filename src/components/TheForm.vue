@@ -1512,15 +1512,19 @@ div
         return this.totalforCIP ? (this.totalforCIP)*1.08 : 0;
       },
       viewamtcollect(){
+        const GST = 1.08;
         let GSTtotal = this.totalofGST;
         let NoGstTotal = this.totalofNoGST;
         let dsgsubsidiyval = this.checkdsgsubsidy(GSTtotal,NoGstTotal);
         let cipCost = this.calculateCipCost;
+
         const transportFee = this.transport.isIncluded ? (this.transport.fixedFee * (1 - (this.subsidyAmount ?? 0) / 100)) : 0;
         const transportAdditionalFee = this.transport.amountToBePaid ? +this.transport.amountToBePaid : 0;
+        const totalTransportFeeWithGST = (transportFee + transportAdditionalFee) * GST;
+
         // console.log( val+val2 - dsgsubsidiyval)
         // console.log(this.totalNoGST)
-        return (GSTtotal + cipCost + NoGstTotal - dsgsubsidiyval ) + (transportFee + transportAdditionalFee);
+        return (GSTtotal + cipCost + NoGstTotal - dsgsubsidiyval ) + (totalTransportFeeWithGST);
 
       },
       checknationality(){
