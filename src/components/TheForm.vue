@@ -1254,6 +1254,11 @@ div
             $filter: `crb5c_fow_customerid eq '${clientId}'`,
           };
           const params = new URLSearchParams(paramObj);
+
+          if(!this.$store.state?.axios?.get){
+            return null;
+          }
+
           const { data } = await this.$store.state.axios.get(
             `crb5c_fow_customers/?${params.toString()}`
           );
@@ -1264,6 +1269,8 @@ div
           
         } catch (error) {
           console.error(error);
+
+          return null;
         }
 
       }
@@ -1469,6 +1476,12 @@ div
       //     this.amtcollect -= 120;
       //   }
       // },
+      subs2(value){
+        if(!value){
+          this.subsidyAmount = null;
+          this.transport.isIncluded = false;
+        }
+      },
       transport: {
         async handler(value){
           if(value.isIncluded){
