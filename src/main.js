@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
+import VueSignatureCanvas from 'vue-signature-canvas';
+ 
 
 import { BootstrapVue, IconsPlugin  } from 'bootstrap-vue'
 
@@ -12,6 +14,7 @@ import router from './router'
 
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
+Vue.use(VueSignatureCanvas)
 
 Vue.config.productionTip = false
 

@@ -12,6 +12,7 @@ div
             .col-sm-6
               label.common.gap(for="stageof") Stage of Dementia:
               v-select(v-model="stageof" :options="DementiaStage")
+              
           .row
             .col-sm-6
               label.common.gap(for="score") Latest score on:
@@ -284,6 +285,107 @@ div
               //-   b-card 
               //-     li.ma-4()
               //-       | {{ses.type}} , {{ ses.day }} {{ ses.time }} ( {{ ses.location }} )
+
+
+              b-modal#confrimationModal.modal_confimration(size="lg" title="Sign here" scrollable centered hide-footer)
+                
+
+              b-modal#paymentConfirmation(size="xl" scrollable centered hide-footer)
+                section.gap.mx-5
+                  label.common(for="collect") Amount to be Collected + GST [SGD]:
+                  label.common(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
+                  hr
+                .mx-5
+                    h1(style="font-weight:700;") Payment Instructions
+                    h4.my-2.text-danger(style="font-weight:700;") Payment via QR code is highly recommended.
+                    p Kindly make payment by scanning the PayNow QR code below with a mobile banking application, or making an electronic funds transfer (FAST), to the bank account below.
+                    hr
+                    
+                label.common.gap.mx-5.my-2 Mode of Payment:
+                .row(style="display: flex;flex-wrap: wrap;text-align: center;") 
+                  .col(cols="2")
+                    label(for="cash") 
+                      div(:class="(this.modeofpayment == 'cash') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
+                        input#cash(v-model="modeofpayment" name="payment" type="radio" value="cash")
+                        |&nbsp;&nbsp;Cash
+                        img.checkboxImg.mx-3(src="/form-images/money.png")
+                  .col(cols="2")
+                    label(for="paynow") 
+                      div(:class="(this.modeofpayment == 'paynow') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
+                        input#paynow( v-model="modeofpayment" name="payment" type="radio" value="paynow") 
+                        |&nbsp;&nbsp;PayNow
+                        img.mx-3.my-2(src="/form-images/paynow_logo.png" style="width:100px")
+                  .col(cols="6")
+                    label(for="e-bank") 
+                      div(:class="(this.modeofpayment == 'e-bank') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
+                        input#e-bank( v-model="modeofpayment" name="payment" type="radio" value="e-bank")
+                        |&nbsp;&nbsp;Internet Banking
+                        img.checkboxImg.mx-3(src="/form-images/money_transfer.png")
+                  .col(cols="6")
+                    label(for="cheque")
+                      div(:class="(this.modeofpayment == 'cheque') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
+                        input#cheque( v-model="modeofpayment" name="payment" type="radio" value="cheque")
+                        |&nbsp;&nbsp;Cheque
+                        img.checkboxImg.mx-3(src="/form-images/cheque.png")
+
+                section.gap( v-if="this.modeofpayment == 'cash'" style="margin: 20px 60px 60px")
+                  label.common(for="collect") Please collect the payment before continuing!
+                
+                section.gap(v-if="this.modeofpayment == 'paynow' || this.modeofpayment == 'e-bank'" style="margin: 20px 60px 60px")
+                  p.my-2.text-danger IMPORTANT: For electronic funds transfer, please indicate invoice number as payment reference.
+                  
+                    
+                    h4.mb-5.text-danger(style="font-weight:700; text-decoration:underline;")
+                    .row 
+                      .col-6 
+                        .d-flex.px-5.mx-2.my-4
+                        b-table-simple(small, borderless, style="max-width:50%;")
+                          b-tr
+                            b-td Bank account name:
+                            b-td Dementia Singapore Ltd - Acc 1
+                          b-tr
+                            b-td Bank account number:
+                            b-td 451-312-912-7
+                          b-tr
+                            b-td UEN for PayNow:
+                            b-td 202111519KDSG
+                          b-tr
+                            b-td Bank:
+                            b-td United Overseas Bank Limited
+                          b-tr
+                            b-td Branch code:
+                            b-td 001
+                          b-tr
+                            b-td Bank address:
+                            b-td
+                              | 80 Raffles Place
+                              br
+                              | Singapore 048624
+                          b-tr
+                            b-td Bank Code:
+                            b-td 7375
+                          b-tr
+                            b-td Bank SWIFT Code:
+                            b-td UOVBSGSG
+                      .col-2
+                        .ml-auto.qrcode
+                          //- vueQrcode(:value="paynowString", :options="qroptions")
+                          img.qr_code(src="/form-images/sample_paynow.png", alt="paynow")
+                      hr
+                                    
+
+                section.gap(v-if="this.modeofpayment == 'cheque'" style="margin: 20px 60px 60px")
+                  p For Cheque Payment:
+                        p.mb-1 All cheques should be crossed and made payable to 
+                          b.text-danger Dementia Singapore Ltd - Acc 1
+                        p Kindly indicate name of the client and invoice number at the back of the cheque.
+
+                  
+                section.submitbtn(v-if="modeofpayment" @click="showConfimrationModal")
+                  b-btn(style="background: #917093;font-size: 17px;width: 20%;") Submit
+
+
+
               b-modal#add-session(size="md" title="Add Session" scrollable centered)         
                 p.common Type 
                   div
@@ -448,9 +550,6 @@ div
                 input#120.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="120" v-show="gotIndividualFee && checkCenter && !subs2")
                 label.gapped.text-small(for="120" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 2-HR one-to-one FOW session $120
               .formed.gap
-                input#240.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="240" v-show="!subs2")
-                label.gapped.text-small(for="240" v-show="!subs2") Centre-based NeeuroFIT 6 months subcription $240
-              .formed.gap
                 input#hb90.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="40" v-show="gotIndividualFee && checkResidence && !subs2") 
                 label.gapped.text-small(for="hb90" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 1-HR one-to-one FOW session(incl. transport) $40
               .formed.gap
@@ -542,6 +641,12 @@ div
             
           
           section(v-show="this.sessions.length" style="margin-top:50px")
+            label.common NeeuroFit Subscription:
+            .formed.gap
+                input#240.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="240")
+                label.gapped.text-small(for="240") Centre-based NeeuroFIT 6 months subcription $240
+
+          section(v-show="this.sessions.length" style="margin-top:50px")
               label.common Additional fee:
               .formed.gap
                 input#50.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="50")
@@ -552,54 +657,40 @@ div
 
           //Payment type
                 //-"
-          section(style="margin-top:50px"  v-show="this.sessions.length")
-            .gapright.row.mt-4
-              .gap.col-sm-6
-                label.common(for="receipt") Official Receipt:
-                .gap.col-sm-6
-                label Upload receipt:
-                .d-flex.mx-1
-                  b-form-file(class="mt-3" plain)
-                .gap.col-sm-6
-                label(style="font-weight:bold") OR
-                .gap.col-sm-6
-                label Reference ID:
-                input.numbers#receipt(name="receipt" type="text" v-model="referenceid")
-              .gap.col-sm-6
+          section(style="margin-top:50px" v-show="this.sessions.length" )
+            .gap.row.mt-4
+              //- .gap.col-sm-6
+              //-   label.common(for="receipt") Official Receipt:
+              //-   .gap.col-sm-6
+              //-   label Upload receipt:
+              //-   .d-flex.mx-1
+              //-     b-form-file(class="mt-3" plain)
+              //-   .gap.col-sm-6
+              //-   label(style="font-weight:bold") OR
+              //-   .gap.col-sm-6
+              //-   label Reference ID:
+              //-   input.numbers#receipt(name="receipt" type="text" v-model="referenceid")
+              .gap
                 label.common.amountjustify(for="collect" ) Amount to be Collected + GST [SGD]:
                 label.common.amountjustify(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
+                b-btn( v-if="viewamtcollect" v-b-modal.paymentConfirmation style="background: #917093;font-size: 17px;width: 20%;float:right;margin:50px 20px 0px 0px") Continue
               hr
                 //- input.numbers#collect(v-model="amtcollect " name="collect" type="text" readonly="readonly")
-            label.common.gap Mode of Payment:
-            .row 
-              .col-md-auto
-                label(for="cash") 
-                  div(:class="(this.modeofpayment == 'cash') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
-                    input#cash(v-model="modeofpayment" name="payment" type="radio" value="cash")
-                    |&nbsp;&nbsp;Cash
-                    img.checkboxImg.mx-3(src="/form-images/money.png")
-              .col-md-auto
-                label(for="paynow") 
-                  div(:class="(this.modeofpayment == 'paynow') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
-                    input#paynow( v-model="modeofpayment" name="payment" type="radio" value="paynow") 
-                    |&nbsp;&nbsp;PayNow
-                    img.mx-3.my-2(src="/form-images/paynow_logo.png" style="width:100px")
-              .col-md-auto
-                label(for="e-bank") 
-                  div(:class="(this.modeofpayment == 'e-bank') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
-                    input#e-bank( v-model="modeofpayment" name="payment" type="radio" value="e-bank")
-                    |&nbsp;&nbsp;Internet Banking
-                    img.checkboxImg.mx-3(src="/form-images/money_transfer.png")
-              .col-md-auto
-                label(for="cheque")
-                  div(:class="(this.modeofpayment == 'cheque') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
-                    input#cheque( v-model="modeofpayment" name="payment" type="radio" value="cheque")
-                    |&nbsp;&nbsp;Cheque
-                    img.checkboxImg.mx-3(src="/form-images/cheque.png")
-  
+            
+            //- 
+            
+            
+          section(v-if="modeofpayment")
+            //- b-row.justify-content-center
+            //-     VueSignatureCanvas.gap(ref="handWrite" :canvasProps="{class: 'sig-canvas'}")
+            //- b-row.justify-content-center
+            //-     b-btn.gap.confimrationBtn#getImagebtn(@click="getImage()") Submit 
+            //- b-row
+            //-   .col-sm-2
+            //-     img.signatureView(:src="signatureImg")
+
           // Submit button 
-          section.submitbtn(v-if="modeofpayment" @click="submitassessment")
-            b-btn(style="background: #917093;font-size: 17px;width: 20%;") Submit
+          
       <br>
       <br>
       <br>
@@ -609,10 +700,13 @@ div
   
   <script>
   import dayjs from "dayjs";
+  // import PaynowQR from '@chewhx/paynowqr';
+  import VueQrcode from 'vue-qrcode';
   import utc from "dayjs/plugin/utc";
   import timezone from "dayjs/plugin/timezone"; // dependent on utc plugin
   import isToday from "dayjs/plugin/isToday";
   import axios from 'axios';
+  import VueSignatureCanvas from 'vue-signature-canvas';
   
   dayjs.extend(utc);
   dayjs.extend(timezone);
@@ -627,10 +721,14 @@ div
     // OpenIndicator,
     components: { 
       vSelect,
+      VueQrcode,
+      VueSignatureCanvas,
     },
     // emits: ["newresource"],
     data() {
       return {
+        name: 'FirstSignatureCanvas',
+        signatureImg: '',
         listPublicHolidayCurrentMonth: null,
         dsgOffDay: {
           date: null,
@@ -871,6 +969,10 @@ div
   
     },
     methods: {
+      getImage(){
+        this.signatureImg = this.$refs.handWrite.toDataURL();
+        this.submitassessment();
+      },
       firstSesDay(date){
         return date ? dayjs(this.firSession).format('dddd') : 'None';
       },
@@ -1130,6 +1232,9 @@ div
         this.clientdata = data.value[0];
         console.log('form data',this.clientdata);
     },
+      showConfimrationModal(){
+        // this.$bvModal.show("confrimationModal");
+      },
      async submitassessment(){
       this.totalscoreMoca = this.totalscore;
       this.totalscoreEq = this.eq5dcounter;
@@ -1482,6 +1587,13 @@ div
           this.transport.isIncluded = false;
         }
       },
+      isCIP(value){
+        if(!value){
+          this.totalGST = this.totalGST.filter(item => item !== '240');
+        }else{
+          this.totalGST.push('240');
+        }
+      },
       transport: {
         async handler(value){
           if(value.isIncluded){
@@ -1489,7 +1601,6 @@ div
               this.transport.startPostalCode = await this.getAndSetClientTransportPostalCode();
               return;
             }
-            
           }
 
           if(!value.isIncluded){
@@ -1498,9 +1609,28 @@ div
 
         },
         deep: true,
-      }
+      },
+
     },
     computed: {
+
+      // paynowString(){
+      //     let qrcode = new PaynowQR({
+      //         uen:'202111519KDSG',           //Required: UEN of company
+      //         amount : 100,               //Specify amount of money to pay.
+      //         refNumber: 1234567,   //Reference number for Paynow Transaction. Useful if you need to track payments for recouncilation.
+      //         company:  'Dementia Singapore Ltd. - Acc 1'   //Company name to embed in the QR code. Optional.               
+      //       });
+      //       return qrcode.output();
+      // },
+      // qroptions(){
+      //     return{
+      //         errorCorrectionLevel:"H",
+      //         color:{
+      //             dark:"#7C1978"
+      //         }
+      //     }
+      // },
       is1stAM(){
         return this.firstSesFormat == 0 ? 'AM' : 'PM';
       },
@@ -1644,9 +1774,13 @@ div
   }
   
   .submitbtn{
-    text-align:right;
-    margin-top: 60px;
-    
+    text-align: center;
+    margin: 70px 0px 28px; 
+  }
+
+  .generateInvoice{
+    text-align:left;
+    margin-top: 60px;  
   }
   
   .sm-container {
@@ -1741,6 +1875,9 @@ div
   .amountjustify{
     justify-content: right;
     margin-right: 30px;
+  }
+
+  .invoiceTotal{
   }
   .numberslider{
     text-align: center;
@@ -1869,16 +2006,35 @@ div
   .center{
     gap: 60px;
   }
+
+  .payment_selection_radio{
+
+  }
+
+  .sig-canvas {
+        width: 80vh;
+        height: 30vh;
+        border-style: dotted;
+        background-color: rgba(203, 203, 203, 0);
+        border: solid 1px dotted rgb(172, 172, 172);
+        border-radius: 5px;
+    }
   
   .font_bold{
     font-weight: bold;
   }
+
+  .qr_code{
+    width: 250px;
+  }
+
   .checkboxSelection{
     border: 1.5px solid #d3d3d3;
     border-radius: 5px;
     padding: 25px;
     margin: 5px;
     height: 100px;
+    width: 450px;
   }
   
   .checkboxSelectionSelected{
@@ -1887,6 +2043,7 @@ div
     padding: 25px;
     margin: 5px;
     height: 100px;
+    width: 450px;
   }
   
   .checkboxImg{
@@ -1909,7 +2066,16 @@ div
   .progressbarstyle{
     background: rgb(118, 80, 137); 
   }
-  
+  .signatureView{
+        width: 80vh;
+        background-color: rgba(203, 203, 203, 0);
+        border: solid 1px rgb(172, 172, 172);
+        border-radius: 5px;
+  }
+
+  .confimrationBtn{
+    width: 20vh;
+  }
   .checkbox_circle{
     border-radius: 50%;
     height: 20px;
