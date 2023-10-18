@@ -472,8 +472,9 @@ div
                               b-form-select.numbers(v-model="dsgsubsidy" :options="subsidyoptions")
                             .col-md-2
                               label.common subsidy
+                              //- checknationality
                       .gap 
-                        input#dsg2.checkbox_circle(v-model="subs2" name="subsidy2" type="checkbox" value="dsg2" :disabled="checknationality")
+                        input#dsg2.checkbox_circle(v-model="subs2" name="subsidy2" type="checkbox" value="dsg2" :disabled="false")
                         label.long.gapped(for="dsg2") Toteboard
                         .row.gap(v-show="subs2")
                           .col-md-2 
