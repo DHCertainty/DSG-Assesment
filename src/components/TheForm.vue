@@ -652,7 +652,7 @@ div
               .formed.gap
                 input#50.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="50")
                 label.gapped.text-small(for="50") One-time Assessment $50
-              .formed.gap
+              .formed.gap(v-if="!isCIP")
                 input#refund.checkbox_circle(v-model="totalNoGST" name="cbfees" type="checkbox" value="320")
                 label.gapped.text-small(for="refund") Refundable One-Month Deposit (4 X applicable fee) $320
 
