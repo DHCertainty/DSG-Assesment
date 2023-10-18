@@ -542,26 +542,26 @@ div
                 input#80.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="80" v-show="gotGroupFee  && checkCenter && !subs2")
                 label.gapped.text-small(for="80" v-show="gotGroupFee && !subs2") Centre-based 3-HR FOW group session $80
               .formed.gap
-                input#60.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="60" v-show="gotIndividualFee && checkCenter && !subs2")
-                label.gapped.text-small(for="60" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 1-HR one-to-one FOW session $60
+                input#60.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="80" v-show="gotIndividualFee && checkCenter && !subs2")
+                label.gapped.text-small(for="60" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 1-HR one-to-one FOW session $80
               .formed.gap
-                input#90.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="90" v-show="gotIndividualFee && checkCenter && !subs2")
-                label.gapped.text-small(for="90" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 1.5-HR one-to-one FOW session $90
+                input#90.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="120" v-show="gotIndividualFee && checkCenter && !subs2")
+                label.gapped.text-small(for="90" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 1.5-HR one-to-one FOW session $120
               .formed.gap
-                input#120.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="120" v-show="gotIndividualFee && checkCenter && !subs2")
-                label.gapped.text-small(for="120" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 2-HR one-to-one FOW session $120
+                input#120.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="160" v-show="gotIndividualFee && checkCenter && !subs2")
+                label.gapped.text-small(for="120" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 2-HR one-to-one FOW session $160
               .formed.gap
-                input#hb90.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="40" v-show="gotIndividualFee && checkResidence && !subs2") 
-                label.gapped.text-small(for="hb90" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 1-HR one-to-one FOW session(incl. transport) $40
+                input#hb90.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="130" v-show="gotIndividualFee && checkResidence && !subs2") 
+                label.gapped.text-small(for="hb90" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 1-HR one-to-one FOW session(incl. transport) $130
               .formed.gap
-                input#hb120.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="120" v-show="gotIndividualFee && checkResidence && !subs2")
-                label.gapped.text-small(for="hb120" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 1.5-HR one-to-one FOW session(incl. transport) $120
+                input#hb120.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="170" v-show="gotIndividualFee && checkResidence && !subs2")
+                label.gapped.text-small(for="hb120" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 1.5-HR one-to-one FOW session(incl. transport) $170
               .formed.gap
-                input#hb150.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="150" v-show="gotIndividualFee && checkResidence && !subs2")
-                label.gapped.text-small(for="hb150" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 2-HR one-to-one FOW session(incl. transport) $120
+                input#hb150.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="210" v-show="gotIndividualFee && checkResidence && !subs2")
+                label.gapped.text-small(for="hb150" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 2-HR one-to-one FOW session(incl. transport) $210
               .formed.gap.gapbot
                 input#hb90-2.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="90" v-show="gotIndividualFee && checkZoom && !subs2")
-                label.gapped.text-small(for="hb90-2" v-show="gotIndividualFee && checkZoom && !subs2") Home-based 1-HR FOW session via video calls $90
+                label.gapped.text-small(for="hb90-2" v-show="gotIndividualFee && checkZoom && !subs2") Home-based 1-HR FOW session via video calls $80
               .formed.gap(v-show="subs2")
                   input#sgp.checkbox_circle( v-model="isCIP" name="cbfees" type="checkbox" :value="1") 
                   label.gapped.text-small(for="sgp") Centre-based 3-HR CIP trial run  ${{ fees4val }} 
@@ -641,7 +641,7 @@ div
                   //-     label(v-show="totalforCIP") ${{totalforCIP}} for {{ CIPdays }} session
             
           
-          section(v-show="this.sessions.length" style="margin-top:50px")
+          section(v-show="this.sessions.length && !isCIP" style="margin-top:50px")
             label.common NeeuroFit Subscription:
             .formed.gap
                 input#240.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="240")
@@ -1588,13 +1588,13 @@ div
           this.transport.isIncluded = false;
         }
       },
-      isCIP(value){
-        if(!value){
-          this.totalGST = this.totalGST.filter(item => item !== '240');
-        }else{
-          this.totalGST.push('240');
-        }
-      },
+      // isCIP(value){
+      //   if(!value){
+      //     this.totalGST = this.totalGST.filter(item => item !== '240');
+      //   }else{
+      //     this.totalGST.push('240');
+      //   }
+      // },
       transport: {
         async handler(value){
           if(value.isIncluded){
