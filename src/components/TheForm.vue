@@ -268,28 +268,57 @@ div
                 .col-sm-3
                   label.common(for="session") Session Recommended: 
                 .col(style="text-align: right;")   
-                  b-btn#add-btn.mx-4(@click="addmethod") + Add Session 
+                  b-btn#add-btn.mx-4(@click="addmethod(0)") + Pick Session 
+                .col(style="text-align: right;")   
+                  b-btn#add-btn.mx-4(@click="addmethod(1)") + Add New Session 
                   //- b-btn#add-btn(@click="addfile") + Add file 
               
-              div.my-4(v-if="this.sessions.length === 0")
+              div.my-4(v-if="!sessions.length && !recommended_session_pick.length" )
                 b-card(style="text-align: center;padding: 40px;")
                   b-icon.large_icon(icon="box-seam")
                   p.gap(style="justify-content: center;") No Session Selected, click add session to begin.
-              div.my-4.p-3.border(v-else style="border-radius: 0.5rem;" )
+
+              div.my-4.p-3.border(v-if="recommended_session_pick.length" style="border-radius: 0.5rem;" )
+                .row
+                  p.ma-4.p-4(v-for="(rec_ses, index) in recommended_session_pick" :key="index")
+                    | {{index+1+'.'}} {{rec_ses.crb5c_session_id}} 
+                    b-icon.delete_icon(icon="x-circle-fill" @click="removePickedSession(index)")
+
+              div.my-4.p-3.border(v-if="sessions.length" style="border-radius: 0.5rem;" )
                 .row
                   p.ma-4.p-4(v-for="(ses, index) in sessions" :key="index")
                     | {{index+1+'.'}} {{ses.type}} - {{ ses.day }} {{ ses.time }} ( {{ ses.location }} ) 
                     b-icon.delete_icon(icon="x-circle-fill" @click="removeSession(index)")
 
-              b-modal#confrimationModal.modal_confimration(size="lg" title="Sign here" scrollable centered hide-footer)
-                  input(type="file" @change="uploadFile")
-                  b-btn(@click="confirmUpload") Submit
+              //- b-modal#confrimationModal.modal_confimration(size="lg" title="Sign here" scrollable centered hide-footer)
+              //-     input(type="file" @change="uploadFile")
+              //-     b-btn(@click="confirmUpload") Submit
                 
+              b-modal#addAdHocModal.modal_confimration(size="lg" title="Add here" scrollable centered hide-footer)
+                  .row 
+                    .col.m-2
+                      label.text-small.m-4  Remarks: #[input.mx-2.modified_remark_input(type="text" v-model="adHocItems.remark")]
+                      label.text-small.m-4 Amount $ : #[input.mx-2(type="number" v-model="adHocItems.total")]
+                  .row.mt-4
+                    .row.m-4
+                      .col-sm-1
+                        input#recurringfee.checkbox_circle(v-model="adHocItems.isRecurring" type="checkbox")
+                      .col-sm
+                        label(for="recurringfee") Recurring (Monthly)
+                    .row.m-4
+                      .col-sm-1
+                        input#includeFee.checkbox_circle(v-model="adHocItems.isIncludeInFee" type="checkbox")
+                      .col-sm
+                        label(for="includeFee") Include in current fee
+                    .row.mt-5(style="justify-content: center;")
+                      b-btn(@click="adHocFee" style="width:50%") Add Fee
 
               b-modal#paymentConfirmation(size="xl" scrollable centered hide-footer)
                 section.gap.mx-5
                   label.common(for="collect") Amount to be Collected + GST [SGD]:
                   label.common(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
+                    
+                  
                   hr
                 .mx-5
                     h1(style="font-weight:700;") Payment Instructions
@@ -381,7 +410,14 @@ div
                   b-btn(style="background: #917093;font-size: 17px;width: 20%;") Submit
 
 
-
+              b-modal#pick-session(size="lg" title="Add Session" scrollable centered hide-footer)         
+                  div.m-3(v-for="(session, index) in  schedule_info" :key="index" )
+                    input#group.mx-3(v-model="pick_sessions"  type="radio" :value="session" :id="session.crb5c_fow_session_scheduleid")
+                    label(:for="session.crb5c_fow_session_scheduleid") {{ session.crb5c_session_id }}
+                  b-btn( size="md" @click="addNewPickSession") Add
+                  
+                    
+              
               b-modal#add-session(size="md" title="Add Session" scrollable centered)         
                 p.common Type 
                   div
@@ -434,11 +470,13 @@ div
                 template(#modal-footer="{ok}")
                   b-btn(v-show="location" size="md" @click="addNew") Add
 
-            .formed(style="margin-top:40px" v-show="this.sessions.length")
+            .formed(style="margin-top:40px" v-show="this.sessions.length || this.recommended_session_pick.length")
               label.common.gap(for="admission") Admission date:
               input.numbers-half#admission(v-model="adm" name="admission" type="date")
   
-          section(v-show="this.sessions.length")
+          
+
+          section(v-show="this.sessions.length || this.recommended_session_pick.length")
             .row.gap
               .col-md-2 
                 label.common.gap Fee & Payment:
@@ -531,14 +569,15 @@ div
                               b-form-input(v-model="transport.amountToBePaid" type="number" placeholder="Amount")
 
           
-          section.mt-5(v-show="this.sessions.length")
-            label.common Applicable Fee (excluding GST):
+          section.mt-5(v-show="this.sessions.length || this.recommended_session_pick.length")
+            label.common Applicable Sessions (excluding GST):
             .formed
               .formed.gap(v-for="(programme, index)  in filteredProgrammeInfos " :key="index")
                 input.checkbox_circle(v-model="applicableFeeTotal" type="checkbox" :value="programme" :id="programme.crb5c_fowprogrammeid")
                 label.gapped.text-small(:for="programme.crb5c_fowprogrammeid") {{programme.crb5c_programmename}} 
                   label(v-if="programme.crb5c_type != 4") ${{ programme.crb5c_price }}
-                  label(v-else) ${{ fees4val  }} ({{ prORsg }})
+                  label(v-else) ${{ fees4val  }}  
+                    span(v-if="transport.isIncluded") (with transport fee: ${{ transportTotalView.toFixed(2) }})
             .formed
               //- .formed.gap
               //-   input#80.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="80" v-show="gotGroupFee  && checkCenter && !subs2")
@@ -643,14 +682,19 @@ div
                   //-     label(v-show="totalforCIP") ${{totalforCIP}} for {{ CIPdays }} session
             
           
-          section(v-show="this.sessions.length && !isCipSelected" style="margin-top:50px")
+          section.mt-5(v-show="(this.sessions.length || this.recommended_session_pick.length)  && !isCipSelected" style="margin-top:50px")
             label.common NeeuroFit Subscription:
             .formed.gap
                 input#neeurofit.checkbox_circle(v-model="neeurofitFeeTotal" type="checkbox" :value="neeuroFitFees")
                 label.gapped.text-small(for="neeurofit") Centre-based NeeuroFIT 6 months subcription $240
 
-          section(v-show="this.sessions.length" style="margin-top:50px")
-              label.common Additional fee:
+          //v-show="this.sessions.length || this.recommended_session_pick.length"
+          section( style="margin-top:50px")
+              .row.mt-5
+                .col 
+                  label.common Additional fee:
+                .col 
+                  b-btn(v-b-modal.addAdHocModal) Ad-hoc fee
               .formed.gap(v-show="!subs1")
                 input#one_time.checkbox_circle(v-model="additionalFeeTotal" type="checkbox" :value="additionalFees.one_time.price")
                 label.gapped.text-small(for="one_time") One-time Assessment $50
@@ -666,26 +710,105 @@ div
               .formed.gap(v-if="!isCipSelected")
                 input#refund.checkbox_circle(v-model="refundableFeeTotal" type="checkbox" :value="refundableDeposit")
                 label.gapped.text-small(for="refund") Refundable One-Month Deposit (4 X applicable fee) ${{ refundableDeposit }}
+              .formed.gap.addtional_fee(v-for="(adhoc,index) in adHocFeeTotal")
+                .row  
+                  .col.mt-2
+                    label.gapped.text-small(for="refund") Fee remark: {{ adhoc.remark }}
+                    label.gapped.text-small(for="refund") Amount : ${{ adhoc.total }}
+                    label.gapped.text-small.mx-4(for="refund") Monthly: {{ adhoc.isRecurring ? 'Yes' : 'No' }}
+                  .col(style="text-align-last: right;")
+                    b-btn.danger(@click="deleteAdHoc(index)") Delete
+                  
+              section
+                hr
+                h2.mt-5 Service Agreement
+                .row.mt-5
+                    .col-sm.text-left
+                      p NRIC Name of Client:
+                    .col-sm
+                      | {{ clientdata.crb5c_no }}
+                .row.mt-3
+                    .col-sm.text-left
+                      p NRIC No. of Client:
+                    .col-sm
+                    | {{ clientdata.nricno}}
+
+                .row.mt-3
+                    .col-sm.text-left
+                      p Services Provided:
+                    .col-sm
+                      p Family of Wisdom (Enrichment) Programme:
+
+                .row.mt-3
+                    .col-sm.text-left
+                      p Date of Commencement:
+                    .col-sm
+                      | {{ adm }}
+                .row.mt-3
+                    .col-sm.text-left
+                      p Fee charged per session (before GST): $
+                    .col-sm
+                      | {{ isCipSelected? (fees4val + transportTotalView )  : totalOfApplicable  }} 
+                      
+
+                .row.mt-5(style="text-align:justify;line-height:5vh")
+                  p I, #[input.form-control(type="text" v-model="fwf")] (NRIC Name), confirm that I am the #[input.form-control(type="text" v-model="fwf")] (relationship) of #[input.form-control(type="text" v-model="fwf")] (NRIC Name of client),#[input.form-control(type="text" v-model="fwf")] (NRIC No.).
+                  
+                hr  
+                section.mt-5(style="text-align:left;")
+                  p I hereby declare that I have understood and agree to abide by the:
+
+                  ul
+                      li Service Agreement
+                      
+                  p of Family of Wisdom (Bendemeer)
+
+                  
+                  .row.mt-4
+                    .col 
+                      .row.mt-5.mx-1
+                            VueSignatureCanvas.gap(ref="handWrite" :canvasProps="{class: 'sig-canvas'}")
+                      .row.mt-2
+                            p.text-center --- Caregiver Sign here ---
+                    .col 
+                      .row.mt-5.mx-1
+                            VueSignatureCanvas.gap(ref="handWrite" :canvasProps="{class: 'sig-canvas'}")
+                      .row.mt-2
+                            p.text-center --- Staff Sign here ---
+                  .row.mt-5  
+                    .col-sm
+                        p Contact Number:
+                    .col-sm
+                        input.form-control(type="text" v-model="fwf")
+                  .row.mt-5
+                    .col-sm 
+                        p Date:
+                    .col-sm
+                        input.form-control(type="text" v-model="fwf")
 
           //Payment type
                 //-"
-          section(style="margin-top:50px" v-show="this.sessions.length" )
+                //- .row
+                //-   .col
+                //-     .row 
+                //-       .col-sm-8
+                //-         | Fee
+                //-       .col-sm-2
+                //-         | Amount
+                //-     .row.mt-5 
+                //-       .col-sm-8
+                //-         label.common(v-if="totalOfNeeurofit !== 0") {{ isNeeuroFit }}
+                //-       .col-sm
+                //-         label.common(v-if="totalOfNeeurofit !== 0") {{ totalOfNeeurofit }} (with GST : {{ totalOfNeeurofit*1.08.toFixed(2) }})
+                //-   .col
+
+          section(style="margin-top:50px" v-show="this.sessions.length || this.recommended_session_pick.length" )
             .gap.row.mt-4
-              //- .gap.col-sm-6
-              //-   label.common(for="receipt") Official Receipt:
-              //-   .gap.col-sm-6
-              //-   label Upload receipt:
-              //-   .d-flex.mx-1
-              //-     b-form-file(class="mt-3" plain)
-              //-   .gap.col-sm-6
-              //-   label(style="font-weight:bold") OR
-              //-   .gap.col-sm-6
-              //-   label Reference ID:
-              //-   input.numbers#receipt(name="receipt" type="text" v-model="referenceid")
               .gap
-                label.common.amountjustify(for="collect" ) Amount to be Collected + GST [SGD]:
-                label.common.amountjustify(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
-                b-btn( v-if="viewamtcollect" v-b-modal.paymentConfirmation style="background: #917093;font-size: 17px;width: 20%;float:right;margin:50px 20px 0px 0px") Continue
+                
+                    label.common.amountjustify(for="collect" ) Amount to be Collected + GST [SGD]:
+                    label.common.amountjustify(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
+                    b-btn( v-if="viewamtcollect" v-b-modal.paymentConfirmation style="background: #917093;font-size: 17px;width: 20%;float:right;margin:50px 20px 0px 0px") Continue
               hr
                 //- input.numbers#collect(v-model="amtcollect " name="collect" type="text" readonly="readonly")
             
@@ -738,6 +861,17 @@ div
     // emits: ["newresource"],
     data() {
       return {
+        isNeeuroFit: 'NeeuroFIT 6 months subcription',
+        adHocItems:{
+          remark : '',
+          total: 0,
+          isRecurring: false,
+          isIncludeInFee: false,
+        },
+        adHocFeeTotal: [],
+        pick_sessions: [],
+        schedule_info: [],
+        recommended_session_pick: [],
         GST: 1.08,
         neeuroFitFees: 240,
         applicableFeeTotal: [],
@@ -996,7 +1130,7 @@ div
       const listPublicHoliday = await this.getSGPublicHoliday();
       this.listPublicHolidayCurrentMonth = this.getPublicHolidayCurrentMonth(listPublicHoliday).length === 0 ? null : this.getPublicHolidayCurrentMonth(listPublicHoliday);
       let getHolidays = await this.getDsgHoliday();
-      console.log('getHolidays',getHolidays)
+      // console.log('getHolidays',getHolidays)
       let dsgHoliday = getHolidays.map(
         (holiday) => {
           return {
@@ -1007,15 +1141,36 @@ div
           };
         }
       );
-      console.log('holiday',dsgHoliday)
+      // console.log('holiday',dsgHoliday)
       this.listPublicHolidayCurrentMonth.push(...dsgHoliday);
 
 
-      console.log('this.listPublicHolidayCurrentMonth', this.listPublicHolidayCurrentMonth)
+      // console.log('this.listPublicHolidayCurrentMonth', this.listPublicHolidayCurrentMonth)
 
       this.getProgrammeInfos();
     },
     methods: {
+      clearadhoc(){
+        this.adHocItems = {
+          remark : '',
+          total: 0,
+          isRecurring: false,
+          isIncludeInFee: false,
+        }
+      },
+      deleteAdHoc(val){
+        this.adHocFeeTotal = this.adHocFeeTotal.filter((_, index) => index !== val)
+      },
+      async adHocFee(){
+        this.adHocFeeTotal.push(this.adHocItems);
+        this.$bvModal.hide("addAdHocModal");
+        this.clearadhoc()
+      },
+      async addNewPickSession(){
+        this.recommended_session_pick.push(this.pick_sessions);
+        await this.filterFees();
+        this.$bvModal.hide("pick-session");
+      },
       createBase64Image(val){
          this.filesToUpload = [];
         const reader = new FileReader();
@@ -1057,6 +1212,10 @@ div
       },
       addfile(){
         this.$bvModal.show("confrimationModal");
+      },
+      async removePickedSession(id){
+        this.recommended_session_pick = this.recommended_session_pick.filter((_, index) => index !== id)
+        await this.filterFees();
       },
       async removeSession(id){
         this.gotIndividualFee = false
@@ -1259,6 +1418,25 @@ div
             this.filterTypeValues.push(4)
           }
         }
+
+        for (let i = 0 ; i < this.recommended_session_pick.length; i++){
+          if (this.recommended_session_pick[i].crb5c_sessiontype === 0){
+            this.filterTypeValues.push(0)
+          } 
+          else if (this.recommended_session_pick[i].crb5c_sessiontype === 1){
+            this.filterTypeValues.push(1)
+          } 
+          else if (this.recommended_session_pick[i].crb5c_sessiontype === 2){
+            this.filterTypeValues.push(2)
+          } 
+          else if (this.recommended_session_pick[i].crb5c_sessiontype === 3){
+            this.filterTypeValues.push(3)
+          } 
+          else{
+            this.filterTypeValues.push(4)
+          }
+        }
+
         this.filterTypeValues = [...new Set(this.filterTypeValues)];
       },
       revert() {
@@ -1282,8 +1460,18 @@ div
         }
         return day2;
       },
-      addmethod() {
-        this.$bvModal.show("add-session");
+      async addmethod(option) {
+        if (option == 1) {
+          this.$bvModal.show("add-session");
+        }
+        else{
+          let data = await this.getSessionScheduleinform();
+          this.schedule_info = data.filter(item => item.crb5c_sessionreporttype != 3);
+          this.schedule_info.sort((a, b) => a.crb5c_day - b.crb5c_day)
+          // console.log('schedule_info',this.schedule_info)
+          this.$bvModal.show("pick-session");
+        }
+        
       },
       async addNew() {
         if(!this.typeses || !this.day || !this.time || !this.location){
@@ -1322,6 +1510,16 @@ div
           );
         this.clientdata = data.value[0];
         // console.log('form data',this.clientdata);
+      },
+      async getSessionScheduleinform(){
+        let paramObj = {
+          $select:'crb5c_session_id,crb5c_sessionreporttype,crb5c_sessiontype,crb5c_day,crb5c_duration,crb5c_time,crb5c_time_hrs,crb5c_time_mins,crb5c_session_time_choice',
+          };
+        let params = new URLSearchParams(paramObj);
+        let { data: data } = await this.$store.state.axios.get(
+          `crb5c_fow_session_schedules/?${params.toString()}`
+          );
+        return data.value;
       },
       async getProgrammeInfos(){
           let paramObj = {
@@ -1603,7 +1801,15 @@ div
 
     },
     computed: {
+      transportTotalView(){
+        if(this.transport.isIncluded){
+          let total_amount = 0;
+          total_amount = (this.transport.fixedFee * (1 - (this.subsidyAmount ?? 0) / 100)) + (this.transport.amountToBePaid ? + this.transport.amountToBePaid : 0);
+          return total_amount;
+        }
+        return 0;
 
+      },
       // paynowString(){
       //     let qrcode = new PaynowQR({
       //         uen:'202111519KDSG',           //Required: UEN of company
@@ -1653,14 +1859,29 @@ div
             let total_amount = 0;
             total_amount = total_amount + this.neeuroFitFees ;
             return total_amount;
+            
           }
+
           return 0;
+      },
+      totalofAddhoc(){
+        if(this.adHocFeeTotal.length){
+          let total_amount = 0;
+          for(let adhoc of this.adHocFeeTotal){
+            if (adhoc.isIncludeInFee) {
+              total_amount = total_amount + parseInt(adhoc.total) ;
+            }
+
+          }
+          return total_amount;
+        }return 0;
       },
       totalOfApplicable(){
         if(this.applicableFeeTotal.length ) {
           let total_amount = 0;
           for(let totalApplicable of this.applicableFeeTotal){
             total_amount = total_amount + totalApplicable.crb5c_price;
+
           }
         return total_amount;
         }
@@ -1677,29 +1898,27 @@ div
           return item.crb5c_type === type;
           }))
         }
-        console.log('filteredProgramme',filteredProgramme)
         return filteredProgramme;
       },
       viewamtcollect(){      
         let refundable = this.refundableFeeTotal ? this.refundableDeposit : 0;
-        let GSTtotal = this.isCipSelected ? (this.fees4val * this.GST):((this.totalOfAdditional + this.totalOfNeeurofit + this.totalOfApplicable) * this.GST);
-        // let NoGstTotal = this.totalofNoGST;
+        let GSTtotal = this.isCipSelected ? 0 :((this.totalOfAdditional + this.totalOfNeeurofit) * this.GST);
         let dsgsubsidiyval = this.checkdsgsubsidy(GSTtotal);
         let cipCost = this.calculateCipCost;
 
         let CIPAdditional = this.totalOfAdditional ? (this.totalOfAdditional*this.GST) : 0;
+        let addHocAdditional = this.totalofAddhoc ? (this.totalofAddhoc * this.GST) : 0;
 
         const transportFee = this.transport.isIncluded ? (this.transport.fixedFee * (1 - (this.subsidyAmount ?? 0) / 100)) : 0;
         const transportAdditionalFee = this.transport.amountToBePaid ? +this.transport.amountToBePaid : 0;
         const totalTransportFeeWithGST = (transportFee + transportAdditionalFee) * this.GST;
 
         if (this.isCipSelected) {
-          return (GSTtotal + cipCost + CIPAdditional) + (totalTransportFeeWithGST);
+          return (GSTtotal + cipCost + CIPAdditional + addHocAdditional) + (totalTransportFeeWithGST * this.CIPdays);
         }
         else{
-          return (GSTtotal + cipCost + refundable - dsgsubsidiyval ) + (totalTransportFeeWithGST);
+          return (GSTtotal + cipCost + addHocAdditional + refundable - dsgsubsidiyval ) + (totalTransportFeeWithGST *  this.CIPdays);
         }
-        
 
       },
       checknationality(){
@@ -2077,6 +2296,17 @@ div
     font-weight: bold;
   }
 
+  .addtional_fee{
+    border: 1px Solid #e2e2e2;
+    padding: 2vh;
+    width: 100vh;
+  }
+
+  .modified_remark_input{
+    border: 1px Solid #b5b5b5;
+    width: 40vh;
+  }
+
   .qr_code{
     width: 250px;
   }
@@ -2124,6 +2354,10 @@ div
         background-color: rgba(203, 203, 203, 0);
         border: solid 1px rgb(172, 172, 172);
         border-radius: 5px;
+  }
+
+  .text-center{
+    text-align: center;
   }
 
   .confimrationBtn{
