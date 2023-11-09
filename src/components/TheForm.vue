@@ -688,8 +688,8 @@ div
                 input#neeurofit.checkbox_circle(v-model="neeurofitFeeTotal" type="checkbox" :value="neeuroFitFees")
                 label.gapped.text-small(for="neeurofit") Centre-based NeeuroFIT 6 months subcription $240
 
-          //v-show="this.sessions.length || this.recommended_session_pick.length"
-          section( style="margin-top:50px")
+          //
+          section(style="margin-top:50px" v-show="this.sessions.length || this.recommended_session_pick.length")
               .row.mt-5
                 .col 
                   label.common Additional fee:
@@ -719,9 +719,33 @@ div
                   .col(style="text-align-last: right;")
                     b-btn.danger(@click="deleteAdHoc(index)") Delete
                   
+              
+          //Payment type
+                //-"
+                //- .row
+                //-   .col
+                //-     .row 
+                //-       .col-sm-8
+                //-         | Fee
+                //-       .col-sm-2
+                //-         | Amount
+                //-     .row.mt-5 
+                //-       .col-sm-8
+                //-         label.common(v-if="totalOfNeeurofit !== 0") {{ isNeeuroFit }}
+                //-       .col-sm
+                //-         label.common(v-if="totalOfNeeurofit !== 0") {{ totalOfNeeurofit }} (with GST : {{ totalOfNeeurofit*1.08.toFixed(2) }})
+                //-   .col
+
+          section(style="margin-top:50px" v-show="this.sessions.length || this.recommended_session_pick.length" )
+            .gap.row.mt-4
+              .gap
+                
+                    label.common.amountjustify(for="collect" ) Amount to be Collected + GST [SGD]:
+                    label.common.amountjustify(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
+                    b-btn( v-if="viewamtcollect" v-b-modal.paymentConfirmation style="background: #917093;font-size: 17px;width: 20%;float:right;margin:50px 20px 0px 0px") Continue
+              hr
               section
-                hr
-                h2.mt-5 Service Agreement
+                h2.mt-5 Service Agreement Form
                 .row.mt-5
                     .col-sm.text-left
                       p NRIC Name of Client:
@@ -786,30 +810,6 @@ div
                     .col-sm
                         input.form-control(type="text" v-model="fwf")
 
-          //Payment type
-                //-"
-                //- .row
-                //-   .col
-                //-     .row 
-                //-       .col-sm-8
-                //-         | Fee
-                //-       .col-sm-2
-                //-         | Amount
-                //-     .row.mt-5 
-                //-       .col-sm-8
-                //-         label.common(v-if="totalOfNeeurofit !== 0") {{ isNeeuroFit }}
-                //-       .col-sm
-                //-         label.common(v-if="totalOfNeeurofit !== 0") {{ totalOfNeeurofit }} (with GST : {{ totalOfNeeurofit*1.08.toFixed(2) }})
-                //-   .col
-
-          section(style="margin-top:50px" v-show="this.sessions.length || this.recommended_session_pick.length" )
-            .gap.row.mt-4
-              .gap
-                
-                    label.common.amountjustify(for="collect" ) Amount to be Collected + GST [SGD]:
-                    label.common.amountjustify(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
-                    b-btn( v-if="viewamtcollect" v-b-modal.paymentConfirmation style="background: #917093;font-size: 17px;width: 20%;float:right;margin:50px 20px 0px 0px") Continue
-              hr
                 //- input.numbers#collect(v-model="amtcollect " name="collect" type="text" readonly="readonly")
             
             //- 
@@ -1801,6 +1801,13 @@ div
 
     },
     computed: {
+      // autoSelectNeeuroFIt(){
+      //   if (this.mocaVal) {
+      //     if (this.mocaVal >= 18 && this.ovyearSelected) {
+      //       this.neeurofitFeeTotal = this.neeuroFitFees;
+      //     }
+      //   }
+      // },
       transportTotalView(){
         if(this.transport.isIncluded){
           let total_amount = 0;
