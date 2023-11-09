@@ -755,7 +755,7 @@ div
                     .col-sm.text-left
                       p NRIC No. of Client:
                     .col-sm
-                    | {{ clientdata.nricno}}
+                    | {{ clientdata.crb5c_nricno}}
 
                 .row.mt-3
                     .col-sm.text-left
@@ -803,12 +803,12 @@ div
                     .col-sm
                         p Contact Number:
                     .col-sm
-                        input.form-control(type="text" v-model="fwf")
+                        input.form-control(type="number" v-model="fwf")
                   .row.mt-5
                     .col-sm 
                         p Date:
                     .col-sm
-                        input.form-control(type="text" v-model="fwf")
+                        input.form-control(type="date" v-model="fwf")
 
                 //- input.numbers#collect(v-model="amtcollect " name="collect" type="text" readonly="readonly")
             
