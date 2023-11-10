@@ -1656,8 +1656,8 @@ div
         crb5c_neeurofitamount: this.isCipSelected ? 0 : parseInt(this.neeurofitFeeTotal) ,
         crb5c_meanstestresult: parseInt(this.subsidyAmount),
         crb5c_transporttotal: parseInt((this.transport.fixedFee * (1 - ((this.subsidyAmount ?? 0) / 100))).toFixed(2)),
-        crb5c_transportincluded: this.transport.isIncluded,
-        crb5c_toteboardincluded: this.subs2,
+        crb5c_transportincluded: this.transport.isIncluded ? 1 : 0,
+        crb5c_toteboardincluded: this.subs2 ? 1 : 0,
         // crb5c_cip1stsessionformat: this.firstSesFormat,
         // crb5c_cip2ndsessionformat: this.secondSesFormat,
        };
