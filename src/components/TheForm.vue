@@ -1590,10 +1590,10 @@ div
        };
 
       
-        const { data1 } = await this.$store.state.axios.post(`/crb5c_fowserviceagreements`,payload1);
-        console.log('main',data1)
+        const { data } = await this.$store.state.axios.post(`/crb5c_fowserviceagreements`,payload1);
+        console.log('main',data)
 
-        let id = data1.crb5c_fowserviceagreementid
+        let id = data.crb5c_fowserviceagreementid
         console.log('crb5c_fowserviceagreementid',id)
 
         const payload2 = { 
