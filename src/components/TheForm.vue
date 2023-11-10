@@ -1650,7 +1650,7 @@ div
         crb5c_additionalfee: this.transport.amountToBePaid,
         crb5c_refundabledeposit: parseInt(this.refundableDeposit),
         // crb5c_onetimeassessmentother: this.,
-        crb5c_neeurofitsubscription: this.neeurofitFeeTotal ? true : false,
+        crb5c_neeurofitsubscription: this.neeurofitFeeTotal ? 1 : 0,
         // crb5c_onetimeassessmentpaid: ,
         // crb5c_onetimeassessmentwaived: ,
         crb5c_neeurofitamount: this.isCipSelected ? 0 : parseInt(this.neeurofitFeeTotal) ,
