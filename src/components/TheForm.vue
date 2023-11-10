@@ -1585,11 +1585,14 @@ div
         this.staffSignatureImg = this.$refs.staffSignature.toDataURL().split(',')[1];
         
         const payload1 = { 
+          crb5c_caregivername: this.caregiverName,
+          crb5c_clientname : this.caregiverClientName,
+          crb5c_clientic: this.caregiverClientIc,
+          crb5c_relationship: this.caregiverRelationship,
           crb5c_caregiversignature: this.caregiverSignatureImg,
           crb5c_clientid: this.$store.state.assessment_client_id,
        };
 
-      
         const { data } = await this.$store.state.axios.post(`/crb5c_fowserviceagreements`,payload1);
         console.log('main',data)
 
