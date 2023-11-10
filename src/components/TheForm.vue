@@ -262,7 +262,7 @@ div
               label.common(for="comment") Comment/Observation about the client
               textarea#comment.p-2(name="comment" rows="3" type="text" placeholder="Comment about the client" v-model="checking")
             hr
-          section()
+          section(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
             .row.gap
               .col-md-2 
                 label.common.gap Fee & Payment:
@@ -352,8 +352,8 @@ div
                                 | Additional Fee: $
                             b-col.col-2
                               b-form-input(v-model="transport.amountToBePaid" type="number" placeholder="Amount")
-          //v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)"
-          section.mt-5()
+          
+          section.mt-5(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
             .formed
               .row
                 .col-sm-3
@@ -497,7 +497,7 @@ div
                         p Kindly indicate name of the client and invoice number at the back of the cheque.
 
                   
-                section.submitbtn(v-if="modeofpayment" @click="showConfimrationModal")
+                section.submitbtn(v-if="modeofpayment" @click="submitassessment")
                   b-btn(style="background: #917093;font-size: 17px;width: 20%;") Submit
 
 
@@ -676,15 +676,15 @@ div
                   //-   div(style="text-align: right;width: 100%;font-size: 20px;")
                   //-     label(v-show="totalforCIP") ${{totalforCIP}} for {{ CIPdays }} session
             
-          // v-show="(this.sessions.length || this.recommended_session_pick.length)  && !isCipSelected"
-          section.mt-5( style="margin-top:50px")
+          // 
+          section.mt-5(v-show="(this.sessions.length || this.recommended_session_pick.length)  && !isCipSelected" style="margin-top:50px")
             label.common NeeuroFit Subscription:
             .formed.gap
                 input#neeurofit.checkbox_circle(v-model="neeurofitFeeTotal" type="checkbox" :value="neeuroFitFees")
                 label.gapped.text-small(for="neeurofit") Centre-based NeeuroFIT 6 months subcription $240
 
-          //v-show="this.sessions.length || this.recommended_session_pick.length"
-          section(style="margin-top:50px" )
+          //
+          section(style="margin-top:50px" v-show="this.sessions.length || this.recommended_session_pick.length")
               .row.mt-5
                 .col 
                   label.common Additional fee:
@@ -737,9 +737,10 @@ div
                 
                     label.common.amountjustify(for="collect" ) Amount to be Collected + GST [SGD]:
                     label.common.amountjustify(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
-                    b-btn( v-if="viewamtcollect" v-b-modal.paymentConfirmation style="background: #917093;font-size: 17px;width: 20%;float:right;margin:50px 20px 0px 0px") Continue
+                    b-btn(@click="navigateToServiceForm") Continue to Agreement 
+                    
               hr
-              section
+              section(v-if="viewServiceForm")
                 h2.mt-5 Service Agreement Form
                 .row.mt-5
                     .col-sm.text-left
@@ -802,6 +803,8 @@ div
                         p Date:
                     .col-sm
                         input.form-control(type="date" v-model="serviceAgreementDate")
+                  .row.mt-5 
+                    b-btn( v-if="viewamtcollect" v-b-modal.paymentConfirmation style="background: #917093;font-size: 17px;width: 20%;float:right;margin:50px 20px 0px 0px") Continue
                   
                   //- .row(v-if="imagesSign")
                   //-   img(:src="'data:image/jpeg;base64,' + imagesSign[0].crb5c_caregiversignature")
@@ -858,6 +861,7 @@ div
     // emits: ["newresource"],
     data() {
       return {
+        viewServiceForm: false,
         caregiverName: '',
         caregiverRelationship: '',
         caregiverClientName: '',
@@ -1159,6 +1163,9 @@ div
       // this.getImagesInfos();
     },
     methods: {
+      navigateToServiceForm(){
+        this.viewServiceForm = true;
+      },
       clearadhoc(){
         this.adHocItems = {
           remark : '',
@@ -1236,10 +1243,10 @@ div
         await this.filterFees();
 
       },
-      getImage(){
-        this.signatureImg = this.$refs.handWrite.toDataURL();
-        this.submitassessment();
-      },
+      // getImage(){
+      //   this.signatureImg = this.$refs.handWrite.toDataURL();
+      //   this.submitassessment();
+      // },
       firstSesDay(date){
         return date ? dayjs(this.firSession).format('dddd') : 'None';
       },
