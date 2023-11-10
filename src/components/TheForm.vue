@@ -1580,7 +1580,34 @@ div
       showConfimrationModal(){
         // this.$bvModal.show("confrimationModal");
       },
-     async submitassessment(){
+      async submitServiceAgreement(){
+        this.caregiverSignatureImg = this.$refs.caregiverSignature.toDataURL().split(',')[1];
+        this.staffSignatureImg = this.$refs.staffSignature.toDataURL().split(',')[1];
+        
+        const payload1 = { 
+          crb5c_caregiversignature: this.caregiverSignatureImg,
+          crb5c_clientid: this.$store.state.assessment_client_id,
+       };
+
+      
+        const { data1 } = await this.$store.state.axios.post(`/crb5c_fowserviceagreements`,payload1);
+        console.log('main',data1)
+
+        let id = data1.crb5c_fowserviceagreementid
+        console.log('crb5c_fowserviceagreementid',id)
+
+        const payload2 = { 
+          crb5c_dsgsignature: this.staffSignatureImg,
+        };
+
+        const { data2 } = await this.$store.state.axios.patch(`/crb5c_fowserviceagreements(${id})`,payload2);
+        console.log('patching img',data2)
+
+        alert('Client Assessment is successfully submitted!');
+
+        window.close();
+      },
+      async submitassessment(){
       this.totalscoreMoca = this.totalscore;
       this.totalscoreEq = this.eq5dcounter;
   
@@ -1662,36 +1689,12 @@ div
         // crb5c_cip2ndsessionformat: this.secondSesFormat,
        };
        
-        const { data } = this.$store.state.axios.post(
+        const { data } = await this.$store.state.axios.post(
           `/crb5c_fowassessmentforms`,payload);
-        console.log(data)
-  
-        this.caregiverSignatureImg = this.$refs.caregiverSignature.toDataURL().split(',')[1];
-        this.staffSignatureImg = this.$refs.staffSignature.toDataURL().split(',')[1];
         
-        const payload1 = { 
-          crb5c_caregiversignature: this.caregiverSignatureImg,
-          crb5c_clientid: this.$store.state.assessment_client_id ? this.$store.state.assessment_client_id : '2343434234',
-       };
-
-      
-        const { data1 } = await this.$store.state.axios.post(
-          `/crb5c_fowserviceagreements`,payload1);
-        console.log('main',data1)
-
-        let id = data1.crb5c_fowserviceagreementid
-
-        const payload2 = { 
-          crb5c_dsgsignature: this.staffSignatureImg,
-       };
-
-       const { data2 } = await this.$store.state.axios.patch(
-          `/crb5c_fowserviceagreements(${id})`,payload2);
-        console.log('patching img',data2)
-
-        alert('Client Assessment is successfully submitted!');
-
-        window.close();
+        console.log('data',data)
+  
+        await this.submitServiceAgreement();
     },
       pick_answer_naming(val){
         if(this[`vis${val}`] == '0'){
