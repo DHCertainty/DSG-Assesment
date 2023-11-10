@@ -730,8 +730,8 @@ div
                 //-       .col-sm
                 //-         label.common(v-if="totalOfNeeurofit !== 0") {{ totalOfNeeurofit }} (with GST : {{ totalOfNeeurofit*1.08.toFixed(2) }})
                 //-   .col
-                style="margin-top:50px" v-show="this.sessions.length || this.recommended_session_pick.length" 
-          section()
+                
+          section(style="margin-top:50px" v-show="this.sessions.length || this.recommended_session_pick.length" )
             .gap.row.mt-4
               .gap
                 
