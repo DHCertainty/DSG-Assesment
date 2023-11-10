@@ -262,7 +262,98 @@ div
               label.common(for="comment") Comment/Observation about the client
               textarea#comment.p-2(name="comment" rows="3" type="text" placeholder="Comment about the client" v-model="checking")
             hr
-          section.mt-5(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
+          section()
+            .row.gap
+              .col-md-2 
+                label.common.gap Fee & Payment:
+                  //- .col-auto 
+                  //-   .formed.gap
+                  //-     input#no(v-model="no" name="subsidy" type="radio" value="no" @click="revert()")
+                  //-     label(for="no") &nbsp;No
+                  //- .col-auto 
+                  //-   .formed.gap.gapbot
+                  //-     input#yes( v-model="subsidy" name="subsidy" type="radio" value="yes")
+                      label(for="yes") &nbsp;Yes
+            .centerCheckbox
+              input#subsidytoggle.checkbox_circle(v-model="subsidy" v-b-toggle.subsidy_box type="checkbox" value="yes")
+              label(for="subsidytoggle").m-3.subsidy_label Subsidy included
+            b-collapse#subsidy_box
+              b-card
+                section
+                    .formed
+                      .formed.gap
+                        input#dsg1.checkbox_circle(v-model="subs1" name="subsidy1" type="checkbox" value="dsg1")
+                        label.long.gapped(for="dsg1") DSG
+                        .row.gap(v-show="subs1")
+                            .col-md-2 
+                              input.numbers#means(name="means" type="number" min="20" v-model="subs1val")
+                            .col-md-2 
+                              b-form-select.numbers(v-model="dsgsubsidy" :options="subsidyoptions")
+                            .col-md-2
+                              label.common subsidy
+                              //- checknationality
+                      .gap 
+                        input#dsg2.checkbox_circle(v-model="subs2" name="subsidy2" type="checkbox" value="dsg2" :disabled="false")
+                        label.long.gapped(for="dsg2") Toteboard
+                        .row.gap(v-show="subs2")
+                          .col-md-2 
+                            label.common Means Test Result
+                          .col-md-2 
+                            v-select(v-model="subsidyAmount" :options="clientdata.crb5c_citizenship == 0 ?  toteboardSG : toteboardPR")
+                          .col-md-2
+                            label.common % subsidy
+                      .formed.gap.mb-4
+                        input#dsg3.checkbox_circle(v-model="subs3" name="subsidy3" type="checkbox" value="dsg3" disabled)
+                        label.long.gapped(for="dsg3") Others
+                        .formed.gap(v-show="subs3")
+                          label.common(for="others") Specify: 
+                          input.numbers-half#others(name="others" type="text")
+                      //- .formed.gapbot(v-show="subs1 || subs2 || subs3 ")
+                      //-     label.common(for="subsid" style="justify-content:end") Amount Subsidized:
+                      //-     .row(style="justify-content:end")
+                      //-       input.small-input-width#subsid(name="subsid" type="number" min="0")
+                //- hr
+                b-row(v-if="subs2")
+                  b-col.col-12
+                    b-row.align-items-center
+                      b-col.col-12.my-3
+                        input.checkbox_circle(id="transport-checkbox" v-model="transport.isIncluded" name="transport-checkbox" type="checkbox")
+                        label.long.gapped(for="transport-checkbox")
+                          | Transport Included ${{  (transport.fixedFee * (1 - ((subsidyAmount ?? 0) / 100))).toFixed(2) }}
+                    b-collapse(id="transport-included-section" v-model="transport.isIncluded")
+                      b-row.my-2
+                        b-col.col-12
+                          b-row.align-items-center
+                            b-col.col-2
+                              label
+                                | Start Postal Code:
+                            b-col.col-2
+                              b-form-input(v-model="transport.startPostalCode" type="number" placeholder="Enter postal code")
+                      b-row
+                        b-col.col-12
+                          b-row.align-items-center
+                            b-col.col-2
+                              label
+                                | Destination Postal Code:
+                            b-col.col-2
+                              b-form-input(v-model="transport.destinationPostalCode" type="number" placeholder="Enter postal code" disabled)
+                      b-row.my-4
+                        b-col.col-3
+                          b-button(style="background-color: rgb(118, 80, 137); color: #fff; font-weight: bold; border-radius: 0.625rem" @click="checkDistanceTransport")
+                            | Check distance
+                      b-row.my-2
+                        b-col.col-12
+                          iframe(style="width: 100%;" id="iframe" height="500" width="500" :src="transport.iframeSrc")
+                      b-row.my-4
+                        b-col.col-12
+                          b-row.align-items-center
+                            b-col.col-2
+                              label
+                                | Additional Fee: $
+                            b-col.col-2
+                              b-form-input(v-model="transport.amountToBePaid" type="number" placeholder="Amount")
+          //v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)"
+          section.mt-5()
             .formed
               .row
                 .col-sm-3
@@ -298,7 +389,7 @@ div
                   .row 
                     .col.m-2
                       label.text-small.m-4  Remarks: #[input.mx-2.modified_remark_input(type="text" v-model="adHocItems.remark")]
-                      label.text-small.m-4 Amount $ : #[input.mx-2(type="number" v-model="adHocItems.total")]
+                      label.text-small.m-4 Amount $ : #[input.mx-2(type="number" v-model="adHocItems.total" value="")]
                   .row.mt-4
                     .row.m-4
                       .col-sm-1
@@ -469,106 +560,7 @@ div
                                   label(for="residence") &nbsp;Residence 
                 template(#modal-footer="{ok}")
                   b-btn(v-show="location" size="md" @click="addNew") Add
-
-            .formed(style="margin-top:40px" v-show="this.sessions.length || this.recommended_session_pick.length")
-              label.common.gap(for="admission") Admission date:
-              input.numbers-half#admission(v-model="adm" name="admission" type="date")
-  
-          
-
-          section(v-show="this.sessions.length || this.recommended_session_pick.length")
-            .row.gap
-              .col-md-2 
-                label.common.gap Fee & Payment:
-                  //- .col-auto 
-                  //-   .formed.gap
-                  //-     input#no(v-model="no" name="subsidy" type="radio" value="no" @click="revert()")
-                  //-     label(for="no") &nbsp;No
-                  //- .col-auto 
-                  //-   .formed.gap.gapbot
-                  //-     input#yes( v-model="subsidy" name="subsidy" type="radio" value="yes")
-                      label(for="yes") &nbsp;Yes
-            .centerCheckbox
-              input#subsidytoggle.checkbox_circle(v-model="subsidy" v-b-toggle.subsidy_box type="checkbox" value="yes")
-              label(for="subsidytoggle").m-3.subsidy_label Subsidy included
-
-          b-collapse#subsidy_box
-              b-card
-                section
-                    .formed
-                      .formed.gap
-                        input#dsg1.checkbox_circle(v-model="subs1" name="subsidy1" type="checkbox" value="dsg1")
-                        label.long.gapped(for="dsg1") DSG
-                        .row.gap(v-show="subs1")
-                            .col-md-2 
-                              input.numbers#means(name="means" type="number" min="20" v-model="subs1val")
-                            .col-md-2 
-                              b-form-select.numbers(v-model="dsgsubsidy" :options="subsidyoptions")
-                            .col-md-2
-                              label.common subsidy
-                              //- checknationality
-                      .gap 
-                        input#dsg2.checkbox_circle(v-model="subs2" name="subsidy2" type="checkbox" value="dsg2" :disabled="false")
-                        label.long.gapped(for="dsg2") Toteboard
-                        .row.gap(v-show="subs2")
-                          .col-md-2 
-                            label.common Means Test Result
-                          .col-md-2 
-                            v-select(v-model="subsidyAmount" :options="clientdata.crb5c_citizenship == 0 ?  toteboardSG : toteboardPR")
-                          .col-md-2
-                            label.common % subsidy
-                      .formed.gap.mb-4
-                        input#dsg3.checkbox_circle(v-model="subs3" name="subsidy3" type="checkbox" value="dsg3" disabled)
-                        label.long.gapped(for="dsg3") Others
-                        .formed.gap(v-show="subs3")
-                          label.common(for="others") Specify: 
-                          input.numbers-half#others(name="others" type="text")
-                      //- .formed.gapbot(v-show="subs1 || subs2 || subs3 ")
-                      //-     label.common(for="subsid" style="justify-content:end") Amount Subsidized:
-                      //-     .row(style="justify-content:end")
-                      //-       input.small-input-width#subsid(name="subsid" type="number" min="0")
-                //- hr
-                b-row(v-if="subs2")
-                  b-col.col-12
-                    b-row.align-items-center
-                      b-col.col-12.my-3
-                        input.checkbox_circle(id="transport-checkbox" v-model="transport.isIncluded" name="transport-checkbox" type="checkbox")
-                        label.long.gapped(for="transport-checkbox")
-                          | Transport Included ${{  (transport.fixedFee * (1 - ((subsidyAmount ?? 0) / 100))).toFixed(2) }}
-                    b-collapse(id="transport-included-section" v-model="transport.isIncluded")
-                      b-row.my-2
-                        b-col.col-12
-                          b-row.align-items-center
-                            b-col.col-2
-                              label
-                                | Start Postal Code:
-                            b-col.col-2
-                              b-form-input(v-model="transport.startPostalCode" type="number" placeholder="Enter postal code")
-                      b-row
-                        b-col.col-12
-                          b-row.align-items-center
-                            b-col.col-2
-                              label
-                                | Destination Postal Code:
-                            b-col.col-2
-                              b-form-input(v-model="transport.destinationPostalCode" type="number" placeholder="Enter postal code" disabled)
-                      b-row.my-4
-                        b-col.col-3
-                          b-button(style="background-color: rgb(118, 80, 137); color: #fff; font-weight: bold; border-radius: 0.625rem" @click="checkDistanceTransport")
-                            | Check distance
-                      b-row.my-2
-                        b-col.col-12
-                          iframe(style="width: 100%;" id="iframe" height="500" width="500" :src="transport.iframeSrc")
-                      b-row.my-4
-                        b-col.col-12
-                          b-row.align-items-center
-                            b-col.col-2
-                              label
-                                | Additional Fee:
-                            b-col.col-2
-                              b-form-input(v-model="transport.amountToBePaid" type="number" placeholder="Amount")
-
-          
+      
           section.mt-5(v-show="this.sessions.length || this.recommended_session_pick.length")
             label.common Applicable Sessions (excluding GST):
             .formed
@@ -579,6 +571,7 @@ div
                   label(v-else) ${{ fees4val  }}  
                     span(v-if="transport.isIncluded") (with transport fee: ${{ transportTotalView.toFixed(2) }})
             .formed
+
               //- .formed.gap
               //-   input#80.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="80" v-show="gotGroupFee  && checkCenter && !subs2")
               //-   label.gapped.text-small(for="80" v-show="gotGroupFee && !subs2") Centre-based 3-HR FOW group session $80
@@ -667,7 +660,9 @@ div
                           b-row
                             b-col.d-flex.justify-content-end.align-items-end(style="font-size: 20px;")
                               label(v-show="totalforCIP") ${{totalforCIP}} for {{ CIPdays }} session
-  
+              .formed(style="margin-top:40px" v-show="this.sessions.length || this.recommended_session_pick.length")
+                label.common.gap(for="admission") Admission date:
+                input.numbers-half#admission(v-model="adm" name="admission" type="date")
   
                   //- b-card
                   //-   label.common.gap(for="admission") 1st Session date:
@@ -681,15 +676,15 @@ div
                   //-   div(style="text-align: right;width: 100%;font-size: 20px;")
                   //-     label(v-show="totalforCIP") ${{totalforCIP}} for {{ CIPdays }} session
             
-          
-          section.mt-5(v-show="(this.sessions.length || this.recommended_session_pick.length)  && !isCipSelected" style="margin-top:50px")
+          // v-show="(this.sessions.length || this.recommended_session_pick.length)  && !isCipSelected"
+          section.mt-5( style="margin-top:50px")
             label.common NeeuroFit Subscription:
             .formed.gap
                 input#neeurofit.checkbox_circle(v-model="neeurofitFeeTotal" type="checkbox" :value="neeuroFitFees")
                 label.gapped.text-small(for="neeurofit") Centre-based NeeuroFIT 6 months subcription $240
 
-          //
-          section(style="margin-top:50px" v-show="this.sessions.length || this.recommended_session_pick.length")
+          //v-show="this.sessions.length || this.recommended_session_pick.length"
+          section(style="margin-top:50px" )
               .row.mt-5
                 .col 
                   label.common Additional fee:
@@ -735,8 +730,8 @@ div
                 //-       .col-sm
                 //-         label.common(v-if="totalOfNeeurofit !== 0") {{ totalOfNeeurofit }} (with GST : {{ totalOfNeeurofit*1.08.toFixed(2) }})
                 //-   .col
-
-          section(style="margin-top:50px" v-show="this.sessions.length || this.recommended_session_pick.length" )
+                style="margin-top:50px" v-show="this.sessions.length || this.recommended_session_pick.length" 
+          section()
             .gap.row.mt-4
               .gap
                 
@@ -756,13 +751,11 @@ div
                       p NRIC No. of Client:
                     .col-sm
                     | {{ clientdata.crb5c_nricno}}
-
                 .row.mt-3
                     .col-sm.text-left
                       p Services Provided:
                     .col-sm
                       p Family of Wisdom (Enrichment) Programme:
-
                 .row.mt-3
                     .col-sm.text-left
                       p Date of Commencement:
@@ -791,12 +784,12 @@ div
                   .row.mt-4
                     .col 
                       .row.mt-5.mx-1
-                            VueSignatureCanvas.gap(ref="handWrite" :canvasProps="{class: 'sig-canvas'}")
+                            VueSignatureCanvas.gap(ref="caregiverSignature" :canvasProps="{class: 'sig-canvas'}")
                       .row.mt-2
                             p.text-center --- Caregiver Sign here ---
                     .col 
                       .row.mt-5.mx-1
-                            VueSignatureCanvas.gap(ref="handWrite" :canvasProps="{class: 'sig-canvas'}")
+                            VueSignatureCanvas.gap(ref="staffSignature" :canvasProps="{class: 'sig-canvas'}")
                       .row.mt-2
                             p.text-center --- Staff Sign here ---
                   .row.mt-5  
@@ -809,6 +802,11 @@ div
                         p Date:
                     .col-sm
                         input.form-control(type="date" v-model="fwf")
+                  .row.mt-5
+                        b-btn(@click="submitSignature") Submit signature
+                  //- .row(v-if="imagesSign")
+                  //-   img(:src="'data:image/jpeg;base64,' + imagesSign[0].crb5c_caregiversignature")
+                    
 
                 //- input.numbers#collect(v-model="amtcollect " name="collect" type="text" readonly="readonly")
             
@@ -861,10 +859,11 @@ div
     // emits: ["newresource"],
     data() {
       return {
+        imagesSign: [],
         isNeeuroFit: 'NeeuroFIT 6 months subcription',
         adHocItems:{
           remark : '',
-          total: 0,
+          total: null,
           isRecurring: false,
           isIncludeInFee: false,
         },
@@ -876,10 +875,10 @@ div
         neeuroFitFees: 240,
         applicableFeeTotal: [],
         additionalFeeTotal: [],
-        refundableFeeTotal: 0,
-        redundableFeeTotal: 0,
-        neeurofitFeeTotal: 0,
-        one_time_other_value: 0,
+        refundableFeeTotal: null,
+        redundableFeeTotal: null,
+        neeurofitFeeTotal: null,
+        one_time_other_value: null,
         additionalFees: {
           one_time :{
             price: 50,
@@ -931,9 +930,9 @@ div
         isAMT: false,
         isMOCA: false,
         isMMSE: false,
-        mmseVal: 0,
-        amtVal: 0,
-        mocaVal: 0,
+        mmseVal: null,
+        amtVal: null,
+        mocaVal: null,
         gstval: 1.08,
         checkCenter:false,
         checkResidence:false,
@@ -1122,6 +1121,7 @@ div
     },
     compatConfig: { MODE: 3 },
     async mounted() {
+      
       const component = this;
       this.$root.$on('getFormData', function(){
         component.getdatainform();
@@ -1148,12 +1148,13 @@ div
       // console.log('this.listPublicHolidayCurrentMonth', this.listPublicHolidayCurrentMonth)
 
       this.getProgrammeInfos();
+      // this.getImagesInfos();
     },
     methods: {
       clearadhoc(){
         this.adHocItems = {
           remark : '',
-          total: 0,
+          total: null,
           isRecurring: false,
           isIncludeInFee: false,
         }
@@ -1402,6 +1403,9 @@ div
         this.filterTypeValues = [];
 
         for (let i = 0 ; i < this.sessions.length; i++){
+          if (this.sessions[i].type == 'Group' && this.sessions[i].location=="Center" && this.subs2){
+            this.filterTypeValues.push(4)
+          } 
           if (this.sessions[i].type == 'Group' && this.sessions[i].location=="Center"){
             this.filterTypeValues.push(0)
           } 
@@ -1414,12 +1418,12 @@ div
           else if (this.sessions[i].type == 'Individual' && this.sessions[i].location=="Video-Call"){
             this.filterTypeValues.push(3)
           } 
-          else{
-            this.filterTypeValues.push(4)
-          }
         }
 
         for (let i = 0 ; i < this.recommended_session_pick.length; i++){
+          if (this.recommended_session_pick[i].crb5c_sessiontype === 0 && this.subs2){
+            this.filterTypeValues.push(4)
+          } 
           if (this.recommended_session_pick[i].crb5c_sessiontype === 0){
             this.filterTypeValues.push(0)
           } 
@@ -1432,9 +1436,6 @@ div
           else if (this.recommended_session_pick[i].crb5c_sessiontype === 3){
             this.filterTypeValues.push(3)
           } 
-          else{
-            this.filterTypeValues.push(4)
-          }
         }
 
         this.filterTypeValues = [...new Set(this.filterTypeValues)];
@@ -1533,6 +1534,21 @@ div
           this.programmeInfos.sort((a, b) => a.crb5c_programmename.localeCompare(b.crb5c_programmename))
           // console.log('programme data',this.programmeInfos);
     },
+    async getImagesInfos(){
+          let id = '9d8fc0b8-157f-ee11-8179-002248ecdc58';
+          let paramObj = {
+            $select:'crb5c_dsgsignature,crb5c_caregiversignature',
+            $filter: `crb5c_fowserviceagreementid eq '${id}'`,
+          };
+          let params = new URLSearchParams(paramObj);
+          let { data } = await this.$store.state.axios.get(
+            `crb5c_fowserviceagreements/?${params.toString()}`
+          );
+          this.imagesSign = data.value;
+          console.log('this.imagesSign',this.imagesSign)
+          
+          // console.log('programme data',this.programmeInfos);
+        },
     async getDsgHoliday(){
           let paramObj = {
             $select:'crb5c_date,crb5c_name',
@@ -1562,8 +1578,8 @@ div
         crb5c_playedtabletopgame: this.checker3,
         crb5c_playedneeurofitgame: this.neeuro,
         crb5c_educationlevel: this.edulev,
-        crb5c_clientname:this.$store.state.assessment_client_name,
-        crb5c_clientid: this.$store.state.assessment_client_id,
+        crb5c_clientname:this.$store.state.assessment_client_name ? this.$store.state.assessment_client_name : 'John testing',
+        crb5c_clientid: this.$store.state.assessment_client_id ? this.$store.state.assessment_client_id : '2343434234',
         crb5c_alternatetrailmaking: parseInt(this.vis1),
         crb5c_copycube: parseInt(this.vis2),
         crb5c_lion: parseInt(this.vis4),
@@ -1614,6 +1630,17 @@ div
         crb5c_mmsescore: (this.isMMSE) ? this.mmseVal : 0,
         crb5c_cip1stsession:  this.firSession,
         crb5c_cip2ndsession: this.secSession,
+        crb5c_additionalfee: this.transport.amountToBePaid,
+        crb5c_refundabledeposit: parseInt(this.refundableDeposit),
+        // crb5c_onetimeassessmentother: this.,
+        crb5c_neeurofitsubscription: this.neeurofitFeeTotal ? true : false,
+        // crb5c_onetimeassessmentpaid: ,
+        // crb5c_onetimeassessmentwaived: ,
+        crb5c_neeurofitamount: this.isCipSelected ? 0 : parseInt(this.neeurofitFeeTotal) ,
+        crb5c_meanstestresult: parseInt(this.subsidyAmount),
+        crb5c_transporttotal: parseInt((this.transport.fixedFee * (1 - ((this.subsidyAmount ?? 0) / 100))).toFixed(2)),
+        crb5c_transportincluded: this.transport.isIncluded,
+        crb5c_toteboardincluded: this.subs2,
         // crb5c_cip1stsessionformat: this.firstSesFormat,
         // crb5c_cip2ndsessionformat: this.secondSesFormat,
        };
@@ -1621,9 +1648,32 @@ div
         const { data } = this.$store.state.axios.post(
           `/crb5c_fowassessmentforms`,payload);
         console.log(data)
+  
+        this.caregiverSignatureImg = this.$refs.caregiverSignature.toDataURL().split(',')[1];
+        this.staffSignatureImg = this.$refs.staffSignature.toDataURL().split(',')[1];
+        
+        const payload1 = { 
+          crb5c_caregiversignature: this.caregiverSignatureImg,
+          crb5c_clientid: this.$store.state.assessment_client_id ? this.$store.state.assessment_client_id : '2343434234',
+       };
+
+      
+        const { data1 } = await this.$store.state.axios.post(
+          `/crb5c_fowserviceagreements`,payload1);
+        console.log('main',data1)
+
+        let id = data1.crb5c_fowserviceagreementid
+
+        const payload2 = { 
+          crb5c_dsgsignature: this.staffSignatureImg,
+       };
+
+       const { data2 } = await this.$store.state.axios.patch(
+          `/crb5c_fowserviceagreements(${id})`,payload2);
+        console.log('patching img',data2)
 
         alert('Client Assessment is successfully submitted!');
-        
+
         window.close();
     },
       pick_answer_naming(val){
@@ -1683,6 +1733,16 @@ div
       }
     },
     watch: {
+      firSession(val){
+        if (val) {
+          this.adm = val;
+        }
+      },
+      checker4(val){
+        if (val) {
+          this.additionalFeeTotal.push(this.additionalFees.one_time.price)
+        }
+      },
       isCipSelected:{
         deep: true,
         handler: function (val) {
@@ -1691,6 +1751,13 @@ div
           this.CIPday = 0;
         }
         }
+      },
+      totalscore(value){
+        if (value >= 18 && this.ovyearSelected) {
+          console.log('moca:',this.totalscoreMoca,this.ovyearSelected )
+          this.neeurofitFeeTotal = this.neeuroFitFees;
+        }
+        
       },
       gp(value) {
         if( value === true) {
