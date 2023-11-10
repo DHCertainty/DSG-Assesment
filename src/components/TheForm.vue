@@ -750,7 +750,7 @@ div
                     .col-sm.text-left
                       p NRIC No. of Client:
                     .col-sm
-                    | {{ clientdata.crb5c_nricno}}
+                      | {{ clientdata.crb5c_nricno}}
                 .row.mt-3
                     .col-sm.text-left
                       p Services Provided:
@@ -769,7 +769,7 @@ div
                       
 
                 .row.mt-5(style="text-align:justify;line-height:5vh")
-                  p I, #[input.form-control(type="text" v-model="fwf")] (NRIC Name), confirm that I am the #[input.form-control(type="text" v-model="fwf")] (relationship) of #[input.form-control(type="text" v-model="fwf")] (NRIC Name of client),#[input.form-control(type="text" v-model="fwf")] (NRIC No.).
+                  p I, #[input.form-control(type="text" v-model="caregiverName")] (NRIC Name), confirm that I am the #[input.form-control(type="text" v-model="caregiverRelationship" )] (relationship) of #[input.form-control(type="text" v-model="caregiverClientName" )] (NRIC Name of client),#[input.form-control(type="text" v-model="caregiverClientIc")] (NRIC No.).
                   
                 hr  
                 section.mt-5(style="text-align:left;")
@@ -784,26 +784,25 @@ div
                   .row.mt-4
                     .col 
                       .row.mt-5.mx-1
-                            VueSignatureCanvas.gap(ref="caregiverSignature" :canvasProps="{class: 'sig-canvas'}")
+                            VueSignatureCanvas.gap.sig-canvas(ref="caregiverSignature" )
                       .row.mt-2
                             p.text-center --- Caregiver Sign here ---
                     .col 
                       .row.mt-5.mx-1
-                            VueSignatureCanvas.gap(ref="staffSignature" :canvasProps="{class: 'sig-canvas'}")
+                            VueSignatureCanvas.gap.sig-canvas(ref="staffSignature" )
                       .row.mt-2
                             p.text-center --- Staff Sign here ---
                   .row.mt-5  
                     .col-sm
                         p Contact Number:
                     .col-sm
-                        input.form-control(type="number" v-model="fwf")
+                        input.form-control(type="number" v-model="serviceAgreementContact")
                   .row.mt-5
                     .col-sm 
                         p Date:
                     .col-sm
-                        input.form-control(type="date" v-model="fwf")
-                  .row.mt-5
-                        b-btn(@click="submitSignature") Submit signature
+                        input.form-control(type="date" v-model="serviceAgreementDate")
+                  
                   //- .row(v-if="imagesSign")
                   //-   img(:src="'data:image/jpeg;base64,' + imagesSign[0].crb5c_caregiversignature")
                     
@@ -859,6 +858,12 @@ div
     // emits: ["newresource"],
     data() {
       return {
+        caregiverName: '',
+        caregiverRelationship: '',
+        caregiverClientName: '',
+        caregiverClientIc: '',
+        serviceAgreementContact: '',
+        serviceAgreementDate: '',
         imagesSign: [],
         isNeeuroFit: 'NeeuroFIT 6 months subcription',
         adHocItems:{
@@ -1146,7 +1151,10 @@ div
 
 
       // console.log('this.listPublicHolidayCurrentMonth', this.listPublicHolidayCurrentMonth)
-
+      let today = dayjs().format('YYYY-MM-DD')
+      this.serviceAgreementDate = today;
+      console.log('this.serviceAgreementDate',this.serviceAgreementDate)
+      
       this.getProgrammeInfos();
       // this.getImagesInfos();
     },
@@ -1510,6 +1518,8 @@ div
           `crb5c_fow_customers/?${params.toString()}`
           );
         this.clientdata = data.value[0];
+        this.caregiverClientIc = this.clientdata.crb5c_nricno;
+        this.caregiverClientName = this.clientdata.crb5c_no;
         // console.log('form data',this.clientdata);
       },
       async getSessionScheduleinform(){
