@@ -31,28 +31,40 @@
 
         window.addEventListener("load", async ()=>{
 
-           let entityId = window.top.Xrm.Page.data.entity.getId();
-           console.log('ID:',entityId)
+            let entityId = '';
 
-           let entityLogicalName = "crb5c_fow_customer";
-           let options = new URLSearchParams({
-            $select:'crb5c_no',
-            $filter:`crb5c_fow_customerid eq '${entityId}'`,
-           });
+            this.isLocal = location.host.includes("localhost");
 
-           let {entities} = await window.top.Xrm.WebApi.retrieveMultipleRecords(entityLogicalName, '?'+options.toString());
-           let entity = transformData(entities[0]);
+            if (!isLocal) {
+                entityId = window.top.Xrm.Page.data.entity.getId();
+                console.log('ID:',entityId)
+            }
+            else{
+                entityId = '66d28ad0-e27e-ed11-81ac-000d3a85cb45';
+                console.log('ID:',entityId)
+            }
 
-           const app = new Vue({
-            el: "#app",
-            template:"#appTemplate",
-            data(){
-                return {
-                    entity,
-                    // entity2
-                }
-            },
-        })
+
+            let entityLogicalName = "crb5c_fow_customer";
+            let options = new URLSearchParams({
+                $select:'crb5c_no',
+                $filter:`crb5c_fow_customerid eq '${entityId}'`,
+            });
+
+            let {entities} = await window.top.Xrm.WebApi.retrieveMultipleRecords(entityLogicalName, '?'+options.toString());
+            let entity = transformData(entities[0]);
+
+            const app = new Vue({
+                el: "#app",
+                template:"#appTemplate",
+                data(){
+                    return {
+                        isLocal: false,
+                        entity,
+                        // entity2
+                    }
+                },
+            })
 
         });
 

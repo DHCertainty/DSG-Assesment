@@ -42,6 +42,7 @@ dayjs.tz.setDefault(defaultTimezone);
 export default {
   data(){
     return{
+      isLocal: false,
       edit_time:null,
       client_id: "",
       client_name: "",
@@ -49,8 +50,17 @@ export default {
     }
   },
   async mounted() {
-        
-    let clientId = this.$route.query.client_id;
+    let clientId = '';
+
+    this.isLocal = location.host.includes("localhost");
+
+    if(!this.isLocal){
+      clientId = this.$route.query.client_id;
+    }else{
+      clientId = '66d28ad0-e27e-ed11-81ac-000d3a85cb45';
+
+    }
+    
     if (!clientId) {
       const url = new URLSearchParams(window.location.href);
       const state = url.get('state');
@@ -81,7 +91,6 @@ export default {
       this.$store.commit('assessment_client_name',this.client_name);
       this.dateofassessment = dayjs().format("MM-DD-YYYY");
       this.$store.commit('assessment_date',this.dateofassessment);
-
       this.$root.$emit('getFormData')
     },
     editTime(){

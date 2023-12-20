@@ -6,6 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
    state () {
     return {
+      accessToken: null,
       msalApp: null,
       logindata: null,
       axios: null,
@@ -16,6 +17,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    accessToken(state, payload) {
+      state.accessToken = payload;
+   },
     msalApp(state, payload) {
        state.msalApp = payload;
     },

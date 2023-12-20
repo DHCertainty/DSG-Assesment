@@ -352,15 +352,15 @@ div
                                 | Additional Fee: $
                             b-col.col-2
                               b-form-input(v-model="transport.amountToBePaid" type="number" placeholder="Amount")
-          
-          section.mt-5(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
+          //v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)"
+          section.mt-5()
             .formed
               .row
-                .col-sm-3
+                .col-sm-3.align-self-center
                   label.common(for="session") Session Recommended: 
-                .col(style="text-align: right;")   
+                .col.col-auto(style="text-align: right;")   
                   b-btn#add-btn.mx-4(@click="addmethod(0)") + Pick Session 
-                .col(style="text-align: right;")   
+                .col.col-auto(style="text-align: right;")   
                   b-btn#add-btn.mx-4(@click="addmethod(1)") + Add New Session 
                   //- b-btn#add-btn(@click="addfile") + Add file 
               
@@ -378,7 +378,7 @@ div
               div.my-4.p-3.border(v-if="sessions.length" style="border-radius: 0.5rem;" )
                 .row
                   p.ma-4.p-4(v-for="(ses, index) in sessions" :key="index")
-                    | {{index+1+'.'}} {{ses.type}} - {{ ses.day }} {{ ses.time }} ( {{ ses.location }} ) 
+                    | {{index+1+'.'}} {{ses.name}} [{{ses.type}}] - {{ ses.day }} {{ ses.time }} ( {{ ses.location }} ) 
                     b-icon.delete_icon(icon="x-circle-fill" @click="removeSession(index)")
 
               //- b-modal#confrimationModal.modal_confimration(size="lg" title="Sign here" scrollable centered hide-footer)
@@ -409,7 +409,6 @@ div
                   label.common(for="collect") Amount to be Collected + GST [SGD]:
                   label.common(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
                     
-                  
                   hr
                 .mx-5
                     h1(style="font-weight:700;") Payment Instructions
@@ -501,15 +500,34 @@ div
                   b-btn(style="background: #917093;font-size: 17px;width: 20%;") Submit
 
 
-              b-modal#pick-session(size="lg" title="Add Session" scrollable centered hide-footer)         
-                  div.m-3(v-for="(session, index) in  schedule_info" :key="index" )
-                    input#group.mx-3(v-model="pick_sessions"  type="radio" :value="session" :id="session.crb5c_fow_session_scheduleid")
-                    label(:for="session.crb5c_fow_session_scheduleid") {{ session.crb5c_session_id }}
-                  b-btn( size="md" @click="addNewPickSession") Add
+              b-modal#pick-session(size="lg" title="Add Session" scrollable centered hide-footer) 
+                  div.p-3    
+                    div.m-3.p-1(v-for="(session, index) in  schedule_info" :key="index" )
+                      input#group.mx-3(v-model="pick_sessions"  type="radio" :value="session" :id="session.crb5c_fow_session_scheduleid")
+                      label(:for="session.crb5c_fow_session_scheduleid") {{ session.crb5c_session_id }}
+                  div.text-center.my-3
+                    b-btn.my-3( size="md" @click="addNewPickSession") Add
                   
-                    
-              
-              b-modal#add-session(size="md" title="Add Session" scrollable centered)         
+
+              b-modal#add-session(size="md" title="Add Session" scrollable centered) 
+                b-row.my-5
+                  b-col.col-auto
+                    label.common Session name:
+                  b-col
+                    input#group(v-model="newSessionTitle" type="text")  
+                  
+                b-row
+                  b-col.col-auto
+                    label.common Session Type:
+                  b-col
+                    b-form-select(v-model="newSessionType" :options="sessionType")
+
+                b-row
+                  b-col.col-auto
+                    label.common Report Type:
+                  b-col
+                    b-form-select(v-model="newDementiaType" :options="dementiaLvl")
+                   
                 p.common Type 
                   div
                     input#group(v-model="typeses" name="typeSes" type="radio" value="Group")
@@ -731,7 +749,8 @@ div
                 //-         label.common(v-if="totalOfNeeurofit !== 0") {{ totalOfNeeurofit }} (with GST : {{ totalOfNeeurofit*1.08.toFixed(2) }})
                 //-   .col
                 
-          section(style="margin-top:50px" v-show="this.sessions.length || this.recommended_session_pick.length" )
+          //v-show="this.sessions.length || this.recommended_session_pick.length"
+          section(style="margin-top:50px"  )
             .gap.row.mt-4
               .gap
                 
@@ -861,6 +880,9 @@ div
     // emits: ["newresource"],
     data() {
       return {
+        newDementiaType: '',
+        newSessionType: '',
+        newSessionTitle: '',
         viewServiceForm: false,
         caregiverName: '',
         caregiverRelationship: '',
@@ -876,6 +898,17 @@ div
           isRecurring: false,
           isIncludeInFee: false,
         },
+        dementiaLvl: [
+          {text: 'Mild', value: 0 },
+          {text: 'Moderate', value: 1 },
+          {text: 'Individual', value: 3 }
+        ],
+        sessionType: [
+          {text: 'Group HQ (Centre) Based', value: 0},
+          {text: 'One-to-one HQ (Centre) Based', value: 1},
+          {text: 'Home Based', value: 2},
+          {text: 'Virtual / Online / Zoom', value: 3},
+        ],
         adHocFeeTotal: [],
         pick_sessions: [],
         schedule_info: [],
@@ -1157,13 +1190,126 @@ div
       // console.log('this.listPublicHolidayCurrentMonth', this.listPublicHolidayCurrentMonth)
       let today = dayjs().format('YYYY-MM-DD')
       this.serviceAgreementDate = today;
-      console.log('this.serviceAgreementDate',this.serviceAgreementDate)
       
       this.getProgrammeInfos();
       // this.getImagesInfos();
     },
     methods: {
+      async AutoMatchingSession(){
+
+        let params = new URLSearchParams({
+            $select: "crb5c_time_hrs,crb5c_time_mins,crb5c_day,crb5c_duration,crb5c_session_id,crb5c_allowadhoccheckin,crb5c_fow_session_scheduleid,crb5c_sessionreporttype,crb5c_sessiontype,crb5c_gender,crb5c_language,crb5c_transportincluded,crb5c_isactive",
+            $expand:"ownerid,crb5c_FOW_Customer_session_schedule_crb5c($select=crb5c_fow_customerid,crb5c_defaultroom;$top=1000),crb5c_parent_activity_bridge($select=crb5c_name,crb5c_activityid,crb5c_activitytype)",
+            $filter:`crb5c_fow_session_scheduleid eq ${this.pick_sessions.crb5c_fow_session_scheduleid}`,
+            $top:1000
+        })
+        
+        let {data:{value:schedules}} = await this.$store.state.axios.get(`/crb5c_fow_session_schedules?${params.toString()}`);
+        
+        console.log('entities',schedules)
+ 
+          
+          const relationshipSchemaName = 'FOW_Customer_session_schedule_crb5c';
+
+          // Form the URL for the AssociateEntities endpoint
+          const url = `https://orga7b5e99e.crm5.dynamics.com//api/data/v9.2/crb5c_fow_customer_crb5c_fow_session_scset(${this.pick_sessions.crb5c_fow_session_scheduleid})/${relationshipSchemaName}/`;
+
+          // Configure headers with the authorization token
+          const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${this.$store.state.accessToken}` // Replace with your actual access token
+          };
+
+          // Send the POST request to associate the records
+          axios.post(url, { "@odata.id": `https://orga7b5e99e.crm5.dynamics.com//api/data/v9.2/crb5c_fow_customer_crb5c_fow_session_scset(${this.$store.state.assessment_client_id})` }, { headers })
+            .then(response => {
+              console.log('Association successful:', response.data);
+            })
+            .catch(error => {
+              console.error('Error associating records:', error);
+            });
+        // const relatedEntities =  {
+        //   entityType: "crb5c_fow_customerid",
+        //   id: this.$store.state.assessment_client_id,    
+        // }
+
+        // console.log('related entities :',relatedEntities)
+
+        // var manyToManyAssociateRequest = {
+        // getMetadata: () => ({
+        //     boundParameter: null,
+        //     parameterTypes: {},
+        //     operationType: 1,
+        //     operationName: "Associate"
+        // }),
+        // relationship: "crb5c_parent_activity_bridge",
+
+        // target: {
+        //     entityType: "crb5c_fow_session_schedule",
+        //     id: 
+        // },
+        // relatedEntities
+        // }
+        // try {
+        //     let result = await this.$store.state.axios.get("https://orga7b5e99e.crm5.dynamics.com/api/data/v9.2/AssociateEntities", manyToManyAssociateRequest, {
+        //       headers: {
+        //           "Content-Type": "application/json",
+        //           "Authorization": `Bearer ${this.$store.state.accessToken}`
+        //       }
+        //   });
+
+        //   console.log("RESULT OF ADDING CLIENT", result.data);
+                  
+        //   }
+        // catch (e) {
+        //         console.log("ERROR Adding bridge table", e);
+        //     }
+
+        
+        let paramsOption = new URLSearchParams({
+        $select: "crb5c_time_hrs,crb5c_time_mins,crb5c_day,crb5c_duration,crb5c_session_id,crb5c_allowadhoccheckin,crb5c_fow_session_scheduleid,crb5c_sessionreporttype,crb5c_sessiontype,crb5c_gender,crb5c_language,crb5c_transportincluded,crb5c_isactive",
+        $expand:"ownerid,crb5c_FOW_Customer_session_schedule_crb5c($select=crb5c_fow_customerid,crb5c_defaultroom;$top=1000),crb5c_parent_activity_bridge($select=crb5c_name,crb5c_activityid,crb5c_activitytype)",
+        $filter:`crb5c_fow_session_scheduleid eq ${this.pick_sessions.crb5c_fow_session_scheduleid}`,
+        $top:1000
+        })
+        
+        let {data:{value:schedulesRetrieval}} = await this.$store.state.axios.get(`/crb5c_fow_session_schedules?${paramsOption.toString()}`);
+        
+        console.log('entities again',schedulesRetrieval)
+
+
+
+        // if (this.schedulerActivityList?.length) {
+        //                     for (let i = 0; i < this.schedulerActivityList.length; i++) {
+        //                         var disassociateRequest = {
+        //                             getMetadata: () => ({
+        //                                 boundParameter: null,
+        //                                 parameterTypes: {},
+        //                                 operationType: 2,
+        //                                 operationName: "Disassociate"
+        //                             }),
+        //                             relationship: "crb5c_parent_activity_bridge",
+
+        //                             target: {
+        //                                 entityType: "crb5c_fow_session_schedule",
+        //                                 id: entityId
+        //                             },
+        //                             relatedEntityId: this.schedulerActivityList[i].crb5c_activityprofileid
+        //                             }
+        //                         try {
+        //                                 let result = await window.parent.Xrm.WebApi.online.execute(disassociateRequest);
+        //                                 console.log("RESULT OF DELETION", result);
+        //                             }   
+        //                         catch (e) {
+        //                                 console.log("ERROR deleting bridge table", e);
+        //                             }
+        //                         }
+                                
+        //                     }
+                            
+      },
       navigateToServiceForm(){
+        this.AutoMatchingSession();
         this.viewServiceForm = true;
       },
       clearadhoc(){
@@ -1499,6 +1645,9 @@ div
           day: this.day,
           time: this.time,
           location: this.location,
+          name: this.newSessionTitle,
+          dementiaLevel: this.newDementiaType,
+          sessionType: this.newSessionType,
         });
   
         await this.filterFees();
@@ -1507,6 +1656,7 @@ div
         this.day=false;
         this.time=false;
         this.location= false;
+        this.newSessionTitle = '';
   
         this.$bvModal.hide("add-session");
   
@@ -1690,6 +1840,7 @@ div
         crb5c_toteboardincluded: this.subs2 ? 1 : 0,
         // crb5c_cip1stsessionformat: this.firstSesFormat,
         // crb5c_cip2ndsessionformat: this.secondSesFormat,
+        
        };
        
         const { data } = await this.$store.state.axios.post(

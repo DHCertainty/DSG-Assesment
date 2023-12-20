@@ -40,6 +40,7 @@ export default {
         let {accessToken} = await msalApp.acquireTokenSilent({scopes:[
             `https://${this.$store.state.logindata.DATAVERSE_DOMAIN}/.default`
         ]});
+        this.$store.commit('accessToken',accessToken);
         this.token = accessToken
         let result = axios.create({
             baseURL:`https://${this.$store.state.logindata.DATAVERSE_DOMAIN}/api/data/${this.$store.state.logindata.DATAVERSE_VERSION}`,
