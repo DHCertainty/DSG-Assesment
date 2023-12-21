@@ -2,7 +2,7 @@
 div
     //- div.progress.mb-4
     //-   div.progress-bar.progressbarstyle(role="progressbar" style="width: 100%;height:30px;position:fixed;z-index: 1;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100") 25%
-    .container-xxl
+    b-container.mt-2.mb-4
       form
         section
           .row
@@ -12,11 +12,9 @@ div
             .col-sm-6
               label.common.gap(for="stageof") Stage of Dementia:
               v-select(v-model="stageof" :options="DementiaStage")
-              
           .row
             .col-sm-6
               label.common.gap(for="score") Latest score on:
-  
               .row.center
                 .col-2
                   input#AMT.checkbox_circle(type="checkbox" v-model="isAMT" value="AMT")
@@ -750,15 +748,13 @@ div
                 //-   .col
                 
           //v-show="this.sessions.length || this.recommended_session_pick.length"
-          section(style="margin-top:50px"  )
-            .gap.row.mt-4
+          section
+            .gap.row.mt-0
               .gap
-                
                     label.common.amountjustify(for="collect" ) Amount to be Collected + GST [SGD]:
                     label.common.amountjustify(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
                     b-btn(@click="navigateToServiceForm") Continue to Agreement 
-                    
-              hr
+
               section(v-if="viewServiceForm")
                 h2.mt-5 Service Agreement Form
                 .row.mt-5
@@ -843,18 +839,12 @@ div
             //-     img.signatureView(:src="signatureImg")
 
           // Submit button 
-          
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
 </template>
   
   <script>
   import dayjs from "dayjs";
   // import PaynowQR from '@chewhx/paynowqr';
-  import VueQrcode from 'vue-qrcode';
+  // import VueQrcode from 'vue-qrcode';
   import utc from "dayjs/plugin/utc";
   import timezone from "dayjs/plugin/timezone"; // dependent on utc plugin
   import isToday from "dayjs/plugin/isToday";
@@ -874,7 +864,7 @@ div
     // OpenIndicator,
     components: { 
       vSelect,
-      VueQrcode,
+      // VueQrcode,
       VueSignatureCanvas,
     },
     // emits: ["newresource"],
