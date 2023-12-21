@@ -1,7 +1,5 @@
 <template lang="pug">
 div
-    //- div.progress.mb-4
-    //-   div.progress-bar.progressbarstyle(role="progressbar" style="width: 100%;height:30px;position:fixed;z-index: 1;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100") 25%
     .container-xxl
       form
         section
@@ -58,8 +56,6 @@ div
               label.gapped.text-small(for="pttg") Played Table Top games
   
   
-  
-            // Survey questions
             label.mt-5(style="font-size: 17px;font-weight: bold;") Games & Surveys:
             .formed.gap
               input#pnbtg.checkbox_circle(name="the-pnbtg" value="pnbtg" type="checkbox" v-model="neeuro")
@@ -266,14 +262,7 @@ div
             .row.gap
               .col-md-2 
                 label.common.gap Fee & Payment:
-                  //- .col-auto 
-                  //-   .formed.gap
-                  //-     input#no(v-model="no" name="subsidy" type="radio" value="no" @click="revert()")
-                  //-     label(for="no") &nbsp;No
-                  //- .col-auto 
-                  //-   .formed.gap.gapbot
-                  //-     input#yes( v-model="subsidy" name="subsidy" type="radio" value="yes")
-                      label(for="yes") &nbsp;Yes
+                 
             .centerCheckbox
               input#subsidytoggle.checkbox_circle(v-model="subsidy" v-b-toggle.subsidy_box type="checkbox" value="yes")
               label(for="subsidytoggle").m-3.subsidy_label Subsidy included
@@ -356,7 +345,7 @@ div
           section.mt-5()
             .formed
               .row
-                .col-sm-3.align-self-center
+                .col-sm-3.align-self-center.col-auto
                   label.common(for="session") Session Recommended: 
                 .col.col-auto(style="text-align: right;")   
                   b-btn#add-btn.mx-4(@click="addmethod(0)") + Pick Session 
@@ -527,6 +516,12 @@ div
                     label.common Report Type:
                   b-col
                     b-form-select(v-model="newDementiaType" :options="dementiaLvl")
+
+                b-row
+                  b-col.col-auto
+                    label.common Duration:
+                  b-col
+                    b-form-select(v-model="newDuration" :options="durationSession")
                    
                 p.common Type 
                   div
@@ -538,27 +533,27 @@ div
                     .row.gap(v-show="typeses")
                       p.common.gap Day 
                         div 
-                          input#monday(v-model="day" name="daySes" type="radio" value="Monday")
+                          input#monday(v-model="day" name="daySes" type="radio" value=1)
                           label(for="monday") &nbsp;Monday
                         div
-                          input#tuesday(v-model="day" name="daySes" type="radio" value="Tuesday")
+                          input#tuesday(v-model="day" name="daySes" type="radio" value=2)
                           label(for="tuesday") &nbsp;Tuesday
                         div
-                          input#wednesday(v-model="day" name="daySes" type="radio" value="Wednesday")
+                          input#wednesday(v-model="day" name="daySes" type="radio" value=3)
                           label(for="wednesday") &nbsp;Wednesday
                         div
-                          input#thursday(v-model="day" name="daySes" type="radio" value="Thursday")
+                          input#thursday(v-model="day" name="daySes" type="radio" value=4)
                           label(for="thursday") &nbsp;Thursday
                         div 
-                          input#friday(v-model="day" name="daySes" type="radio" value="Friday")
+                          input#friday(v-model="day" name="daySes" type="radio" value=5)
                           label(for="friday") &nbsp;Friday
                           .row.gap(v-show="day && typeses==='Group'")
                             p.common.gap Time 
                             div
-                              input#am(v-model="time" name="timeSes" type="radio" value="AM")
+                              input#am(v-model="time" name="timeSes" type="radio" value="09:30")
                               label(for="am") &nbsp;9:30 AM
                             div
-                              input#pm(v-model="time" name="timeSes" type="radio" value="PM")
+                              input#pm(v-model="time" name="timeSes" type="radio" value="14:00")
                               label(for="pm") &nbsp;2:00 PM
                               
                           .row.gap(v-show="day && typeses==='Individual'")
@@ -590,34 +585,6 @@ div
                     span(v-if="transport.isIncluded") (with transport fee: ${{ transportTotalView.toFixed(2) }})
             .formed
 
-              //- .formed.gap
-              //-   input#80.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="80" v-show="gotGroupFee  && checkCenter && !subs2")
-              //-   label.gapped.text-small(for="80" v-show="gotGroupFee && !subs2") Centre-based 3-HR FOW group session $80
-              //- .formed.gap
-              //-   input#60.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="80" v-show="gotIndividualFee && checkCenter && !subs2")
-              //-   label.gapped.text-small(for="60" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 1-HR one-to-one FOW session $80
-              //- .formed.gap
-              //-   input#90.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="120" v-show="gotIndividualFee && checkCenter && !subs2")
-              //-   label.gapped.text-small(for="90" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 1.5-HR one-to-one FOW session $120
-              //- .formed.gap
-              //-   input#120.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="160" v-show="gotIndividualFee && checkCenter && !subs2")
-              //-   label.gapped.text-small(for="120" v-show="gotIndividualFee && checkCenter && !subs2") Centre-based 2-HR one-to-one FOW session $160
-              //- .formed.gap
-              //-   input#hb90.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="130" v-show="gotIndividualFee && checkResidence && !subs2") 
-              //-   label.gapped.text-small(for="hb90" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 1-HR one-to-one FOW session(incl. transport) $130
-              //- .formed.gap
-              //-   input#hb120.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="170" v-show="gotIndividualFee && checkResidence && !subs2")
-              //-   label.gapped.text-small(for="hb120" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 1.5-HR one-to-one FOW session(incl. transport) $170
-              //- .formed.gap
-              //-   input#hb150.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="210" v-show="gotIndividualFee && checkResidence && !subs2")
-              //-   label.gapped.text-small(for="hb150" v-show="gotIndividualFee && checkResidence && !subs2") Home-based 2-HR one-to-one FOW session(incl. transport) $210
-              //- .formed.gap.gapbot
-              //-   input#hb90-2.checkbox_circle(v-model="totalGST" name="cbfees" type="checkbox" value="90" v-show="gotIndividualFee && checkZoom && !subs2")
-              //-   label.gapped.text-small(for="hb90-2" v-show="gotIndividualFee && checkZoom && !subs2") Home-based 1-HR FOW session via video calls $80
-              //- .formed.gap(v-show="subs2")
-              //-     input#sgp.checkbox_circle( v-model="isCIP" name="cbfees" type="checkbox" :value="1") 
-              //-     label.gapped.text-small(for="sgp") Centre-based 3-HR CIP trial run  ${{ fees4val }} 
-              //-       span(style="font-weight:bold") ({{ prORsg }})
               .formed.gap.border.border-1(style="border-radius: 0.5rem;" v-show="isCipSelected")
                   b-row.p-3
                     b-col.col-6
@@ -806,12 +773,20 @@ div
                       .row.mt-5.mx-1
                             VueSignatureCanvas.gap.sig-canvas(ref="caregiverSignature" )
                       .row.mt-2
-                            p.text-center --- Caregiver Sign here ---
+                        .col 
+                          p.text-center --- Caregiver Sign here ---
+                        .col
+                          b-button(@click="clearCanvas('caregiverSignature')") Clear
+
+                            
                     .col 
                       .row.mt-5.mx-1
                             VueSignatureCanvas.gap.sig-canvas(ref="staffSignature" )
                       .row.mt-2
+                          .col
                             p.text-center --- Staff Sign here ---
+                          .col 
+                            b-button(@click="clearCanvas('staffSignature')") Clear
                   .row.mt-5  
                     .col-sm
                         p Contact Number:
@@ -880,8 +855,9 @@ div
     // emits: ["newresource"],
     data() {
       return {
-        newDementiaType: '',
-        newSessionType: '',
+        newDuration: null,
+        newDementiaType: null,
+        newSessionType: null,
         newSessionTitle: '',
         viewServiceForm: false,
         caregiverName: '',
@@ -902,6 +878,12 @@ div
           {text: 'Mild', value: 0 },
           {text: 'Moderate', value: 1 },
           {text: 'Individual', value: 3 }
+        ],
+        durationSession: [
+          {text: '1 hour', value: 60 },
+          {text: '1 hour 30 minute', value: 90 },
+          {text: '2 hours', value: 120 },
+          {text: '13 hour', value: 180 },
         ],
         sessionType: [
           {text: 'Group HQ (Centre) Based', value: 0},
@@ -1183,129 +1165,83 @@ div
           };
         }
       );
-      // console.log('holiday',dsgHoliday)
       this.listPublicHolidayCurrentMonth.push(...dsgHoliday);
 
-
-      // console.log('this.listPublicHolidayCurrentMonth', this.listPublicHolidayCurrentMonth)
       let today = dayjs().format('YYYY-MM-DD')
       this.serviceAgreementDate = today;
       
       this.getProgrammeInfos();
-      // this.getImagesInfos();
+
     },
     methods: {
-      async AutoMatchingSession(){
+      async associateTable(data){
+
+        const url = `https://orga7b5e99e.crm5.dynamics.com/api/data/v9.2/crb5c_fow_customers(${this.$store.state.assessment_client_id})/crb5c_FOW_Customer_session_schedule_crb5c/$ref`;
+
+        const pl ={
+          "@odata.id": `https://orga7b5e99e.crm5.dynamics.com/api/data/v9.2/crb5c_fow_session_schedules(${data.crb5c_fow_session_scheduleid})`,
+        }
+
+        const headers = {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.$store.state.accessToken}` 
+        };
+
+        const {data: x} = await axios.post(url, pl, { headers })
+
+        console.log(x)
 
         let params = new URLSearchParams({
             $select: "crb5c_time_hrs,crb5c_time_mins,crb5c_day,crb5c_duration,crb5c_session_id,crb5c_allowadhoccheckin,crb5c_fow_session_scheduleid,crb5c_sessionreporttype,crb5c_sessiontype,crb5c_gender,crb5c_language,crb5c_transportincluded,crb5c_isactive",
             $expand:"ownerid,crb5c_FOW_Customer_session_schedule_crb5c($select=crb5c_fow_customerid,crb5c_defaultroom;$top=1000),crb5c_parent_activity_bridge($select=crb5c_name,crb5c_activityid,crb5c_activitytype)",
-            $filter:`crb5c_fow_session_scheduleid eq ${this.pick_sessions.crb5c_fow_session_scheduleid}`,
+            $filter:`crb5c_fow_session_scheduleid eq ${data.crb5c_fow_session_scheduleid}`,
             $top:1000
         })
         
-        let {data:{value:schedules}} = await this.$store.state.axios.get(`/crb5c_fow_session_schedules?${params.toString()}`);
+        let {data:{value:schedules}} = await this.$store.state.axios.get(`/crb5c_fow_session_schedules?${params}`);
         
         console.log('entities',schedules)
- 
-          
-          const relationshipSchemaName = 'FOW_Customer_session_schedule_crb5c';
+    },
+      async AutoMatchingSession(){
 
-          // Form the URL for the AssociateEntities endpoint
-          const url = `https://orga7b5e99e.crm5.dynamics.com//api/data/v9.2/crb5c_fow_customer_crb5c_fow_session_scset(${this.pick_sessions.crb5c_fow_session_scheduleid})/${relationshipSchemaName}/`;
+        let payloadAssessment = {
+            crb5c_admissiondate: this.adm
+        }
 
-          // Configure headers with the authorization token
-          const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.$store.state.accessToken}` // Replace with your actual access token
-          };
+        const { data } = await this.$store.state.axios.patch(`/crb5c_fow_customers(${this.$store.state.assessment_client_id})`,payloadAssessment);
+        console.log('after admission post',data)
 
-          // Send the POST request to associate the records
-          axios.post(url, { "@odata.id": `https://orga7b5e99e.crm5.dynamics.com//api/data/v9.2/crb5c_fow_customer_crb5c_fow_session_scset(${this.$store.state.assessment_client_id})` }, { headers })
-            .then(response => {
-              console.log('Association successful:', response.data);
-            })
-            .catch(error => {
-              console.error('Error associating records:', error);
-            });
-        // const relatedEntities =  {
-        //   entityType: "crb5c_fow_customerid",
-        //   id: this.$store.state.assessment_client_id,    
-        // }
+        if (this.sessions.length) {
 
-        // console.log('related entities :',relatedEntities)
+          for (let session of this.sessions){
+              console.log('Creating new Session')
+              console.log('time value',session.time )
+              let [hours, minutes] = '';
+              hours = session.time.split(':')[0];
+              minutes = session.time.split(':')[1];
+              
+              let payloadSession  = {
+              crb5c_session_id: session.name,
+              crb5c_sessiontype: session.sessionType,
+              crb5c_sessionreporttype: session.dementiaLevel,
+              crb5c_time_hrs: hours,
+              crb5c_time_mins: minutes,
+              crb5c_duration: session.duration,
+              crb5c_day: parseInt(session.day),
+              crb5c_isactive: true,
+              }
 
-        // var manyToManyAssociateRequest = {
-        // getMetadata: () => ({
-        //     boundParameter: null,
-        //     parameterTypes: {},
-        //     operationType: 1,
-        //     operationName: "Associate"
-        // }),
-        // relationship: "crb5c_parent_activity_bridge",
+              const { data } = await this.$store.state.axios.post(`/crb5c_fow_session_schedules`,payloadSession);
+              console.log('afterpost',data)
 
-        // target: {
-        //     entityType: "crb5c_fow_session_schedule",
-        //     id: 
-        // },
-        // relatedEntities
-        // }
-        // try {
-        //     let result = await this.$store.state.axios.get("https://orga7b5e99e.crm5.dynamics.com/api/data/v9.2/AssociateEntities", manyToManyAssociateRequest, {
-        //       headers: {
-        //           "Content-Type": "application/json",
-        //           "Authorization": `Bearer ${this.$store.state.accessToken}`
-        //       }
-        //   });
-
-        //   console.log("RESULT OF ADDING CLIENT", result.data);
-                  
-        //   }
-        // catch (e) {
-        //         console.log("ERROR Adding bridge table", e);
-        //     }
-
-        
-        let paramsOption = new URLSearchParams({
-        $select: "crb5c_time_hrs,crb5c_time_mins,crb5c_day,crb5c_duration,crb5c_session_id,crb5c_allowadhoccheckin,crb5c_fow_session_scheduleid,crb5c_sessionreporttype,crb5c_sessiontype,crb5c_gender,crb5c_language,crb5c_transportincluded,crb5c_isactive",
-        $expand:"ownerid,crb5c_FOW_Customer_session_schedule_crb5c($select=crb5c_fow_customerid,crb5c_defaultroom;$top=1000),crb5c_parent_activity_bridge($select=crb5c_name,crb5c_activityid,crb5c_activitytype)",
-        $filter:`crb5c_fow_session_scheduleid eq ${this.pick_sessions.crb5c_fow_session_scheduleid}`,
-        $top:1000
-        })
-        
-        let {data:{value:schedulesRetrieval}} = await this.$store.state.axios.get(`/crb5c_fow_session_schedules?${paramsOption.toString()}`);
-        
-        console.log('entities again',schedulesRetrieval)
-
-
-
-        // if (this.schedulerActivityList?.length) {
-        //                     for (let i = 0; i < this.schedulerActivityList.length; i++) {
-        //                         var disassociateRequest = {
-        //                             getMetadata: () => ({
-        //                                 boundParameter: null,
-        //                                 parameterTypes: {},
-        //                                 operationType: 2,
-        //                                 operationName: "Disassociate"
-        //                             }),
-        //                             relationship: "crb5c_parent_activity_bridge",
-
-        //                             target: {
-        //                                 entityType: "crb5c_fow_session_schedule",
-        //                                 id: entityId
-        //                             },
-        //                             relatedEntityId: this.schedulerActivityList[i].crb5c_activityprofileid
-        //                             }
-        //                         try {
-        //                                 let result = await window.parent.Xrm.WebApi.online.execute(disassociateRequest);
-        //                                 console.log("RESULT OF DELETION", result);
-        //                             }   
-        //                         catch (e) {
-        //                                 console.log("ERROR deleting bridge table", e);
-        //                             }
-        //                         }
-                                
-        //                     }
+              this.associateTable(data)
+          }
+        }
+        if(this.recommended_session_pick.length){
+          for (let rec of this.recommended_session_pick){
+            this.associateTable(rec)
+            }
+          }
                             
       },
       navigateToServiceForm(){
@@ -1646,6 +1582,7 @@ div
           time: this.time,
           location: this.location,
           name: this.newSessionTitle,
+          duration: this.newDuration,
           dementiaLevel: this.newDementiaType,
           sessionType: this.newSessionType,
         });
@@ -1727,6 +1664,9 @@ div
           return data.value;
           // console.log('programme data',this.programmeInfos);
     },
+      clearCanvas(val){
+        this.$refs[val].clear();
+      },
       showConfimrationModal(){
         // this.$bvModal.show("confrimationModal");
       },
