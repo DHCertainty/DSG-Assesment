@@ -1,8 +1,6 @@
 <template lang="pug">
 div
-    //- div.progress.mb-4
-    //-   div.progress-bar.progressbarstyle(role="progressbar" style="width: 100%;height:30px;position:fixed;z-index: 1;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100") 25%
-    b-container.mt-2.mb-4
+    b-container.main-container.mt-2.mb-4
       form
         section
           .row
@@ -341,16 +339,18 @@ div
                                 | Additional Fee: $
                             b-col.col-2
                               b-form-input(v-model="transport.amountToBePaid" type="number" placeholder="Amount")
-          //v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)"
-          section.mt-5()
+  
+          section.mt-5(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
             .formed
               .row
                 .col-sm-3.align-self-center.col-auto
                   label.common(for="session") Session Recommended: 
                 .col.col-auto(style="text-align: right;")   
-                  b-btn#add-btn.mx-4(@click="addmethod(0)") + Pick Session 
+                  b-btn#add-btn.btn-warning.mx-3(@click="addmethod(0)") + Pick Session 
                 .col.col-auto(style="text-align: right;")   
-                  b-btn#add-btn.mx-4(@click="addmethod(1)") + Add New Session 
+                  b-btn#add-btn.mx-3.btn-warning(@click="addmethod(1)") + Add New Session 
+                .col.col-auto(style="text-align: right;")   
+                  b-btn#add-btn.mx-3.btn-dark(@click="AutoMatchingSession()") + (Test) Automation
                   //- b-btn#add-btn(@click="addfile") + Add file 
               
               div.my-4(v-if="!sessions.length && !recommended_session_pick.length" )
@@ -360,13 +360,13 @@ div
 
               div.my-4.p-3.border(v-if="recommended_session_pick.length" style="border-radius: 0.5rem;" )
                 .row
-                  p.ma-4.p-4(v-for="(rec_ses, index) in recommended_session_pick" :key="index")
+                  p.p-3(v-for="(rec_ses, index) in recommended_session_pick" :key="index")
                     | {{index+1+'.'}} {{rec_ses.crb5c_session_id}} 
                     b-icon.delete_icon(icon="x-circle-fill" @click="removePickedSession(index)")
 
               div.my-4.p-3.border(v-if="sessions.length" style="border-radius: 0.5rem;" )
                 .row
-                  p.ma-4.p-4(v-for="(ses, index) in sessions" :key="index")
+                  p.p-3(v-for="(ses, index) in sessions" :key="index")
                     | {{index+1+'.'}} {{ses.name}} [{{ses.type}}] - {{ ses.day }} {{ ses.time }} ( {{ ses.location }} ) 
                     b-icon.delete_icon(icon="x-circle-fill" @click="removeSession(index)")
 
@@ -510,7 +510,7 @@ div
                     input#group.mx-3(v-model="pick_sessions"  type="radio" :value="session" :id="session.crb5c_fow_session_scheduleid")
                     label(:for="session.crb5c_fow_session_scheduleid") {{ session.crb5c_session_id }}
                   div.text-center.my-2
-                    b-button.my-3( size="md" variant="success" @click="addNewPickSession") Add
+                    b-button.my-3.px-4( size="md" variant="success" @click="addNewPickSession") Add
                   
               //------- add new session modal -start
               b-modal#add-session(size="md" title="Add Session" scrollable centered)
@@ -725,11 +725,11 @@ div
 
           //
           section(style="margin-top:50px" v-show="this.sessions.length || this.recommended_session_pick.length")
-              .row.mt-5
-                .col 
+              .row.mt-5.align-items-center
+                .col.col-auto 
                   label.common Additional fee:
                 .col 
-                  b-btn(v-b-modal.addAdHocModal) Ad-hoc fee
+                  b-btn.btn-success(varianyv-b-modal.addAdHocModal) Ad-hoc fee
               .formed.gap(v-show="!subs1")
                 input#one_time.checkbox_circle(v-model="additionalFeeTotal" type="checkbox" :value="additionalFees.one_time.price")
                 label.gapped.text-small(for="one_time") One-time Assessment $50
@@ -771,13 +771,13 @@ div
                 //-         label.common(v-if="totalOfNeeurofit !== 0") {{ totalOfNeeurofit }} (with GST : {{ totalOfNeeurofit*1.08.toFixed(2) }})
                 //-   .col
                 
-          //v-show="this.sessions.length || this.recommended_session_pick.length"
-          section
+ 
+          section(v-show="this.sessions.length || this.recommended_session_pick.length")
             .gap.row.mt-0
               .gap
                     label.common.amountjustify(for="collect" ) Amount to be Collected + GST [SGD]:
                     label.common.amountjustify(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
-                    b-btn(@click="navigateToServiceForm") Continue to Agreement 
+                    b-btn.btn-success(@click="navigateToServiceForm") Continue to Agreement 
 
               section(v-if="viewServiceForm")
                 h2.mt-5 Service Agreement Form
@@ -1258,7 +1258,6 @@ div
     },
       async AutoMatchingSession(){
 
-        
         
         if (!this.adm) {
           alert('Please fill up the admission date before proceeding!') 
@@ -2291,7 +2290,7 @@ div
     margin: auto;
     display: block;
     justify-content: center;
-    text-align: center;
+    text-align: left;
   }
   
   .submitbtn{
@@ -2638,6 +2637,10 @@ div
 
   .icon-loader{
     font-size: 20vh;
+  }
+
+  .main-container{
+    border: 1px Solid rgb(255, 255, 255);
   }
   </style>
   
