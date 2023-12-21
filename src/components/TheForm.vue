@@ -1203,6 +1203,11 @@ div
         console.log('entities',schedules)
     },
       async AutoMatchingSession(){
+        
+        if (!this.adm) {
+          alert('Please fill up the admission date before proceeding!') 
+          return
+        }
 
         let payloadAssessment = {
             crb5c_admissiondate: this.adm
