@@ -385,7 +385,7 @@ div
                     b-button.btn-transparent(@click="closeModal('automatedMatchingModal')")
                       Icon(icon="ic:twotone-close" ) 
                   b-row.mt-2.justify-content-center
-                    lord-icon(src="https://cdn.lordicon.com/gqjpawbc.json" trigger="loop" delay="1000"  colors="primary:#121331,secondary:#4f1091" state="in-reveal" style="width:350px;height:350px")
+                    lord-icon(src="https://cdn.lordicon.com/gqjpawbc.json" trigger="loop" delay="500"  colors="primary:#121331,secondary:#4f1091" state="in-reveal" style="width:350px;height:350px")
                   b-row.my-5.text-center
                     h6 Successfully automated the sessions, you can now close this pop-up.
 
@@ -506,27 +506,28 @@ div
 
 
               b-modal#pick-session(size="lg" title="Add Session" scrollable centered hide-footer) 
+                b-form(@submit.prevent="addNewPickSession")
                   b-form-radio-group(v-model="pick_sessions")
-                    b-form-radio.mb-2( :value="session" v-for="session in filteredChoice" :id="session.crb5c_fow_session_scheduleid") &nbsp;{{ session.crb5c_session_id }}
+                    b-form-radio.mb-2( :value="session" required v-for="session in filteredChoice" :id="session.crb5c_fow_session_scheduleid") &nbsp;{{ session.crb5c_session_id }}
                   div.text-center.my-2
-                    b-button.my-3.px-4( size="md" variant="success" @click="addNewPickSession") Add
+                    b-button.my-3.px-4( size="md" variant="success" type="submit") Add
                   
               //------- add new session modal -start
               b-modal#add-session(size="md" title="Add Session" scrollable centered)
                 b-card.p-3(no-body)
 
                   b-form-group.mb-2(label="Session Name:")
-                    b-form-input.border-dark.rounded(v-model="newSessionTitle" size="sm" type="text")  
+                    b-form-input.input-border-light.rounded(v-model="newSessionTitle" size="sm" type="text")  
 
                   div.d-flex.mb-2
                     b-form-group(label="Session Type:")
-                      b-form-select.p-1.rounded.border-dark(v-model="newSessionType" :options="sessionType")
+                      b-form-select.p-1.input-border-light.rounded(v-model="newSessionType" :options="sessionType")
                     b-form-group.mx-auto(label="Report Type: ")
-                      b-form-select.p-1.rounded.border-dark(v-model="newDementiaType" :options="dementiaLvl")
+                      b-form-select.p-1.input-border-light.rounded(v-model="newDementiaType" :options="dementiaLvl")
 
                   div.d-flex.mb-2
                     b-form-group(label="Duration: ")
-                      b-form-select.p-1.rounded.w-100.border-dark(v-model="newDuration" :options="durationSession")
+                      b-form-select.p-1.rounded.w-100.input-border-light(v-model="newDuration" :options="durationSession")
                     
 
                 b-card.my-3.p-3(no-body)
@@ -535,7 +536,7 @@ div
                       label.mr-2 Type:
                       b-form-radio.mx-2( v-model="typeses" name="typeSes" value="Group") &nbsp;Group 
                       b-form-radio.mx-2( v-model="typeses" name="typeSes" value="Individual") &nbsp;Individual
-                b-card.p-3(no-body v-show="typeses")
+                b-card.p-3(no-body )
                   div.d-flex
                     b-form-group.mb-2
                       label.mr-2.font-weight-bold Day:
@@ -544,19 +545,19 @@ div
                         b-form-radio( v-model="day" name="daySes" value=3) &nbsp;Wednesday
                         b-form-radio( v-model="day" name="daySes" value=4) &nbsp;Thursday
                         b-form-radio( v-model="day" name="daySes" value=5) &nbsp;Friday
-                    b-form-group.mb-2.mx-auto(v-show="day && typeses==='Group'")
+                    b-form-group.mb-2.mx-auto()
                       label.mr-2.font-weight-bold Time:
                         b-form-radio( v-model="time" name="timeSes" value="09:30") &nbsp;9:30 AM
                         b-form-radio( v-model="time" name="timeSes" value="14:00") &nbsp;2:00 PM
                     b-form-group.mb-2.mx-auto.w-auto(label="Time:" v-if="day && typeses==='Individual'")
                       b-form-timepicker.numbers#timeSession(v-model="time" name="timeSession" type="time" locale="en")
-                  hr(v-show="time && typeses==='Individual'")
-                  b-form-group(label="Location:" v-show="time && typeses==='Individual'")
+                  hr(v-show="typeses==='Individual'")
+                  b-form-group(label="Location:" v-show="typeses==='Individual'")
                     b-form-radio( v-model="location" name="location" type="radio" value="Center") &nbsp;Center 
                     b-form-radio( v-model="location" name="location" type="radio" value="Video-Call") &nbsp;Video Call (Zoom)
                     b-form-radio( v-model="location" name="location" type="radio" value="Residence") &nbsp;Residence
                 template(#modal-footer="{ok}")
-                  b-btn(v-show="location" size="md" @click="addNew") Add
+                  b-btn.btn-success(v-show="location" size="md" @click="addNew") Add
               // add new session modal -end  
                   
                 b-row
@@ -905,7 +906,7 @@ div
     data() {
       return {
         loadingAutomated: false,
-        newDuration: null,
+        newDuration: 180,
         newDementiaType: null,
         newSessionType: null,
         newSessionTitle: '',
@@ -1202,19 +1203,19 @@ div
 
       const listPublicHoliday = await this.getSGPublicHoliday();
       this.listPublicHolidayCurrentMonth = this.getPublicHolidayCurrentMonth(listPublicHoliday).length === 0 ? null : this.getPublicHolidayCurrentMonth(listPublicHoliday);
-      let getHolidays = await this.getDsgHoliday();
-      // console.log('getHolidays',getHolidays)
-      let dsgHoliday = getHolidays.map(
-        (holiday) => {
-          return {
-            date: dayjs(holiday.crb5c_date).format('YYYY-MM-DD'),
-            day: dayjs(holiday.crb5c_date).format('dddd'),
-            holiday: holiday.crb5c_name,
-            _id: holiday.crb5c_fowcalendarid
-          };
-        }
-      );
-      this.listPublicHolidayCurrentMonth.push(...dsgHoliday);
+      // let getHolidays = await this.getDsgHoliday();
+      // // console.log('getHolidays',getHolidays)
+      // let dsgHoliday = getHolidays.map(
+      //   (holiday) => {
+      //     return {
+      //       date: dayjs(holiday.crb5c_date).format('YYYY-MM-DD'),
+      //       day: dayjs(holiday.crb5c_date).format('dddd'),
+      //       holiday: holiday.crb5c_name,
+      //       _id: holiday.crb5c_fowcalendarid
+      //     };
+      //   }
+      // );
+      // this.listPublicHolidayCurrentMonth.push(...dsgHoliday);
 
       let today = dayjs().format('YYYY-MM-DD')
       this.serviceAgreementDate = today;
@@ -1634,13 +1635,13 @@ div
           this.schedule_info = data.filter(item => item.crb5c_sessionreporttype != 3);
           this.schedule_info.sort((a, b) => a.crb5c_day - b.crb5c_day)
           // console.log('schedule_info',this.schedule_info)
-          // console.log(this.pick_sessions);
           this.$bvModal.show("pick-session");
         }
         
       },
       async addNew() {
-        if(!this.typeses || !this.day || !this.time || !this.location){
+        if(!this.typeses || !this.day || !this.time || !this.location || !this.newSessionTitle || !this.newDuration || !this.newSessionType || !this.newDementiaType){
+          alert('Please fill up all the inforation for the new session')
           return;
         }
   
@@ -1915,6 +1916,25 @@ div
       }
     },
     watch: {
+      newSessionType(val){
+
+        switch (val) {
+          case 0:
+            this.location =  'Center'
+            break;
+          case 1:
+            this.location = 'Center'
+            break;
+          case 2:  
+            this.location = 'Residence'
+            break;
+          case 3:
+            this.location = 'Video-Call'
+            break;
+        }
+
+  
+      },
       firSession(val){
         if (val) {
           this.adm = val;
@@ -2642,6 +2662,10 @@ div
 
   .icon-loader{
     font-size: 20vh;
+  }
+
+  .input-border-light{
+    border: 1px Solid rgb(210, 210, 210);
   }
 
   .main-container{
