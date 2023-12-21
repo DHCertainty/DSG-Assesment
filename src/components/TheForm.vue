@@ -506,9 +506,8 @@ div
 
 
               b-modal#pick-session(size="lg" title="Add Session" scrollable centered hide-footer) 
-                  div.m-2.p-1(v-for="(session, index) in  schedule_info" :key="index" )
-                    input#group.mx-3(v-model="pick_sessions"  type="radio" :value="session" :id="session.crb5c_fow_session_scheduleid")
-                    label(:for="session.crb5c_fow_session_scheduleid") {{ session.crb5c_session_id }}
+                  b-form-radio-group(v-model="pick_sessions")
+                    b-form-radio.mb-2( :value="session" v-for="session in filteredChoice" :id="session.crb5c_fow_session_scheduleid") &nbsp;{{ session.crb5c_session_id }}
                   div.text-center.my-2
                     b-button.my-3.px-4( size="md" variant="success" @click="addNewPickSession") Add
                   
@@ -1635,6 +1634,7 @@ div
           this.schedule_info = data.filter(item => item.crb5c_sessionreporttype != 3);
           this.schedule_info.sort((a, b) => a.crb5c_day - b.crb5c_day)
           // console.log('schedule_info',this.schedule_info)
+          // console.log(this.pick_sessions);
           this.$bvModal.show("pick-session");
         }
         
@@ -2057,6 +2057,11 @@ div
       //     }
       //   }
       // },
+      filteredChoice() {
+        return this.schedule_info.filter(
+          (option2) => !this.recommended_session_pick.some((option1) => option1.crb5c_fow_session_scheduleid === option2.crb5c_fow_session_scheduleid)
+        );
+      },
       transportTotalView(){
         if(this.transport.isIncluded){
           let total_amount = 0;
