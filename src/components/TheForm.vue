@@ -506,20 +506,59 @@ div
 
 
               b-modal#pick-session(size="lg" title="Add Session" scrollable centered hide-footer) 
-                  div.p-3    
-                    div.m-3.p-1(v-for="(session, index) in  schedule_info" :key="index" )
-                      input#group.mx-3(v-model="pick_sessions"  type="radio" :value="session" :id="session.crb5c_fow_session_scheduleid")
-                      label(:for="session.crb5c_fow_session_scheduleid") {{ session.crb5c_session_id }}
-                  div.text-center.my-3
-                    b-btn.my-3( size="md" @click="addNewPickSession") Add
+                  div.m-2.p-1(v-for="(session, index) in  schedule_info" :key="index" )
+                    input#group.mx-3(v-model="pick_sessions"  type="radio" :value="session" :id="session.crb5c_fow_session_scheduleid")
+                    label(:for="session.crb5c_fow_session_scheduleid") {{ session.crb5c_session_id }}
+                  div.text-center.my-2
+                    b-button.my-3( size="md" variant="success" @click="addNewPickSession") Add
                   
+              //------- add new session modal -start
+              b-modal#add-session(size="md" title="Add Session" scrollable centered)
+                b-card.p-3(no-body)
 
-              b-modal#add-session(size="md" title="Add Session" scrollable centered) 
-                b-row.my-5
-                  b-col.col-auto
-                    label.common Session name:
-                  b-col
-                    input#group(v-model="newSessionTitle" type="text")  
+                  b-form-group.mb-2(label="Session Name:")
+                    b-form-input.border-dark.rounded(v-model="newSessionTitle" size="sm" type="text")  
+
+                  div.d-flex.mb-2
+                    b-form-group(label="Session Type:")
+                      b-form-select.p-1.rounded.border-dark(v-model="newSessionType" :options="sessionType")
+                    b-form-group.mx-auto(label="Report Type: ")
+                      b-form-select.p-1.rounded.border-dark(v-model="newDementiaType" :options="dementiaLvl")
+
+                  div.d-flex.mb-2
+                    b-form-group(label="Duration: ")
+                      b-form-select.p-1.rounded.w-100.border-dark(v-model="newDuration" :options="durationSession")
+                    
+
+                b-card.my-3.p-3(no-body)
+                  b-form-group
+                    div.d-flex
+                      label.mr-2 Type:
+                      b-form-radio.mx-2( v-model="typeses" name="typeSes" value="Group") &nbsp;Group 
+                      b-form-radio.mx-2( v-model="typeses" name="typeSes" value="Individual") &nbsp;Individual
+                b-card.p-3(no-body v-show="typeses")
+                  div.d-flex
+                    b-form-group.mb-2
+                      label.mr-2.font-weight-bold Day:
+                        b-form-radio( v-model="day" name="daySes" value=1) &nbsp;Monday 
+                        b-form-radio( v-model="day" name="daySes" value=2) &nbsp;Tuesday
+                        b-form-radio( v-model="day" name="daySes" value=3) &nbsp;Wednesday
+                        b-form-radio( v-model="day" name="daySes" value=4) &nbsp;Thursday
+                        b-form-radio( v-model="day" name="daySes" value=5) &nbsp;Friday
+                    b-form-group.mb-2.mx-auto(v-show="day && typeses==='Group'")
+                      label.mr-2.font-weight-bold Time:
+                        b-form-radio( v-model="time" name="timeSes" value="09:30") &nbsp;9:30 AM
+                        b-form-radio( v-model="time" name="timeSes" value="14:00") &nbsp;2:00 PM
+                    b-form-group.mb-2.mx-auto.w-auto(label="Time:" v-if="day && typeses==='Individual'")
+                      b-form-timepicker.numbers#timeSession(v-model="time" name="timeSession" type="time" locale="en")
+                  hr(v-show="time && typeses==='Individual'")
+                  b-form-group(label="Location:" v-show="time && typeses==='Individual'")
+                    b-form-radio( v-model="location" name="location" type="radio" value="Center") &nbsp;Center 
+                    b-form-radio( v-model="location" name="location" type="radio" value="Video-Call") &nbsp;Video Call (Zoom)
+                    b-form-radio( v-model="location" name="location" type="radio" value="Residence") &nbsp;Residence
+                template(#modal-footer="{ok}")
+                  b-btn(v-show="location" size="md" @click="addNew") Add
+              // add new session modal -end  
                   
                 b-row
                   b-col.col-auto
@@ -895,7 +934,7 @@ div
           {text: '1 hour', value: 60 },
           {text: '1 hour 30 minute', value: 90 },
           {text: '2 hours', value: 120 },
-          {text: '13 hour', value: 180 },
+          {text: '3 hour', value: 180 },
         ],
         sessionType: [
           {text: 'Group HQ (Centre) Based', value: 0},
