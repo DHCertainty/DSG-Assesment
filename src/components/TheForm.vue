@@ -506,11 +506,11 @@ div
 
 
               b-modal#pick-session(size="lg" title="Add Session" scrollable centered hide-footer) 
-                b-form(@submit.prevent="addNewPickSession")
+                div
                   b-form-radio-group(v-model="pick_sessions")
                     b-form-radio.mb-2( :value="session" required v-for="session in filteredChoice" :id="session.crb5c_fow_session_scheduleid") &nbsp;{{ session.crb5c_session_id }}
                   div.text-center.my-2
-                    b-button.my-3.px-4( size="md" variant="success" type="submit") Add
+                    b-button.my-3.px-4( size="md" variant="success" :disabled="isAddButtonDisabled" @click="addNewPickSession") Add
                   
               //------- add new session modal -start
               b-modal#add-session(size="md" title="Add Session" scrollable centered)
@@ -538,20 +538,19 @@ div
                       b-form-radio.mx-2( v-model="typeses" name="typeSes" value="Individual") &nbsp;Individual
                 b-card.p-3(no-body )
                   div.d-flex
-                    b-form-group.mb-2
+                    b-form-group
                       label.mr-2.font-weight-bold Day:
                         b-form-radio( v-model="day" name="daySes" value=1) &nbsp;Monday 
                         b-form-radio( v-model="day" name="daySes" value=2) &nbsp;Tuesday
                         b-form-radio( v-model="day" name="daySes" value=3) &nbsp;Wednesday
                         b-form-radio( v-model="day" name="daySes" value=4) &nbsp;Thursday
                         b-form-radio( v-model="day" name="daySes" value=5) &nbsp;Friday
-                    b-form-group.mb-2.mx-auto()
+                    b-form-group.mx-auto(v-if="day && typeses==='Group'")
                       label.mr-2.font-weight-bold Time:
                         b-form-radio( v-model="time" name="timeSes" value="09:30") &nbsp;9:30 AM
                         b-form-radio( v-model="time" name="timeSes" value="14:00") &nbsp;2:00 PM
-                    b-form-group.mb-2.mx-auto.w-auto(label="Time:" v-if="day && typeses==='Individual'")
+                    b-form-group.mx-auto.w-auto(label="Time:" v-if="day && typeses==='Individual'")
                       b-form-timepicker.numbers#timeSession(v-model="time" name="timeSession" type="time" locale="en")
-                  hr(v-show="typeses==='Individual'")
                   b-form-group(label="Location:" v-show="typeses==='Individual'")
                     b-form-radio( v-model="location" name="location" type="radio" value="Center") &nbsp;Center 
                     b-form-radio( v-model="location" name="location" type="radio" value="Video-Call") &nbsp;Video Call (Zoom)
@@ -559,80 +558,10 @@ div
                 template(#modal-footer="{ok}")
                   b-btn.btn-success(v-show="location" size="md" @click="addNew") Add
               // add new session modal -end  
-                  
-                b-row
-                  b-col.col-auto
-                    label.common Session Type:
-                  b-col
-                    b-form-select(v-model="newSessionType" :options="sessionType")
-
-                b-row
-                  b-col.col-auto
-                    label.common Report Type:
-                  b-col
-                    b-form-select(v-model="newDementiaType" :options="dementiaLvl")
-
-                b-row
-                  b-col.col-auto
-                    label.common Duration:
-                  b-col
-                    b-form-select(v-model="newDuration" :options="durationSession")
-                   
-                p.common Type 
-                  div
-                    input#group(v-model="typeses" name="typeSes" type="radio" value="Group")
-                    label(for="group") &nbsp;Group
-                  div
-                    input#individual(v-model="typeses" name="typeSes" type="radio" value="Individual")
-                    label(for="individual") &nbsp;Individual
-                    .row.gap(v-show="typeses")
-                      p.common.gap Day 
-                        div 
-                          input#monday(v-model="day" name="daySes" type="radio" value=1)
-                          label(for="monday") &nbsp;Monday
-                        div
-                          input#tuesday(v-model="day" name="daySes" type="radio" value=2)
-                          label(for="tuesday") &nbsp;Tuesday
-                        div
-                          input#wednesday(v-model="day" name="daySes" type="radio" value=3)
-                          label(for="wednesday") &nbsp;Wednesday
-                        div
-                          input#thursday(v-model="day" name="daySes" type="radio" value=4)
-                          label(for="thursday") &nbsp;Thursday
-                        div 
-                          input#friday(v-model="day" name="daySes" type="radio" value=5)
-                          label(for="friday") &nbsp;Friday
-                          .row.gap(v-show="day && typeses==='Group'")
-                            p.common.gap Time 
-                            div
-                              input#am(v-model="time" name="timeSes" type="radio" value="09:30")
-                              label(for="am") &nbsp;9:30 AM
-                            div
-                              input#pm(v-model="time" name="timeSes" type="radio" value="14:00")
-                              label(for="pm") &nbsp;2:00 PM
-                              
-                          .row.gap(v-show="day && typeses==='Individual'")
-                            p.common.gap Time
-                            div
-                                b-form-timepicker.numbers#timeSession(v-model="time" name="timeSession" type="time" locale="en")
-                                .row.gap(v-show="time && typeses==='Individual'")
-                                p.common.gap Location
-                                div
-                                  input#center(v-model="location" name="location" type="radio" value="Center")
-                                  label(for="center") &nbsp;Center 
-                                div
-                                  input#videocall(v-model="location" name="location" type="radio" value="Video-Call")
-                                  label(for="videocall") &nbsp;Video Call (Zoom)
-                                div
-                                  input#residence(v-model="location" name="location" type="radio" value="Residence")
-                                  label(for="residence") &nbsp;Residence 
-                template(#modal-footer="{ok}")
-                  b-btn(v-show="location" size="md" @click="addNew") Add
-      
           section.mt-5(v-show="this.sessions.length || this.recommended_session_pick.length")
             label.common Applicable Sessions (excluding GST):
             .formed
-              .formed.gap(v-for="(programme, index)  in filteredProgrammeInfos " :key="index")
+              .formed(v-for="(programme, index)  in filteredProgrammeInfos " :key="index")
                 input.checkbox_circle(v-model="applicableFeeTotal" type="checkbox" :value="programme" :id="programme.crb5c_fowprogrammeid")
                 label.gapped.text-small(:for="programme.crb5c_fowprogrammeid") {{programme.crb5c_programmename}} 
                   label(v-if="programme.crb5c_type != 4") ${{ programme.crb5c_price }}
@@ -1336,6 +1265,7 @@ div
         this.recommended_session_pick.push(this.pick_sessions);
         await this.filterFees();
         this.$bvModal.hide("pick-session");
+        this.pick_sessions = [];
       },
       createBase64Image(val){
          this.filesToUpload = [];
@@ -2077,6 +2007,9 @@ div
       //     }
       //   }
       // },
+      isAddButtonDisabled() {
+        return this.pick_sessions.length === 0;
+      },
       filteredChoice() {
         return this.schedule_info.filter(
           (option2) => !this.recommended_session_pick.some((option1) => option1.crb5c_fow_session_scheduleid === option2.crb5c_fow_session_scheduleid)
