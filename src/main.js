@@ -11,6 +11,10 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import store from './store'
 import router from './router'
 
+const script = document.createElement('script');
+script.src = 'https://cdn.lordicon.com/lordicon.js';
+script.async = true;
+document.head.appendChild(script);
 
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)

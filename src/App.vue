@@ -1,10 +1,12 @@
+
 <template>
   <div>
     <the-navbar></the-navbar>
     <the-form></the-form>
   </div>
+  
 </template>
-
+<script src="https://cdn.lordicon.com/lordicon.js"></script>
 <script>
 import TheForm from './components/TheForm.vue';
 import TheNavbar from './components/TheNavbar.vue';

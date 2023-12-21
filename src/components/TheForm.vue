@@ -374,6 +374,22 @@ div
               //-     input(type="file" @change="uploadFile")
               //-     b-btn(@click="confirmUpload") Submit
                 
+              b-modal#automatedMatchingModal.modal_confimration(size="lg"  scrollable centered hide-footer hide-header no-close-on-esc no-close-on-backdrop)
+                div(v-if="loadingAutomated")
+                  b-row.mt-5 
+                    Icon.icon-loader(icon="line-md:cog-filled-loop")
+                  b-row.my-5.text-center
+                    h6 Please wait while the sessions are being automated
+                div(v-else)
+                  div.mx-3(style="text-align: right; font-size: 3vh") 
+                    b-button.btn-transparent(@click="closeModal('automatedMatchingModal')")
+                      Icon(icon="ic:twotone-close" ) 
+                  b-row.mt-2.justify-content-center
+                    lord-icon(src="https://cdn.lordicon.com/gqjpawbc.json" trigger="loop" delay="1000"  colors="primary:#121331,secondary:#4f1091" state="in-reveal" style="width:350px;height:350px")
+                  b-row.my-5.text-center
+                    h6 Successfully automated the sessions, you can now close this pop-up.
+
+                
               b-modal#addAdHocModal.modal_confimration(size="lg" title="Add here" scrollable centered hide-footer)
                   .row 
                     .col.m-2
@@ -827,7 +843,9 @@ div
 </template>
   
   <script>
+  
   import dayjs from "dayjs";
+  import {Icon} from '@iconify/vue2';
   // import PaynowQR from '@chewhx/paynowqr';
   import VueQrcode from 'vue-qrcode';
   import utc from "dayjs/plugin/utc";
@@ -850,11 +868,13 @@ div
     components: { 
       vSelect,
       VueQrcode,
+      Icon,
       VueSignatureCanvas,
     },
     // emits: ["newresource"],
     data() {
       return {
+        loadingAutomated: false,
         newDuration: null,
         newDementiaType: null,
         newSessionType: null,
@@ -1145,7 +1165,6 @@ div
     },
     compatConfig: { MODE: 3 },
     async mounted() {
-      
       const component = this;
       this.$root.$on('getFormData', function(){
         component.getdatainform();
@@ -1174,6 +1193,10 @@ div
 
     },
     methods: {
+      closeModal(modal_name){
+        console.log('dsflkfmk')
+        this.$bvModal.hide(modal_name);
+      },
       async associateTable(data){
 
         const url = `https://orga7b5e99e.crm5.dynamics.com/api/data/v9.2/crb5c_fow_customers(${this.$store.state.assessment_client_id})/crb5c_FOW_Customer_session_schedule_crb5c/$ref`;
@@ -1203,11 +1226,17 @@ div
         console.log('entities',schedules)
     },
       async AutoMatchingSession(){
+
+        
         
         if (!this.adm) {
           alert('Please fill up the admission date before proceeding!') 
           return
         }
+
+        this.loadingAutomated = true;
+        this.$bvModal.show("automatedMatchingModal");
+        
 
         let payloadAssessment = {
             crb5c_admissiondate: this.adm
@@ -1239,14 +1268,17 @@ div
               const { data } = await this.$store.state.axios.post(`/crb5c_fow_session_schedules`,payloadSession);
               console.log('afterpost',data)
 
-              this.associateTable(data)
+              await this.associateTable(data)
           }
         }
         if(this.recommended_session_pick.length){
           for (let rec of this.recommended_session_pick){
-            this.associateTable(rec)
+            await this.associateTable(rec)
             }
           }
+          
+          this.loadingAutomated = false;
+          
                             
       },
       navigateToServiceForm(){
@@ -2564,6 +2596,16 @@ div
     border-color: transparent !important;   
     opacity: 0.65;
     transition: all 0.5s;
+  }
+
+  .btn-transparent{
+    border: none;
+    background: rgba(253, 253, 253, 0);
+    color: black;
+  }
+
+  .icon-loader{
+    font-size: 20vh;
   }
   </style>
   
