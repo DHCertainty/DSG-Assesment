@@ -15,20 +15,24 @@ div
               label.common.gap(for="score") Latest score on:
               .row.center
                 .col-2
-                  input#AMT.checkbox_circle(type="checkbox" v-model="isAMT" value="AMT")
-                  label(for="AMT") &nbsp;AMT
+                  b-form-checkbox(type="checkbox" v-model="isAMT" value="AMT") &nbsp;AMT
+                  //-
+                  //- input#AMT.checkbox_circle(type="checkbox" v-model="isAMT" value="AMT")
+                  //- label.my-auto(for="AMT") &nbsp;AMT
                   .row.center
                     .col-2(v-if="isAMT") 
                         input.checkbox#score(v-model="amtVal" type="number" min="0" )
                 .col-2
-                  input#MMSE.checkbox_circle(type="checkbox" v-model="isMMSE" value="MMSE")
-                  label(for="MMSE") &nbsp;MMSE
+                  b-form-checkbox(type="checkbox" v-model="isMMSE" value="MMSE") &nbsp;MMSE
+                  //- input#MMSE.checkbox_circle(type="checkbox" v-model="isMMSE" value="MMSE")
+                  //- label(for="MMSE") 
                   .row.center 
                     .col-2(v-if="isMMSE")
                       input.checkbox#score(v-model="mmseVal" type="number" min="0")
                 .col-2 
-                  input#MOCA.checkbox_circle(type="checkbox" v-model="isMOCA" value="MOCA")
-                  label(for="MOCA") &nbsp;MOCA
+                  b-form-checkbox(type="checkbox" v-model="isMOCA" value="MOCA") &nbsp;MOCA
+                  //- input#MOCA.checkbox_circle(type="checkbox" v-model="isMOCA" value="MOCA")
+                  //- label(for="MOCA") &nbsp;MOCA
                   .row.center
                     .col-2(v-if="isMOCA")
                       input.checkbox#score(v-model="mocaVal" type="number" min="0")
@@ -37,27 +41,25 @@ div
               input.numbers#score(v-model="date" name="score" type="date")
           hr
   
-  
-  
           // General questions
           section(v-show="type && stageof && date && (isAMT || isMOCA || isMMSE)")
-            label.mt-4(style="font-size: 17px;font-weight: bold;") General:
-            .formed.gap
-              input#sacop.checkbox_circle(v-model="checker" type="checkbox" value="sacop" name="part2")
-              label.gapped.text-small(for="sacop") Shared about Centre's objectives & program
-            .formed.gap
-              input#wcv.checkbox_circle(v-model="checker2" name="part2" type="checkbox" value="wcv")
-              label.gapped.text-small(for="wcv") Watched Centre's video
+            label.mb-2(style="font-size: 17px;font-weight: bold;") General:
+            b-form-checkbox.mb-2(v-model="checker" type="checkbox" value="sacop" name="part2") &nbsp;Shared about Centre's objectives & program
+            b-form-checkbox.mb-2(v-model="checker2" name="part2" type="checkbox" value="wcv") &nbsp;Watched Centre's video
+            b-form-checkbox(v-model="checker3" name="part2" type="checkbox" value="pttg") &nbsp;Played Table Top games
+            //- .formed.gap
+            //-   input#sacop.checkbox_circle(v-model="checker" type="checkbox" value="sacop" name="part2")
+            //-   label.gapped.text-small(for="sacop") Shared about Centre's objectives & program
+            //- .formed.gap
+            //-   input#wcv.checkbox_circle(v-model="checker2" name="part2" type="checkbox" value="wcv")
+            //-   label.gapped.text-small(for="wcv") Watched Centre's video
             
-            .formed.gap
-              input#pttg.checkbox_circle(v-model="checker3" name="part2" type="checkbox" value="pttg")
-              label.gapped.text-small(for="pttg") Played Table Top games
-  
-  
-            label.mt-5(style="font-size: 17px;font-weight: bold;") Games & Surveys:
-            .formed.gap
-              input#pnbtg.checkbox_circle(name="the-pnbtg" value="pnbtg" type="checkbox" v-model="neeuro")
-              label.gapped.text-small(for="pnbtg") Played NeeuroFIT brain training game
+            //- .formed.gap
+            //-   input#pttg.checkbox_circle(v-model="checker3" name="part2" type="checkbox" value="pttg")
+            //-   label.gapped.text-small(for="pttg") Played Table Top games
+            hr
+            label.mb-2(style="font-size: 17px;font-weight: bold;") Games & Surveys:
+            b-form-checkbox.mb-2(name="the-pnbtg" value="pnbtg" type="checkbox" v-model="neeuro") &nbsp;Played NeeuroFIT brain training game
             .container.my-4(v-show="neeuro")
               h2 NeeuroFit Games:
               .gap.left
@@ -112,9 +114,9 @@ div
                       v-select(:options="levels" v-model="flexibilityObj.Flexibilitylevel")
   
             //MOCA form     
-            .formed.gap
-              input#mocaform.checkbox_circle(v-model="checker4" name="mocaform" type="checkbox" value="mocaform")
-              label.gapped.text-small(for="mocaform") MOCA form
+            b-form-checkbox.mb-2(v-model="checker4" name="mocaform" type="checkbox" value="mocaform") &nbsp;MOCA form
+            //- input#mocaform.checkbox_circle(v-model="checker4" name="mocaform" type="checkbox" value="mocaform")
+            //- label.gapped.text-small(for="mocaform") MOCA form
             .container.left.gap(v-show="checker4")
               h2.moca.gapbot MOCA
               p.common Version:
@@ -215,9 +217,9 @@ div
               p.common.gap Orientation
               v-select(multiple v-model="vis16" :options="['Date', 'Month', 'Year', 'Day', 'Place', 'Country']")
               p.common.gap Total Score: {{ totalscore }}
-            .formed.gap
-              input#eq5d.checkbox_circle(v-model="checker5" name="eq5d" type="checkbox" value="eq5d")
-              label.gapped.text-small(for="eq5d") EQ-5D-5L form
+            b-form-checkbox.mb-2(v-model="checker5" name="eq5d" type="checkbox" value="eq5d") &nbsp;EQ-5D-5L form
+              // input#eq5d.checkbox_circle(v-model="checker5" name="eq5d" type="checkbox" value="eq5d")
+              // label.gapped.text-small(for="eq5d") EQ-5D-5L form
             .container.gap(v-show="checker5")
               h2.moca.gapbot EQ-5D-5L
               p.common Health Status:
@@ -260,7 +262,6 @@ div
             .row.gap
               .col-md-2 
                 label.common.gap Fee & Payment:
-                 
             .centerCheckbox
               input#subsidytoggle.checkbox_circle(v-model="subsidy" v-b-toggle.subsidy_box type="checkbox" value="yes")
               label(for="subsidytoggle").m-3.subsidy_label Subsidy included
