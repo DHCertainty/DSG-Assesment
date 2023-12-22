@@ -1571,7 +1571,16 @@ div
         
       },
       async addNew() {
-        if(!this.typeses || !this.day || !this.time || !this.location || !this.newSessionTitle || !this.newDuration || !this.newSessionType || !this.newDementiaType){
+        let testobj={type: this.typeses,
+          day: this.day,
+          time: this.time,
+          location: this.location,
+          name: this.newSessionTitle,
+          duration: this.newDuration,
+          dementiaLevel: this.newDementiaType,
+          sessionType: this.newSessionType,}
+        console.log(testobj);
+        if(!this.typeses || !this.day || !this.time || !this.location || !this.newSessionTitle || !this.newDuration || this.newSessionType == null || this.newDementiaType==null){
           alert('Please fill up all the inforation for the new session')
           return;
         }
