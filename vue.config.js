@@ -8,5 +8,5 @@ module.exports = defineConfig({
     headers:{
         "Cache-Control": "no-cache"
     }
-  }
+  },
 })

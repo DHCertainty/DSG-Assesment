@@ -2,47 +2,46 @@
 div
     b-container.main-container.mt-2.mb-4
       form
-        section
-          .row
-            .col-sm-6
-              label.common.gap(for="typeof") Type of Dementia:
-              v-select(v-model="type" :options="DementiaType")
-            .col-sm-6
-              label.common.gap(for="stageof") Stage of Dementia:
-              v-select(v-model="stageof" :options="DementiaStage")
-          .row
-            .col-sm-6
-              label.common.gap(for="score") Latest score on:
-              .row.center
-                .col-2
-                  b-form-checkbox(type="checkbox" v-model="isAMT" value="AMT") &nbsp;AMT
-                  //-
-                  //- input#AMT.checkbox_circle(type="checkbox" v-model="isAMT" value="AMT")
-                  //- label.my-auto(for="AMT") &nbsp;AMT
-                  .row.center
-                    .col-2(v-if="isAMT") 
-                        input.checkbox#score(v-model="amtVal" type="number" min="0" )
-                .col-2
-                  b-form-checkbox(type="checkbox" v-model="isMMSE" value="MMSE") &nbsp;MMSE
-                  //- input#MMSE.checkbox_circle(type="checkbox" v-model="isMMSE" value="MMSE")
-                  //- label(for="MMSE") 
-                  .row.center 
-                    .col-2(v-if="isMMSE")
-                      input.checkbox#score(v-model="mmseVal" type="number" min="0")
-                .col-2 
-                  b-form-checkbox(type="checkbox" v-model="isMOCA" value="MOCA") &nbsp;MOCA
-                  //- input#MOCA.checkbox_circle(type="checkbox" v-model="isMOCA" value="MOCA")
-                  //- label(for="MOCA") &nbsp;MOCA
-                  .row.center
-                    .col-2(v-if="isMOCA")
-                      input.checkbox#score(v-model="mocaVal" type="number" min="0")
-            .col-sm-6
-              label.common.gap(for="score") Date Done in hospital:
-              input.numbers#score(v-model="date" name="score" type="date")
-          hr
+          section.p-4.border.border-dark.rounded.shadow
+            .row
+              .col-sm-6
+                label.common(for="typeof") Type of Dementia:
+                v-select(v-model="type" :options="DementiaType")
+              .col-sm-6
+                label.common(for="stageof") Stage of Dementia:
+                v-select(v-model="stageof" :options="DementiaStage")
+            .row.mt-3
+              .col-sm-6
+                label.common(for="score") Latest score on:
+                .row.center
+                  .col-2
+                    b-form-checkbox(type="checkbox" v-model="isAMT" value="AMT") &nbsp;AMT
+                    //-
+                    //- input#AMT.checkbox_circle(type="checkbox" v-model="isAMT" value="AMT")
+                    //- label.my-auto(for="AMT") &nbsp;AMT
+                    .row.center
+                      .col-2(v-if="isAMT") 
+                          input.checkbox#score(v-model="amtVal" type="number" min="0" )
+                  .col-2
+                    b-form-checkbox(type="checkbox" v-model="isMMSE" value="MMSE") &nbsp;MMSE
+                    //- input#MMSE.checkbox_circle(type="checkbox" v-model="isMMSE" value="MMSE")
+                    //- label(for="MMSE") 
+                    .row.center 
+                      .col-2(v-if="isMMSE")
+                        input.checkbox#score(v-model="mmseVal" type="number" min="0")
+                  .col-2 
+                    b-form-checkbox(type="checkbox" v-model="isMOCA" value="MOCA") &nbsp;MOCA
+                    //- input#MOCA.checkbox_circle(type="checkbox" v-model="isMOCA" value="MOCA")
+                    //- label(for="MOCA") &nbsp;MOCA
+                    .row.center
+                      .col-2(v-if="isMOCA")
+                        input.checkbox#score(v-model="mocaVal" type="number" min="0")
+              .col-sm-6
+                label.common(for="score") Date Done in hospital:
+                input.numbers#score(v-model="date" name="score" type="date")
   
           // General questions
-          section(v-show="type && stageof && date && (isAMT || isMOCA || isMMSE)")
+          section.p-4.border.my-4.border-dark.rounded.shadow(v-show="type && stageof && date && (isAMT || isMOCA || isMMSE)")
             label.mb-2(style="font-size: 17px;font-weight: bold;") General:
             b-form-checkbox.mb-2(v-model="checker" type="checkbox" value="sacop" name="part2") &nbsp;Shared about Centre's objectives & program
             b-form-checkbox.mb-2(v-model="checker2" name="part2" type="checkbox" value="wcv") &nbsp;Watched Centre's video
@@ -60,72 +59,59 @@ div
             hr
             label.mb-2(style="font-size: 17px;font-weight: bold;") Games & Surveys:
             b-form-checkbox.mb-2(name="the-pnbtg" value="pnbtg" type="checkbox" v-model="neeuro") &nbsp;Played NeeuroFIT brain training game
-            .container.my-4(v-show="neeuro")
-              h2 NeeuroFit Games:
-              .gap.left
-                input#att.checkbox_circle(v-model="atten" name="part2ins" type="checkbox" value="att")
-                label.my-2.font_bold(for="att") &nbsp;Attention
-                .row.px-5(v-show="atten")
-                  .gap.col-sm-6
-                    label(for="stageof" ) Game played:
-                    v-select(:options="game1" v-model="attentionObj.attentiongame")
-                  .gap.col-sm-6
-                    label(for="stageof" ) Finished Level:
-                    v-select(:options="levels" v-model="attentionObj.attentionlevel")
-              .gap.left 
-                input#spat.checkbox_circle(type="checkbox" name="part2ins" v-model="spatial" value="spat")
-                label.my-2.font_bold(for="spat") &nbsp;Spatial
-                .row.px-5(v-show="spatial")
-                  .gap.col-sm-6
-                    label(for="stageof") Game Played:
-                    v-select(:options="game2" v-model="spatialObj.spatialgame")
-                  .gap.col-sm-6
-                    label(for="stageof") Finished Level:
-                    v-select(:options="levels" v-model="spatialObj.spatiallevel")
-              .gap.left 
-                input#dec.checkbox_circle(type="checkbox" name="part2ins" v-model="decision" value="dec")
-                label.my-2.font_bold(for="dec") &nbsp;Decision
-                .row.px-5(v-show="decision")
-                  .gap.col-sm-6
-                    label(for="stageof") Game Played:
-                    v-select(:options="game3" v-model="decisionObj.decisiongame")
-                  .gap.col-sm-6
-                    label(for="stageof") Finished Level:
-                    v-select(:options="levels" v-model="decisionObj.decisionlevel")
-              .gap.left 
-                input#mem.checkbox_circle(type="checkbox" name="part2ins" v-model="memory" value="mem")
-                label.my-2.font_bold(for="mem") &nbsp;Memory
-                .row.px-5(v-show="memory")
-                  .gap.col-sm-6
-                    label(for="stageof") Game Played:
-                    v-select(:options="game4" v-model="memoryObj.memorygame")
-                  .gap.col-sm-6
-                    label(for="stageof") Finished Level:
-                    v-select(:options="levels" v-model="memoryObj.memorylevel")
-              .gap.left
-                  input#flexi.checkbox_circle(type="checkbox" name="part2ins" v-model="flexibility" value="flexi")
-                  label.my-2.font_bold(for="flexi") &nbsp;Flexibility
-                  .row.px-5(v-show="flexibility")
-                    .gap.col-sm-6
-                      label(for="stageof") Game Played:
-                      v-select(:options="game5" v-model="flexibilityObj.flexibilitygame")
-                    .gap.col-sm-6
-                      label(for="stageof") Finished Level:
-                      v-select(:options="levels" v-model="flexibilityObj.Flexibilitylevel")
+            b-card.my-4(v-show="neeuro"  header-tag="header")
+              template(#header)
+                h5.font-weight-bold Neeurofit
+              b-form-checkbox.mb-2(v-model="atten" name="part2ins" type="checkbox" value="att") &nbsp;Attention
+              .row.mb-2(v-show="atten")
+                .col-sm-6
+                  label(for="stageof" ) Game played:
+                  v-select(:options="game1" v-model="attentionObj.attentiongame")
+                .col-sm-6
+                  label(for="stageof" ) Finished Level:
+                  v-select(:options="levels" v-model="attentionObj.attentionlevel")
+              b-form-checkbox.mb-2(type="checkbox" name="part2ins" v-model="spatial" value="spat") &nbsp;Spatial
+              .row.mb-2(v-show="spatial")
+                .col-sm-6
+                  label(for="stageof") Game Played:
+                  v-select(:options="game2" v-model="spatialObj.spatialgame")
+                .col-sm-6
+                  label(for="stageof") Finished Level:
+                  v-select(:options="levels" v-model="spatialObj.spatiallevel")
+              b-form-checkbox.mb-2(type="checkbox" name="part2ins" v-model="decision" value="dec") &nbsp;Decision
+              .row.mb-2(v-show="decision")
+                .col-sm-6
+                  label(for="stageof") Game Played:
+                  v-select(:options="game3" v-model="decisionObj.decisiongame")
+                .col-sm-6
+                  label(for="stageof") Finished Level:
+                  v-select(:options="levels" v-model="decisionObj.decisionlevel")
+              b-form-checkbox.mb-2(type="checkbox" name="part2ins" v-model="memory" value="mem") &nbsp;Memory
+              .row.mb-2(v-show="memory")
+                .col-sm-6
+                  label(for="stageof") Game Played:
+                  v-select(:options="game4" v-model="memoryObj.memorygame")
+                .col-sm-6
+                  label(for="stageof") Finished Level:
+                  v-select(:options="levels" v-model="memoryObj.memorylevel")
+              b-form-checkbox.mb-2(type="checkbox" name="part2ins" v-model="flexibility" value="flexi") &nbsp;Flexibility
+              .row.mb-2(v-show="flexibility")
+                .col-sm-6
+                  label(for="stageof") Game Played:
+                  v-select(:options="game5" v-model="flexibilityObj.flexibilitygame")
+                .col-sm-6
+                  label(for="stageof") Finished Level:
+                  v-select(:options="levels" v-model="flexibilityObj.Flexibilitylevel")
   
             //MOCA form     
             b-form-checkbox.mb-2(v-model="checker4" name="mocaform" type="checkbox" value="mocaform") &nbsp;MOCA form
-            //- input#mocaform.checkbox_circle(v-model="checker4" name="mocaform" type="checkbox" value="mocaform")
-            //- label.gapped.text-small(for="mocaform") MOCA form
-            .container.left.gap(v-show="checker4")
-              h2.moca.gapbot MOCA
+            b-card.my-4(v-show="checker4"  header-tag="header")
+              template(#header)
+                h5.font-weight-bold MOCA
               p.common Version:
-              div
-                input#cn.checkbox_circle(v-model="cn" name="cnbx" type="checkbox" value="0")
-                label.gapped(for="cn") Chinese 
-              div
-                input#en.checkbox_circle(v-model="en" name="enbx" type="checkbox" value="1")
-                label.gapped(for="en") English 
+              div.d-flex
+                b-form-checkbox(v-model="language" name="languageVer" type="checkbox" value="0") &nbsp;Chinese
+                b-form-checkbox.mx-4(v-model="language" name="languageVer" type="checkbox" value="1") &nbsp;English
               p.common.gap Education Level:
               .col-sm-6
                 v-select(v-model="edulev" :options="edulevel")
@@ -220,48 +206,47 @@ div
             b-form-checkbox.mb-2(v-model="checker5" name="eq5d" type="checkbox" value="eq5d") &nbsp;EQ-5D-5L form
               // input#eq5d.checkbox_circle(v-model="checker5" name="eq5d" type="checkbox" value="eq5d")
               // label.gapped.text-small(for="eq5d") EQ-5D-5L form
-            .container.gap(v-show="checker5")
-              h2.moca.gapbot EQ-5D-5L
-              p.common Health Status:
+            b-card.gap(v-show="checker5"  header-tag="header")
+              template(#header)
+                h5.font-weight-bold EQ-5D-5L
               .row
                 .left.col-sm-6
-                  .row.gap
+                  .row.mb-3
                     label.col-lg-4 Mobility:
                     v-select.col-lg-8(v-model="eq1" :options="eq5dnumbers" :clearable="false")
-                  .row.gap
+                  .row.mb-3
                     label.col-lg-4 Self-Care:
                     v-select.col-lg-8(v-model="eq2" :options="eq5dnumbers" :clearable="false")
-                  .row.gap
+                  .row.mb-3
                     label.col-lg-4 Usual Activities:
                     v-select.col-lg-8(v-model="eq3" :options="eq5dnumbers" :clearable="false")
-                  .row.gap
+                  .row.mb-3
                     label.col-lg-4 Pain/Discomfort:
                     v-select.col-lg-8(v-model="eq4" :options="eq5dnumbers" :clearable="false")
-                  .row.gap
+                  .row.mb-3
                     label.col-lg-4 Anxiety/Depression:
                     v-select.col-lg-8(v-model="eq5" :options="eq5dnumbers" :clearable="false")
                 .col-sm-6
-                  p.gapbot Total Score:
-                  .sm-container
-                    <br/>
-                    h1 {{ eq5dcounter }}/25
-              p.common.gap Perceived Health Scale:
-              .row 
-                label.left.col-sm-2 Health Scale:
-                .col-sm-4
-                  input.numbers(v-model="healthscale" type="range" min="0" max="100") 
-                .col-sm-4(style="font-size:22px;font-weight:bold;")
-                  input.numberslider(v-model="healthscale" type="number" min="0" max="100" onkeydown="return event.keyCode !== 190") 
-            //- hr   
-          section.mt-5(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
+                  b-card.mx-auto(header-tag="header")
+                    template(#header)
+                      h5.font-weight-bold Total Score
+                    h5.font-weight-bold.mx-auto {{ eq5dcounter }}/25
+                  b-card.mx-auto.mt-3(header-tag="header")
+                    template(#header)
+                      div.d-flex
+                        h5.font-weight-bold Perceived Health Scale:
+                        input.numberslider.mx-3.my-auto.w-25(style="font-size:22px;font-weight:bold;" v-model="healthscale" type="number" min="0" max="100" onkeydown="return event.keyCode !== 190") 
+                    .row 
+                      .col-sm-12
+                        input.numbers(v-model="healthscale" type="range" min="0" max="100") 
+          section.p-4.border.my-4.border-dark.rounded.shadow(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
             .formed
               label.common(for="comment") Comment/Observation about the client
               textarea#comment.p-2(name="comment" rows="3" type="text" placeholder="Comment about the client" v-model="checking")
-            hr
-          section(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
-            .row.gap
+          section.p-4.border.my-4.border-dark.rounded.shadow(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
+            .row
               .col-md-2 
-                label.common.gap Fee & Payment:
+                label.common Fee & Payment:
             .centerCheckbox
               input#subsidytoggle.checkbox_circle(v-model="subsidy" v-b-toggle.subsidy_box type="checkbox" value="yes")
               label(for="subsidytoggle").m-3.subsidy_label Subsidy included
@@ -835,6 +820,7 @@ div
     // emits: ["newresource"],
     data() {
       return {
+        language:null,
         loadingAutomated: false,
         newDuration: 180,
         newDementiaType: null,
@@ -2272,16 +2258,17 @@ div
   }
   
   .sm-container {
-    border-radius: 15px;
+    border-radius: 16px;
     border: 1px solid #ccc;
     padding: 1rem;
     text-align: center;
+    display: flex;
     justify-content: center;
-    margin: auto;
+    align-items: center;
     // position: relative;
     // left: 30%;
-    width: 200px;
-    height: 9rem;
+    width: 160px;
+    height: 8rem;
   }
   
   label.common {
@@ -2447,8 +2434,7 @@ div
   }
   
   hr {
-    margin-top: 3rem;
-    margin-bottom: 2rem;
+
     border-width: 2px;
     border-color: #00000059;
     display: block;

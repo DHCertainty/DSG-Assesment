@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import VueSignatureCanvas from 'vue-signature-canvas';
- 
+
 
 import { BootstrapVue, IconsPlugin  } from 'bootstrap-vue'
 
