@@ -2,7 +2,7 @@
 div
     b-container.main-container.mt-2.mb-4
       form
-          section.p-4.border.border-dark.rounded.shadow
+          section.p-4.border.mb-4.border-dark.rounded.shadow
             .row
               .col-sm-6
                 label.common(for="typeof") Type of Dementia:
@@ -16,23 +16,16 @@ div
                 .row.center
                   .col-2
                     b-form-checkbox(type="checkbox" v-model="isAMT" value="AMT") &nbsp;AMT
-                    //-
-                    //- input#AMT.checkbox_circle(type="checkbox" v-model="isAMT" value="AMT")
-                    //- label.my-auto(for="AMT") &nbsp;AMT
                     .row.center
                       .col-2(v-if="isAMT") 
                           input.checkbox#score(v-model="amtVal" type="number" min="0" )
                   .col-2
-                    b-form-checkbox(type="checkbox" v-model="isMMSE" value="MMSE") &nbsp;MMSE
-                    //- input#MMSE.checkbox_circle(type="checkbox" v-model="isMMSE" value="MMSE")
-                    //- label(for="MMSE") 
+                    b-form-checkbox(type="checkbox" v-model="isMMSE" value="MMSE") &nbsp;MMSE 
                     .row.center 
                       .col-2(v-if="isMMSE")
                         input.checkbox#score(v-model="mmseVal" type="number" min="0")
                   .col-2 
                     b-form-checkbox(type="checkbox" v-model="isMOCA" value="MOCA") &nbsp;MOCA
-                    //- input#MOCA.checkbox_circle(type="checkbox" v-model="isMOCA" value="MOCA")
-                    //- label(for="MOCA") &nbsp;MOCA
                     .row.center
                       .col-2(v-if="isMOCA")
                         input.checkbox#score(v-model="mocaVal" type="number" min="0")
@@ -46,16 +39,6 @@ div
             b-form-checkbox.mb-2(v-model="checker" type="checkbox" value="sacop" name="part2") &nbsp;Shared about Centre's objectives & program
             b-form-checkbox.mb-2(v-model="checker2" name="part2" type="checkbox" value="wcv") &nbsp;Watched Centre's video
             b-form-checkbox(v-model="checker3" name="part2" type="checkbox" value="pttg") &nbsp;Played Table Top games
-            //- .formed.gap
-            //-   input#sacop.checkbox_circle(v-model="checker" type="checkbox" value="sacop" name="part2")
-            //-   label.gapped.text-small(for="sacop") Shared about Centre's objectives & program
-            //- .formed.gap
-            //-   input#wcv.checkbox_circle(v-model="checker2" name="part2" type="checkbox" value="wcv")
-            //-   label.gapped.text-small(for="wcv") Watched Centre's video
-            
-            //- .formed.gap
-            //-   input#pttg.checkbox_circle(v-model="checker3" name="part2" type="checkbox" value="pttg")
-            //-   label.gapped.text-small(for="pttg") Played Table Top games
             hr
             label.mb-2(style="font-size: 17px;font-weight: bold;") Games & Surveys:
             b-form-checkbox.mb-2(name="the-pnbtg" value="pnbtg" type="checkbox" v-model="neeuro") &nbsp;Played NeeuroFIT brain training game
@@ -248,37 +231,31 @@ div
               .col-md-2 
                 label.common Fee & Payment:
             .centerCheckbox
-              input#subsidytoggle.checkbox_circle(v-model="subsidy" v-b-toggle.subsidy_box type="checkbox" value="yes")
-              label(for="subsidytoggle").m-3.subsidy_label Subsidy included
-            b-collapse#subsidy_box
+              b-form-checkbox(v-model="subsidy" v-b-toggle.subsidy_box type="checkbox" value="yes") &nbsp;Subsidy included
+            b-collapse.mt-3#subsidy_box(v-model="subsidy")
               b-card
                 section
                     .formed
-                      .formed.gap
-                        input#dsg1.checkbox_circle(v-model="subs1" name="subsidy1" type="checkbox" value="dsg1")
-                        label.long.gapped(for="dsg1") DSG
-                        .row.gap(v-show="subs1")
+                      .formed
+                        b-form-checkbox.mb-2(v-model="subs1" name="subsidy1" type="checkbox" value="dsg1") &nbsp;DSG
+                        .row.my-2(v-show="subs1")
                             .col-md-2 
                               input.numbers#means(name="means" type="number" min="20" v-model="subs1val")
                             .col-md-2 
                               b-form-select.numbers(v-model="dsgsubsidy" :options="subsidyoptions")
                             .col-md-2
                               label.common subsidy
-                              //- checknationality
-                      .gap 
-                        input#dsg2.checkbox_circle(v-model="subs2" name="subsidy2" type="checkbox" value="dsg2" :disabled="false")
-                        label.long.gapped(for="dsg2") Toteboard
-                        .row.gap(v-show="subs2")
+                              //- checknationality 
+                        b-form-checkbox.mb-2(v-model="subs2" name="subsidy2" type="checkbox" value="dsg2" :disabled="false") &nbsp;Toteboard
+                        .row.my-2(v-show="subs2")
                           .col-md-2 
                             label.common Means Test Result
                           .col-md-2 
                             v-select(v-model="subsidyAmount" :options="clientdata.crb5c_citizenship == 0 ?  toteboardSG : toteboardPR")
                           .col-md-2
                             label.common % subsidy
-                      .formed.gap.mb-4
-                        input#dsg3.checkbox_circle(v-model="subs3" name="subsidy3" type="checkbox" value="dsg3" disabled)
-                        label.long.gapped(for="dsg3") Others
-                        .formed.gap(v-show="subs3")
+                        b-form-checkbox.mb-2(v-model="subs3" name="subsidy3" type="checkbox" value="dsg3" disabled) &nbsp;Others
+                        .formed.my-2(v-show="subs3")
                           label.common(for="others") Specify: 
                           input.numbers-half#others(name="others" type="text")
                       //- .formed.gapbot(v-show="subs1 || subs2 || subs3 ")
@@ -326,7 +303,7 @@ div
                             b-col.col-2
                               b-form-input(v-model="transport.amountToBePaid" type="number" placeholder="Amount")
   
-          section.mt-5(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
+          section.p-4.border.my-4.border-dark.rounded.shadow(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
             .formed
               .row
                 .col-sm-3.align-self-center.col-auto
@@ -334,9 +311,9 @@ div
                 .col.col-auto(style="text-align: right;")   
                   b-btn#add-btn.btn-warning.mx-3(@click="addmethod(0)") + Pick Session 
                 .col.col-auto(style="text-align: right;")   
-                  b-btn#add-btn.mx-3.btn-warning(@click="addmethod(1)") + Add New Session 
+                  b-btn#add-btn.mx-2.btn-warning(@click="addmethod(1)") + Add New Session 
                 .col.col-auto(style="text-align: right;")   
-                  b-btn#add-btn.mx-3.btn-dark(@click="AutoMatchingSession()") + (Test) Automation
+                  b-btn#add-btn.mx-2.btn-dark(@click="AutoMatchingSession()") + (Test) Automation
                   //- b-btn#add-btn(@click="addfile") + Add file 
               
               div.my-4(v-if="!sessions.length && !recommended_session_pick.length" )
@@ -344,15 +321,20 @@ div
                   b-icon.large_icon(icon="box-seam")
                   p.gap(style="justify-content: center;") No Session Selected, click add session to begin.
 
-              div.my-4.p-3.border(v-if="recommended_session_pick.length" style="border-radius: 0.5rem;" )
-                .row
-                  p.p-3(v-for="(rec_ses, index) in recommended_session_pick" :key="index")
-                    | {{index+1+'.'}} {{rec_ses.crb5c_session_id}} 
-                    b-icon.delete_icon(icon="x-circle-fill" @click="removePickedSession(index)")
+              <!-- div.my-4.rounded.border(v-if="recommended_session_pick.length") -->
+                <!-- .row -->
+                  <!-- p.p-3(v-for="(rec_ses, index) in recommended_session_pick" :key="index")
+                    | {{index+1+'.'}} {{rec_ses.crb5c_session_id}}
+                    b-icon.delete_icon(icon="x-circle-fill" @click="removePickedSession(index)") -->
+              b-table.my-4(:fields="sessionTableFields" :items="recommended_session_pick" v-if="recommended_session_pick.length" striped bordered responsive)
+                template(#cell(session_name)="data")
+                  p {{data.item.crb5c_session_id}}
+                template(#cell(actions)="data")
+                  b-button(variant="danger" @click="removePickedSession(data.index)") Remove
 
               div.my-4.p-3.border(v-if="sessions.length" style="border-radius: 0.5rem;" )
                 .row
-                  p.p-3(v-for="(ses, index) in sessions" :key="index")
+                  p.p-3(v-for="(ses, index) in sessions" :key="index") 
                     | {{index+1+'.'}} {{ses.name}} [{{ses.type}}] - {{ ses.day }} {{ ses.time }} ( {{ ses.location }} ) 
                     b-icon.delete_icon(icon="x-circle-fill" @click="removeSession(index)")
 
@@ -376,24 +358,16 @@ div
                     h6 Successfully automated the sessions, you can now close this pop-up.
 
                 
-              b-modal#addAdHocModal.modal_confimration(size="lg" title="Add here" scrollable centered hide-footer)
-                  .row 
-                    .col.m-2
-                      label.text-small.m-4  Remarks: #[input.mx-2.modified_remark_input(type="text" v-model="adHocItems.remark")]
-                      label.text-small.m-4 Amount $ : #[input.mx-2(type="number" v-model="adHocItems.total" value="")]
-                  .row.mt-4
-                    .row.m-4
-                      .col-sm-1
-                        input#recurringfee.checkbox_circle(v-model="adHocItems.isRecurring" type="checkbox")
-                      .col-sm
-                        label(for="recurringfee") Recurring (Monthly)
-                    .row.m-4
-                      .col-sm-1
-                        input#includeFee.checkbox_circle(v-model="adHocItems.isIncludeInFee" type="checkbox")
-                      .col-sm
-                        label(for="includeFee") Include in current fee
-                    .row.mt-5(style="justify-content: center;")
-                      b-btn(@click="adHocFee" style="width:50%") Add Fee
+              b-modal#addAdHocModal.modal_confimration(size="lg" title="Ad-hoc Fee" scrollable centered hide-footer)
+                  .d-flex.flex-column
+                    b-form-group.mb-3(label="Remark:")
+                      b-form-input(type="text" v-model="adHocItems.remark")
+                    b-form-group.mb-3(label="Amount ($): ")
+                      b-form-input(type="number" v-model="adHocItems.total" value="")
+                    b-form-checkbox.mb-2(v-model="adHocItems.isRecurring"  type="checkbox") &nbsp;Recurring (Monthly)
+                    b-form-checkbox.mb-2(v-model="adHocItems.isIncludeInFee"  type="checkbox") &nbsp;Include in current fee
+                    .d-flex.justify-content-center.mt-3
+                      b-button(@click="adHocFee" variant="primary" style="width:50%") Add Fee
 
               b-modal#paymentConfirmation(size="xl" scrollable centered hide-footer)
                 section.gap.mx-5
@@ -544,7 +518,7 @@ div
                 template(#modal-footer="{ok}")
                   b-btn.btn-success(v-show="location" size="md" @click="addNew") Add
               // add new session modal -end  
-          section.mt-5(v-show="this.sessions.length || this.recommended_session_pick.length")
+          section.p-4.border.my-4.border-dark.rounded.shadow(v-show="this.sessions.length || this.recommended_session_pick.length")
             label.common Applicable Sessions (excluding GST):
             .formed
               .formed(v-for="(programme, index)  in filteredProgrammeInfos " :key="index")
@@ -615,7 +589,7 @@ div
                           b-row
                             b-col.d-flex.justify-content-end.align-items-end(style="font-size: 20px;")
                               label(v-show="totalforCIP") ${{totalforCIP}} for {{ CIPdays }} session
-              .formed(style="margin-top:40px" v-show="this.sessions.length || this.recommended_session_pick.length")
+              .formed.mt-3( v-show="this.sessions.length || this.recommended_session_pick.length")
                 label.common.gap(for="admission") Admission date:
                 input.numbers-half#admission(v-model="adm" name="admission" type="date")
   
@@ -631,23 +605,19 @@ div
                   //-   div(style="text-align: right;width: 100%;font-size: 20px;")
                   //-     label(v-show="totalforCIP") ${{totalforCIP}} for {{ CIPdays }} session
             
-          // 
-          section.mt-5(v-show="(this.sessions.length || this.recommended_session_pick.length)  && !isCipSelected" style="margin-top:50px")
-            label.common NeeuroFit Subscription:
-            .formed.gap
-                input#neeurofit.checkbox_circle(v-model="neeurofitFeeTotal" type="checkbox" :value="neeuroFitFees")
-                label.gapped.text-small(for="neeurofit") Centre-based NeeuroFIT 6 months subcription $240
-
           //
-          section(style="margin-top:50px" v-show="this.sessions.length || this.recommended_session_pick.length")
-              .row.mt-5.align-items-center
-                .col.col-auto 
-                  label.common Additional fee:
-                .col 
-                  b-btn.btn-success(varianyv-b-modal.addAdHocModal) Ad-hoc fee
+
+          section.p-4.border.my-4.border-dark.rounded.shadow(v-show="(this.sessions.length || this.recommended_session_pick.length)  && !isCipSelected" style="margin-top:50px")
+            label.common NeeuroFit Subscription:
+            b-form-checkbox(v-model="neeurofitFeeTotal" type="checkbox" :value="neeuroFitFees") &nbsp;Centre-based NeeuroFIT 6 months subcription $240
+
+          
+          section.p-4.border.my-4.border-dark.rounded.shadow(style="margin-top:50px" v-show="this.sessions.length || this.recommended_session_pick.length")
+              .d-flex.align-items-center
+                label Additional fee:
+                b-button.mx-3(v-b-modal.addAdHocModal variant="success") Ad-hoc fee
               .formed.gap(v-show="!subs1")
-                input#one_time.checkbox_circle(v-model="additionalFeeTotal" type="checkbox" :value="additionalFees.one_time.price")
-                label.gapped.text-small(for="one_time") One-time Assessment $50
+                b-form-checkbox(v-model="additionalFeeTotal" type="checkbox" :value="additionalFees.one_time.price") &nbsp;One-time Assessment $50
               .formed.gap(v-show="subs1")
                 input#one_time_other.checkbox_circle( v-model="additionalFeeTotal"  type="checkbox" :value="oneTimeOtherValue" :disabled="!oneTimeOtherValue")
                 label.gapped.text-small(for="one_time_other") One-time Assessment $
@@ -658,18 +628,19 @@ div
                   strike.mx-2 $50 
                     label.mx-2 [Waived]
               .formed.gap(v-if="!isCipSelected")
-                input#refund.checkbox_circle(v-model="refundableFeeTotal" type="checkbox" :value="refundableDeposit")
-                label.gapped.text-small(for="refund") Refundable One-Month Deposit (4 X applicable fee) ${{ refundableDeposit }}
-              .formed.gap.addtional_fee(v-for="(adhoc,index) in adHocFeeTotal")
-                .row  
-                  .col.mt-2
-                    label.gapped.text-small(for="refund") Fee remark: {{ adhoc.remark }}
-                    label.gapped.text-small(for="refund") Amount : ${{ adhoc.total }}
-                    label.gapped.text-small.mx-4(for="refund") Monthly: {{ adhoc.isRecurring ? 'Yes' : 'No' }}
-                  .col(style="text-align-last: right;")
-                    b-btn.danger(@click="deleteAdHoc(index)") Delete
-                  
-              
+                b-form-checkbox(v-model="refundableFeeTotal" type="checkbox" :value="refundableDeposit") &nbsp;Refundable One-Month Deposit (4 X applicable fee) ${{ refundableDeposit }}
+
+              b-table.my-4(:fields="adHocFeeTableFields" :items="adHocFeeTotal" v-if="adHocFeeTotal.length" striped bordered responsive)
+                template(#cell(remark)="data")
+                  p {{data.item.remark}}
+                template(#cell(total)="data")
+                  p {{data.item.total}}
+                template(#cell(isRecurring)="data")
+                  p  {{ data.item.isRecurring ? 'Yes' : 'No' }}
+                template(#cell(isIncludeInFee)="data")
+                  p  {{ data.item.isIncludeInFee ? 'Yes' : 'No' }}
+                template(#cell(action)="data")
+                  b-button(variant="danger" @click="deleteAdHoc(data.index)") Remove
           //Payment type
                 //-"
                 //- .row
@@ -820,6 +791,17 @@ div
     // emits: ["newresource"],
     data() {
       return {
+        adHocFeeTableFields:[
+          {key:'remark', label:'Remarks'},
+          {key:'total', label:'Amount'},
+          {key:'isRecurring', label:'Recurring (Monthly'},
+          {key:'isIncludeInFee', label:'Include in Fee'},
+          {key:'action', label:'Action'}
+        ],
+        sessionTableFields:[
+          {key:"session_name", label:"Session Name"},
+          {key:"actions", label:"Actions"}
+        ],
         language:null,
         loadingAutomated: false,
         newDuration: 180,
@@ -2413,7 +2395,7 @@ div
   .formed {
     position: relative;
     /* padding-left: 90px; */
-    margin-right: 3rem;
+    /* margin-right: 3rem; */
   }
   
   .gap {
