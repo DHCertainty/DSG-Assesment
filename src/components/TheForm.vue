@@ -204,7 +204,7 @@ div
                     label.col-lg-4 Usual Activities:
                     v-select.col-lg-8(v-model="eq3" :options="eq5dnumbers" :clearable="false")
                   .row.mb-3
-                    label.col-lg-4 Pain/Discomfort:
+                    label.col-lg-4 Pain / Discomfort:
                     v-select.col-lg-8(v-model="eq4" :options="eq5dnumbers" :clearable="false")
                   .row.mb-3
                     label.col-lg-4 Anxiety/Depression:
@@ -367,9 +367,9 @@ div
                     b-form-checkbox.mb-2(v-model="adHocItems.isRecurring"  type="checkbox") &nbsp;Recurring (Monthly)
                     b-form-checkbox.mb-2(v-model="adHocItems.isIncludeInFee"  type="checkbox") &nbsp;Include in current fee
                     .d-flex.justify-content-center.mt-3
-                      b-button(@click="adHocFee" variant="primary" style="width:50%") Add Fee
+                      b-button(@click="adHocFee" variant="primary" :disabled="!adHocItems.remark || !adHocItems.total || (!adHocItems.isRecurring && !adHocItems.isIncludeInFee)" style="width:50%") Add Fee
 
-              b-modal#paymentConfirmation(size="xl" scrollable centered hide-footer)
+              b-modal#paymentConfirmation(size="xl" scrollable centered hide-footer title="Summary")
                 section.gap.mx-5
                   label.common(for="collect") Amount to be Collected + GST [SGD]:
                   label.common(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
@@ -391,20 +391,20 @@ div
                         img.checkboxImg.mx-3(src="/form-images/money.png")
                   .col(cols="2")
                     label(for="paynow") 
-                      div(:class="(this.modeofpayment == 'paynow') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
-                        input#paynow( v-model="modeofpayment" name="payment" type="radio" value="paynow") 
+                      div.border-danger(:class="(this.modeofpayment == 'paynow') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
+                        input#paynow( v-model="modeofpayment" name="payment" type="radio" value="paynow" disabled) 
                         |&nbsp;&nbsp;PayNow
                         img.mx-3.my-2(src="/form-images/paynow_logo.png" style="width:100px")
                   .col(cols="6")
                     label(for="e-bank") 
-                      div(:class="(this.modeofpayment == 'e-bank') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
-                        input#e-bank( v-model="modeofpayment" name="payment" type="radio" value="e-bank")
+                      div.border-danger(:class="(this.modeofpayment == 'e-bank') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
+                        input#e-bank( v-model="modeofpayment" name="payment" type="radio" value="e-bank" disabled)
                         |&nbsp;&nbsp;Internet Banking
                         img.checkboxImg.mx-3(src="/form-images/money_transfer.png")
                   .col(cols="6")
                     label(for="cheque")
-                      div(:class="(this.modeofpayment == 'cheque') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
-                        input#cheque( v-model="modeofpayment" name="payment" type="radio" value="cheque")
+                      div.border-danger(:class="(this.modeofpayment == 'cheque') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
+                        input#cheque( v-model="modeofpayment" name="payment" type="radio" value="cheque" disabled)
                         |&nbsp;&nbsp;Cheque
                         img.checkboxImg.mx-3(src="/form-images/cheque.png")
 
@@ -612,7 +612,7 @@ div
             b-form-checkbox(v-model="neeurofitFeeTotal" type="checkbox" :value="neeuroFitFees") &nbsp;Centre-based NeeuroFIT 6 months subcription $240
 
           
-          section.p-4.border.my-4.border-dark.rounded.shadow(style="margin-top:50px" v-show="this.sessions.length || this.recommended_session_pick.length")
+          section.p-4.border.my-4.border-dark.rounded.shadow(v-show="this.sessions.length || this.recommended_session_pick.length")
               .d-flex.align-items-center
                 label Additional fee:
                 b-button.mx-3(v-b-modal.addAdHocModal variant="success") Ad-hoc fee
@@ -657,106 +657,109 @@ div
                 //-         label.common(v-if="totalOfNeeurofit !== 0") {{ totalOfNeeurofit }} (with GST : {{ totalOfNeeurofit*1.08.toFixed(2) }})
                 //-   .col
                 
- 
-          section(v-show="this.sessions.length || this.recommended_session_pick.length")
-            .gap.row.mt-0
-              .gap
-                    label.common.amountjustify(for="collect" ) Amount to be Collected + GST [SGD]:
-                    label.common.amountjustify(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
-                    b-btn.btn-success(@click="navigateToServiceForm") Continue to Agreement 
 
-              section(v-if="viewServiceForm")
-                h2.mt-5 Service Agreement Form
-                .row.mt-5
-                    .col-sm.text-left
-                      p NRIC Name of Client:
-                    .col-sm
-                      | {{ clientdata.crb5c_no }}
-                .row.mt-3
-                    .col-sm.text-left
-                      p NRIC No. of Client:
-                    .col-sm
-                      | {{ clientdata.crb5c_nricno}}
-                .row.mt-3
-                    .col-sm.text-left
-                      p Services Provided:
-                    .col-sm
-                      p Family of Wisdom (Enrichment) Programme:
-                .row.mt-3
-                    .col-sm.text-left
-                      p Date of Commencement:
-                    .col-sm
-                      | {{ adm }}
-                .row.mt-3
-                    .col-sm.text-left
-                      p Fee charged per session (before GST): $
-                    .col-sm
-                      | {{ isCipSelected? (fees4val + transportTotalView )  : totalOfApplicable  }} 
-                      
+          section.p-4.border.my-4.border-dark.rounded.shadow(v-show="this.sessions.length || this.recommended_session_pick.length")
+            div.d-flex.justify-content-between.align-items-center
+              div
+                b-button(variant="success" @click="navigateToServiceForm") Continue to Agreement 
+              div.d-flex.flex-column.align-items-end
+                label.common(for="collect" ) Amount to be Collected + GST [SGD]:
+                label.common(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
 
-                .row.mt-5(style="text-align:justify;line-height:5vh")
-                  p I, #[input.form-control(type="text" v-model="caregiverName")] (NRIC Name), confirm that I am the #[input.form-control(type="text" v-model="caregiverRelationship" )] (relationship) of #[input.form-control(type="text" v-model="caregiverClientName" )] (NRIC Name of client),#[input.form-control(type="text" v-model="caregiverClientIc")] (NRIC No.).
+          section.p-4.border.my-4.border-dark.rounded.shadow(v-if="viewServiceForm")
+            h2 Service Agreement Form
+            .row.mt-3
+                .col-sm.text-left
+                  p NRIC Name of Client:
+                .col-sm
+                  | {{ clientdata.crb5c_no }}
+            .row.mt-3
+                .col-sm.text-left
+                  p NRIC No. of Client:
+                .col-sm
+                  | {{ clientdata.crb5c_nricno}}
+            .row.mt-3
+                .col-sm.text-left
+                  p Services Provided:
+                .col-sm
+                  p Family of Wisdom (Enrichment) Programme:
+            .row.mt-3
+                .col-sm.text-left
+                  p Date of Commencement:
+                .col-sm
+                  | {{ adm }}
+            .row.mt-3
+                .col-sm.text-left
+                  p Fee charged per session (before GST): $
+                .col-sm
+                  | {{ isCipSelected? (fees4val + transportTotalView )  : totalOfApplicable  }} 
                   
-                hr  
-                section.mt-5(style="text-align:left;")
-                  p I hereby declare that I have understood and agree to abide by the:
+            hr
+            .row(style="text-align:justify;line-height:5vh")
+              <!-- p I, #[input.form-control(type="text" v-model="caregiverName")] (NRIC Name), confirm that I am the #[input.form-control(type="text" v-model="caregiverRelationship" )] (relationship) of #[input.form-control(type="text" v-model="caregiverClientName" )] (NRIC Name of client),#[input.form-control(type="text" v-model="caregiverClientIc")] (NRIC No.). -->
+              .d-flex.flex-wrap
+                span.m-2 I,
+                input.form-control.w-50.d-inline.m-2(type="text" v-model="caregiverName" placeholder="Caregiver Name")
+                span.m-2 (NRIC Name), confirm that I am the
+                input.form-control.w-25.d-inline.m-2(type="text" v-model="caregiverRelationship" placeholder="Spouse / Sibling / Children / Caregiver / Guardian")
+                span.m-2 (relationship) of
+                input.form-control.w-50.d-inline.m-2(type="text" v-model="caregiverClientName" placeholder="Client Name")
+                span.m-2 (NRIC Name of client),
+                input.form-control.w-25.d-inline.m-2(type="text" v-model="caregiverClientIc" placeholder="Caregiver IC")
+                span.m-2 (NRIC No.).
+              
+            hr  
+            section.mt-3(style="text-align:left;")
+              p I hereby declare that I have understood and agree to abide by the:
+              ul
+                  li Service Agreement
+              p of Family of Wisdom (Bendemeer)
+              .row.mt-3
+                .col 
+                  .row.mt-3.mx-1
+                        VueSignatureCanvas.gap.sig-canvas(ref="caregiverSignature" )
+                  div.d-flex.justify-content-between
+                    h5
+                      u.text-center Caregiver Sign Here
+                    b-button(variant="danger" @click="clearCanvas('caregiverSignature')") Clear
 
-                  ul
-                      li Service Agreement
-                      
-                  p of Family of Wisdom (Bendemeer)
+                        
+                .col 
+                  .row.mt-3.mx-1
+                        VueSignatureCanvas.gap.sig-canvas(ref="staffSignature" )
+                  div.d-flex.justify-content-between.align-items-center
+                    h5
+                      u.text-center Staff Sign Here 
+                    b-button(variant="danger" @click="clearCanvas('staffSignature')") Clear
+              hr
+              .row.mt-2
+                .col-sm
+                    p Contact Number:
+                .col-sm
+                    input.form-control(type="number" v-model="serviceAgreementContact")
+              .row.mt-3
+                .col-sm 
+                    p Date:
+                .col-sm
+                    input.form-control(type="date" v-model="serviceAgreementDate")
+              div.mt-3.d-flex.justify-content-center.align-items-center
+                b-button.px-5.py-2( v-if="viewamtcollect" variant="success" v-b-modal.paymentConfirmation) Continue
+              
+              //- .row(v-if="imagesSign")
+              //-   img(:src="'data:image/jpeg;base64,' + imagesSign[0].crb5c_caregiversignature")
+            //- input.numbers#collect(v-model="amtcollect " name="collect" type="text" readonly="readonly")
+        
+        
+      section(v-if="modeofpayment")
+        //- b-row.justify-content-center
+        //-     VueSignatureCanvas.gap(ref="handWrite" :canvasProps="{class: 'sig-canvas'}")
+        //- b-row.justify-content-center
+        //-     b-btn.gap.confimrationBtn#getImagebtn(@click="getImage()") Submit 
+        //- b-row
+        //-   .col-sm-2
+        //-     img.signatureView(:src="signatureImg")
 
-                  
-                  .row.mt-4
-                    .col 
-                      .row.mt-5.mx-1
-                            VueSignatureCanvas.gap.sig-canvas(ref="caregiverSignature" )
-                      .row.mt-2
-                        .col 
-                          p.text-center --- Caregiver Sign here ---
-                        .col
-                          b-button(@click="clearCanvas('caregiverSignature')") Clear
-
-                            
-                    .col 
-                      .row.mt-5.mx-1
-                            VueSignatureCanvas.gap.sig-canvas(ref="staffSignature" )
-                      .row.mt-2
-                          .col
-                            p.text-center --- Staff Sign here ---
-                          .col 
-                            b-button(@click="clearCanvas('staffSignature')") Clear
-                  .row.mt-5  
-                    .col-sm
-                        p Contact Number:
-                    .col-sm
-                        input.form-control(type="number" v-model="serviceAgreementContact")
-                  .row.mt-5
-                    .col-sm 
-                        p Date:
-                    .col-sm
-                        input.form-control(type="date" v-model="serviceAgreementDate")
-                  .row.mt-5 
-                    b-btn( v-if="viewamtcollect" v-b-modal.paymentConfirmation style="background: #917093;font-size: 17px;width: 20%;float:right;margin:50px 20px 0px 0px") Continue
-                  
-                  //- .row(v-if="imagesSign")
-                  //-   img(:src="'data:image/jpeg;base64,' + imagesSign[0].crb5c_caregiversignature")
-                    
-
-                //- input.numbers#collect(v-model="amtcollect " name="collect" type="text" readonly="readonly")
-            
-            //- 
-            
-          section(v-if="modeofpayment")
-            //- b-row.justify-content-center
-            //-     VueSignatureCanvas.gap(ref="handWrite" :canvasProps="{class: 'sig-canvas'}")
-            //- b-row.justify-content-center
-            //-     b-btn.gap.confimrationBtn#getImagebtn(@click="getImage()") Submit 
-            //- b-row
-            //-   .col-sm-2
-            //-     img.signatureView(:src="signatureImg")
-
-          // Submit button 
+      // Submit button 
 </template>
   
   <script>
@@ -794,7 +797,7 @@ div
         adHocFeeTableFields:[
           {key:'remark', label:'Remarks'},
           {key:'total', label:'Amount'},
-          {key:'isRecurring', label:'Recurring (Monthly'},
+          {key:'isRecurring', label:'Recurring (Monthly)'},
           {key:'isIncludeInFee', label:'Include in Fee'},
           {key:'action', label:'Action'}
         ],

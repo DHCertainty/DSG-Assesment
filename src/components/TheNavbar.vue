@@ -1,5 +1,5 @@
 <template>
-  <header class="front">
+  <header class="front border-bottom border-dark" >
     <link
       href="https://fonts.googleapis.com/css?family=Roboto"
       rel="stylesheet"
