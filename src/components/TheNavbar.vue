@@ -71,7 +71,7 @@ export default {
     this.$store.commit('assessment_client_id',clientId)
     
     await this.$parent.init();
-    console.log(this.$store.state);
+    // console.log(this.$store.state);
     await this.getClientData();
 
    

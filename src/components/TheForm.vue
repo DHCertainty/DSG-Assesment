@@ -1,8 +1,10 @@
 <template lang="pug">
-div
+div(ref='pdfWholePage')
     b-container.main-container.mt-2.mb-4
       form
-          section.p-4.border.mb-4.border-dark.rounded.shadow
+          //- div
+          //-   button(@click="generatePDF") Generate PDF
+          section.p-4.border.mb-4.border-light.rounded.shadow
             .row
               .col-sm-6
                 label.common(for="typeof") Type of Dementia:
@@ -34,18 +36,18 @@ div
                 input.numbers#score(v-model="date" name="score" type="date")
   
           // General questions
-          section.p-4.border.my-4.border-dark.rounded.shadow(v-show="type && stageof && date && (isAMT || isMOCA || isMMSE)")
+          section.p-4.border.my-4.border-light.rounded.shadow(v-show="type && stageof && date && (isAMT || isMOCA || isMMSE)")
             label.mb-2(style="font-size: 17px;font-weight: bold;") General:
-            b-form-checkbox.mb-2(v-model="checker" type="checkbox" value="sacop" name="part2") &nbsp;Shared about Centre's objectives & program
-            b-form-checkbox.mb-2(v-model="checker2" name="part2" type="checkbox" value="wcv") &nbsp;Watched Centre's video
-            b-form-checkbox(v-model="checker3" name="part2" type="checkbox" value="pttg") &nbsp;Played Table Top games
+            b-form-checkbox.mb-2(v-model="checker" value="sacop" name="part2") &nbsp;Shared about Centre's objectives & program
+            b-form-checkbox.mb-2(v-model="checker2" name="part2" value="wcv") &nbsp;Watched Centre's video
+            b-form-checkbox(v-model="checker3" name="part2" value="pttg") &nbsp;Played Table Top games
             hr
             label.mb-2(style="font-size: 17px;font-weight: bold;") Games & Surveys:
-            b-form-checkbox.mb-2(name="the-pnbtg" value="pnbtg" type="checkbox" v-model="neeuro") &nbsp;Played NeeuroFIT brain training game
+            b-form-checkbox.mb-2(name="the-pnbtg" value="pnbtg" v-model="neeuro") &nbsp;Played NeeuroFIT brain training game
             b-card.my-4(v-show="neeuro"  header-tag="header")
               template(#header)
                 h5.font-weight-bold Neeurofit
-              b-form-checkbox.mb-2(v-model="atten" name="part2ins" type="checkbox" value="att") &nbsp;Attention
+              b-form-checkbox.mb-2(v-model="atten" name="part2ins" value="att") &nbsp;Attention
               .row.mb-2(v-show="atten")
                 .col-sm-6
                   label(for="stageof" ) Game played:
@@ -222,16 +224,16 @@ div
                     .row 
                       .col-sm-12
                         input.numbers(v-model="healthscale" type="range" min="0" max="100") 
-          section.p-4.border.my-4.border-dark.rounded.shadow(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
+          section.p-4.border.my-4.border-light.rounded.shadow(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
             .formed
               label.common(for="comment") Comment/Observation about the client
               textarea#comment.p-2(name="comment" rows="3" type="text" placeholder="Comment about the client" v-model="checking")
-          section.p-4.border.my-4.border-dark.rounded.shadow(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
+          section.p-4.border.my-4.border-light.rounded.shadow(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
             .row
               .col-md-2 
                 label.common Fee & Payment:
             .centerCheckbox
-              b-form-checkbox(v-model="subsidy" v-b-toggle.subsidy_box type="checkbox" value="yes") &nbsp;Subsidy included
+              b-form-checkbox(v-model="subsidy" v-b-toggle.subsidy_box type="checkbox" value=true) &nbsp;Subsidy included
             b-collapse.mt-3#subsidy_box(v-model="subsidy")
               b-card
                 section
@@ -303,7 +305,7 @@ div
                             b-col.col-2
                               b-form-input(v-model="transport.amountToBePaid" type="number" placeholder="Amount")
   
-          section.p-4.border.my-4.border-dark.rounded.shadow(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
+          section.p-4.border.my-4.border-light.rounded.shadow(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
             .formed
               .row
                 .col-sm-3.align-self-center.col-auto
@@ -312,8 +314,8 @@ div
                   b-btn#add-btn.btn-warning.mx-3(@click="addmethod(0)") + Pick Session 
                 .col.col-auto(style="text-align: right;")   
                   b-btn#add-btn.mx-2.btn-warning(@click="addmethod(1)") + Add New Session 
-                .col.col-auto(style="text-align: right;")   
-                  b-btn#add-btn.mx-2.btn-dark(@click="AutoMatchingSession()") + (Test) Automation
+                //- .col.col-auto(style="text-align: right;")   
+                //-   b-btn#add-btn.mx-2.btn-dark(@click="AutoMatchingSession()") + (Test) Automation
                   //- b-btn#add-btn(@click="addfile") + Add file 
               
               div.my-4(v-if="!sessions.length && !recommended_session_pick.length" )
@@ -341,7 +343,7 @@ div
               //- b-modal#confrimationModal.modal_confimration(size="lg" title="Sign here" scrollable centered hide-footer)
               //-     input(type="file" @change="uploadFile")
               //-     b-btn(@click="confirmUpload") Submit
-                
+              
               b-modal#automatedMatchingModal.modal_confimration(size="lg"  scrollable centered hide-footer hide-header no-close-on-esc no-close-on-backdrop)
                 div(v-if="loadingAutomated")
                   b-row.mt-5 
@@ -357,6 +359,21 @@ div
                   b-row.my-5.text-center
                     h6 Successfully automated the sessions, you can now close this pop-up.
 
+              b-modal#assessmentSubmission.modal_confimration(size="lg"  scrollable centered hide-footer hide-header no-close-on-esc no-close-on-backdrop)
+                div(v-if="loadingSubmission")
+                  b-row.mt-5 
+                    Icon.icon-loader(icon="line-md:loading-twotone-loop")
+                  b-row.my-5.text-center
+                    h6 Please wait, assessment is being finalized and submitting
+                div(v-else)
+                  //- div.mx-3(style="text-align: right; font-size: 3vh") 
+                  //-   b-button.btn-transparent(@click="closeModal('automatedMatchingModal')")
+                  //-     Icon(icon="ic:twotone-close" ) 
+                  b-row.mt-4.justify-content-center
+                    lord-icon(src="https://cdn.lordicon.com/wzwygmng.json" trigger="loop" delay="1200"  colors="primary:#121331,secondary:#4f1091" state="in-reveal" style="width:350px;height:350px")
+                  b-row.my-5.text-center
+                    h6 Submitted successfully, session automation will beginin 5 seconds.
+
                 
               b-modal#addAdHocModal.modal_confimration(size="lg" title="Ad-hoc Fee" scrollable centered hide-footer)
                   .d-flex.flex-column
@@ -369,17 +386,17 @@ div
                     .d-flex.justify-content-center.mt-3
                       b-button(@click="adHocFee" variant="primary" :disabled="!adHocItems.remark || !adHocItems.total || (!adHocItems.isRecurring && !adHocItems.isIncludeInFee)" style="width:50%") Add Fee
 
-              b-modal#paymentConfirmation(size="xl" scrollable centered hide-footer title="Summary")
+              b-modal#paymentConfirmation(size="xl" scrollable centered hide-footer)
                 section.gap.mx-5
                   label.common(for="collect") Amount to be Collected + GST [SGD]:
                   label.common(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
                     
-                  hr
+                hr
                 .mx-5
-                    h1(style="font-weight:700;") Payment Instructions
-                    h4.my-2.text-danger(style="font-weight:700;") Payment via QR code is highly recommended.
-                    p Kindly make payment by scanning the PayNow QR code below with a mobile banking application, or making an electronic funds transfer (FAST), to the bank account below.
-                    hr
+                    h1(style="font-weight:700;") Payment (LIMITED)
+                    h4.my-2.text-danger(style="font-weight:700;") Payment and billing are on hold .
+                    p For the time being you can only do cash payment, but do keep record of the payment details manually untill the full billing and invoice is released.
+                hr
                     
                 label.common.gap.mx-5.my-2 Mode of Payment:
                 .row(style="display: flex;flex-wrap: wrap;text-align: center;") 
@@ -518,7 +535,7 @@ div
                 template(#modal-footer="{ok}")
                   b-btn.btn-success(v-show="location" size="md" @click="addNew") Add
               // add new session modal -end  
-          section.p-4.border.my-4.border-dark.rounded.shadow(v-show="this.sessions.length || this.recommended_session_pick.length")
+          section.p-4.border.my-4.border-light.rounded.shadow(v-show="this.sessions.length || this.recommended_session_pick.length")
             label.common Applicable Sessions (excluding GST):
             .formed
               .formed(v-for="(programme, index)  in filteredProgrammeInfos " :key="index")
@@ -607,12 +624,12 @@ div
             
           //
 
-          section.p-4.border.my-4.border-dark.rounded.shadow(v-show="(this.sessions.length || this.recommended_session_pick.length)  && !isCipSelected" style="margin-top:50px")
+          section.p-4.border.my-4.border-light.rounded.shadow(v-show="(this.sessions.length || this.recommended_session_pick.length)  && !isCipSelected" style="margin-top:50px")
             label.common NeeuroFit Subscription:
             b-form-checkbox(v-model="neeurofitFeeTotal" type="checkbox" :value="neeuroFitFees") &nbsp;Centre-based NeeuroFIT 6 months subcription $240
 
           
-          section.p-4.border.my-4.border-dark.rounded.shadow(v-show="this.sessions.length || this.recommended_session_pick.length")
+          section.p-4.border.my-4.border-light.rounded.shadow(v-show="this.sessions.length || this.recommended_session_pick.length")
               .d-flex.align-items-center
                 label Additional fee:
                 b-button.mx-3(v-b-modal.addAdHocModal variant="success") Ad-hoc fee
@@ -658,96 +675,96 @@ div
                 //-   .col
                 
 
-          section.p-4.border.my-4.border-dark.rounded.shadow(v-show="this.sessions.length || this.recommended_session_pick.length")
+          section.p-4.border.my-4.border-light.rounded.shadow(v-show="this.sessions.length || this.recommended_session_pick.length")
             div.d-flex.justify-content-between.align-items-center
-              div
-                b-button(variant="success" @click="navigateToServiceForm") Continue to Agreement 
+              div()
+                b-button(variant="success" @click="navigateToServiceForm" v-if="!viewServiceForm") Continue to Agreement 
               div.d-flex.flex-column.align-items-end
                 label.common(for="collect" ) Amount to be Collected + GST [SGD]:
                 label.common(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
 
-          section.p-4.border.my-4.border-dark.rounded.shadow(v-if="viewServiceForm")
-            h2 Service Agreement Form
-            .row.mt-3
-                .col-sm.text-left
-                  p NRIC Name of Client:
-                .col-sm
-                  | {{ clientdata.crb5c_no }}
-            .row.mt-3
-                .col-sm.text-left
-                  p NRIC No. of Client:
-                .col-sm
-                  | {{ clientdata.crb5c_nricno}}
-            .row.mt-3
-                .col-sm.text-left
-                  p Services Provided:
-                .col-sm
-                  p Family of Wisdom (Enrichment) Programme:
-            .row.mt-3
-                .col-sm.text-left
-                  p Date of Commencement:
-                .col-sm
-                  | {{ adm }}
-            .row.mt-3
-                .col-sm.text-left
-                  p Fee charged per session (before GST): $
-                .col-sm
-                  | {{ isCipSelected? (fees4val + transportTotalView )  : totalOfApplicable  }} 
-                  
-            hr
-            .row(style="text-align:justify;line-height:5vh")
-              <!-- p I, #[input.form-control(type="text" v-model="caregiverName")] (NRIC Name), confirm that I am the #[input.form-control(type="text" v-model="caregiverRelationship" )] (relationship) of #[input.form-control(type="text" v-model="caregiverClientName" )] (NRIC Name of client),#[input.form-control(type="text" v-model="caregiverClientIc")] (NRIC No.). -->
-              .d-flex.flex-wrap
-                span.m-2 I,
-                input.form-control.w-50.d-inline.m-2(type="text" v-model="caregiverName" placeholder="Caregiver Name")
-                span.m-2 (NRIC Name), confirm that I am the
-                input.form-control.w-25.d-inline.m-2(type="text" v-model="caregiverRelationship" placeholder="Spouse / Sibling / Children / Caregiver / Guardian")
-                span.m-2 (relationship) of
-                input.form-control.w-50.d-inline.m-2(type="text" v-model="caregiverClientName" placeholder="Client Name")
-                span.m-2 (NRIC Name of client),
-                input.form-control.w-25.d-inline.m-2(type="text" v-model="caregiverClientIc" placeholder="Caregiver IC")
-                span.m-2 (NRIC No.).
-              
-            hr  
-            section.mt-3(style="text-align:left;")
-              p I hereby declare that I have understood and agree to abide by the:
-              ul
-                  li Service Agreement
-              p of Family of Wisdom (Bendemeer)
+          div( ref='pdfFormView' v-if="viewServiceForm")
+            section.p-4.border.my-4.border-light.rounded.shadow()
+              h2 Service Agreement Form
               .row.mt-3
-                .col 
-                  .row.mt-3.mx-1
-                        VueSignatureCanvas.gap.sig-canvas(ref="caregiverSignature" )
-                  div.d-flex.justify-content-between
-                    h5
-                      u.text-center Caregiver Sign Here
-                    b-button(variant="danger" @click="clearCanvas('caregiverSignature')") Clear
-
-                        
-                .col 
-                  .row.mt-3.mx-1
-                        VueSignatureCanvas.gap.sig-canvas(ref="staffSignature" )
-                  div.d-flex.justify-content-between.align-items-center
-                    h5
-                      u.text-center Staff Sign Here 
-                    b-button(variant="danger" @click="clearCanvas('staffSignature')") Clear
+                  .col-sm.text-left
+                    p NRIC Name of Client:
+                  .col-sm
+                    | {{ clientdata.crb5c_no }}
+              .row.mt-3
+                  .col-sm.text-left
+                    p NRIC No. of Client:
+                  .col-sm
+                    | {{ clientdata.crb5c_nricno}}
+              .row.mt-3
+                  .col-sm.text-left
+                    p Services Provided:
+                  .col-sm
+                    p Family of Wisdom (Enrichment) Programme
+              .row.mt-3
+                  .col-sm.text-left
+                    p Date of Commencement:
+                  .col-sm
+                    | {{ adm }}
+              .row.mt-3
+                  .col-sm.text-left
+                    p Fee charged per session (before GST): $
+                  .col-sm
+                    | {{ isCipSelected? (fees4val + transportTotalView )  : totalOfApplicable  }} 
+                    
               hr
-              .row.mt-2
-                .col-sm
-                    p Contact Number:
-                .col-sm
-                    input.form-control(type="number" v-model="serviceAgreementContact")
-              .row.mt-3
-                .col-sm 
-                    p Date:
-                .col-sm
-                    input.form-control(type="date" v-model="serviceAgreementDate")
-              div.mt-3.d-flex.justify-content-center.align-items-center
-                b-button.px-5.py-2( v-if="viewamtcollect" variant="success" v-b-modal.paymentConfirmation) Continue
-              
-              //- .row(v-if="imagesSign")
-              //-   img(:src="'data:image/jpeg;base64,' + imagesSign[0].crb5c_caregiversignature")
-            //- input.numbers#collect(v-model="amtcollect " name="collect" type="text" readonly="readonly")
+              .row(style="text-align:justify;line-height:5vh")
+                .d-flex.flex-wrap
+                  span.m-2 I,
+                  b-form-select.w-25.d-inline.m-2(v-model="caregiverPicked" :options="caregiverDetails" value-field="crb5c_fow_caregiverid" text-field="crb5c_name")
+                  span.m-2 (NRIC Name), confirm that I am the
+                  input.form-control.w-25.d-inline.m-2(type="text" v-model="clientReationship" placeholder="Spouse / Sibling / Children / Caregiver / Guardian")
+                  span.m-2 (relationship) of
+                  input.form-control.w-50.d-inline.m-2(type="text" v-model="caregiverClientName" placeholder="Client Name")
+                  span.m-2 (NRIC Name of client),
+                  input.form-control.w-25.d-inline.m-2(type="text" v-model="caregiverClientIc" placeholder="Caregiver IC")
+                  span.m-2 (NRIC No.).
+                
+              hr  
+              section.mt-3(style="text-align:left;")
+                p I hereby declare that I have understood and agree to abide by the:
+                ul
+                    li Service Agreement
+                p of Family of Wisdom (Bendemeer)
+                .row.mt-3
+                  .col 
+                    .row.mt-3.mx-1
+                          VueSignatureCanvas.gap.sig-canvas(ref="caregiverSignature" )
+                    div.d-flex.justify-content-between
+                      h5
+                        u.text-center Caregiver Sign Here
+                      b-button(variant="danger" @click="clearCanvas('caregiverSignature')") Clear
+
+                          
+                  .col 
+                    .row.mt-3.mx-1
+                          VueSignatureCanvas.gap.sig-canvas(ref="staffSignature" )
+                    div.d-flex.justify-content-between.align-items-center
+                      h5
+                        u.text-center Staff Sign Here 
+                      b-button(variant="danger" @click="clearCanvas('staffSignature')") Clear
+                hr
+                .row.mt-2
+                  .col-sm
+                      p Contact Number:
+                  .col-sm
+                      input.form-control(type="number" v-model="serviceAgreementContact")
+                .row.mt-3
+                  .col-sm 
+                      p Date:
+                  .col-sm
+                      input.form-control(type="date" v-model="serviceAgreementDate")
+                div.mt-3.d-flex.justify-content-center.align-items-center
+                  b-button.px-5.py-2( v-if="viewamtcollect" variant="success" v-b-modal.paymentConfirmation) Continue
+                
+                //- .row(v-if="imagesSign")
+                //-   img(:src="'data:image/jpeg;base64,' + imagesSign[0].crb5c_caregiversignature")
+              //- input.numbers#collect(v-model="amtcollect " name="collect" type="text" readonly="readonly")
         
         
       section(v-if="modeofpayment")
@@ -765,6 +782,8 @@ div
   <script>
   
   import dayjs from "dayjs";
+  // import html2canvas from 'html2canvas';
+  import * as html2pdf from 'html2pdf.js';
   import {Icon} from '@iconify/vue2';
   // import PaynowQR from '@chewhx/paynowqr';
   // import VueQrcode from 'vue-qrcode';
@@ -794,6 +813,12 @@ div
     // emits: ["newresource"],
     data() {
       return {
+        caregiverNamePrefilled: '',
+        pdfFullPage: '',
+        pdfAgreement: '',
+        clientReationship: '',
+        caregiverPicked: '',
+        caregiverDetails: [],
         adHocFeeTableFields:[
           {key:'remark', label:'Remarks'},
           {key:'total', label:'Amount'},
@@ -806,6 +831,7 @@ div
           {key:"actions", label:"Actions"}
         ],
         language:null,
+        loadingSubmission: false,
         loadingAutomated: false,
         newDuration: 180,
         newDementiaType: null,
@@ -932,7 +958,7 @@ div
         checker3: false,
         checker4: false,
         checker5: false,
-        subsidy: null,
+        subsidy: false,
         no: null,
         checking: "",
         sessions: [],
@@ -1125,14 +1151,25 @@ div
 
     },
     methods: {
+      // async generatePDF() {
+      //   },
+    pdfToBase64(pdfBlob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(pdfBlob);
+        reader.onloadend = () => {
+          resolve(reader.result.split(',')[1]);
+        };
+
+        reader.onerror = error => reject(error);
+      });
+    },
       closeModal(modal_name){
         console.log('dsflkfmk')
         this.$bvModal.hide(modal_name);
       },
       async associateTable(data){
-
         const url = `https://orga7b5e99e.crm5.dynamics.com/api/data/v9.2/crb5c_fow_customers(${this.$store.state.assessment_client_id})/crb5c_FOW_Customer_session_schedule_crb5c/$ref`;
-
         const pl ={
           "@odata.id": `https://orga7b5e99e.crm5.dynamics.com/api/data/v9.2/crb5c_fow_session_schedules(${data.crb5c_fow_session_scheduleid})`,
         }
@@ -1152,23 +1189,14 @@ div
             $filter:`crb5c_fow_session_scheduleid eq ${data.crb5c_fow_session_scheduleid}`,
             $top:1000
         })
-        
         let {data:{value:schedules}} = await this.$store.state.axios.get(`/crb5c_fow_session_schedules?${params}`);
-        
         console.log('entities',schedules)
     },
       async AutoMatchingSession(){
 
-        
-        if (!this.adm) {
-          alert('Please fill up the admission date before proceeding!') 
-          return
-        }
-
         this.loadingAutomated = true;
         this.$bvModal.show("automatedMatchingModal");
         
-
         let payloadAssessment = {
             crb5c_admissiondate: this.adm
         }
@@ -1214,7 +1242,7 @@ div
                             
       },
       navigateToServiceForm(){
-        this.AutoMatchingSession();
+        // this.AutoMatchingSession();
         this.viewServiceForm = true;
       },
       clearadhoc(){
@@ -1585,6 +1613,7 @@ div
         const clientId = this.$store.state.assessment_client_id;
         let paramObj = {
           $select:'crb5c_no,crb5c_nricno,crb5c_citizenship',
+          $expand:"crb5c_fow_caregiver_client_crb5c_FOW_Cust($select=crb5c_name,crb5c_contactnumbermobile,crb5c_relationship)",
           $filter: `crb5c_fow_customerid eq '${clientId}'`,
           };
         let params = new URLSearchParams(paramObj);
@@ -1594,7 +1623,10 @@ div
         this.clientdata = data.value[0];
         this.caregiverClientIc = this.clientdata.crb5c_nricno;
         this.caregiverClientName = this.clientdata.crb5c_no;
-        // console.log('form data',this.clientdata);
+        this.caregiverDetails = this.clientdata.crb5c_fow_caregiver_client_crb5c_FOW_Cust;
+        console.log('caregiver data',this.caregiverDetails);
+
+
       },
       async getSessionScheduleinform(){
         let paramObj = {
@@ -1616,7 +1648,7 @@ div
           );
           this.programmeInfos = data.value;
           this.programmeInfos.sort((a, b) => a.crb5c_programmename.localeCompare(b.crb5c_programmename))
-          // console.log('programme data',this.programmeInfos);
+          console.log('programme data',this.programmeInfos);
     },
     async getImagesInfos(){
           let id = '9d8fc0b8-157f-ee11-8179-002248ecdc58';
@@ -1643,17 +1675,27 @@ div
           );
           return data.value;
           // console.log('programme data',this.programmeInfos);
-    },
+      },
       clearCanvas(val){
         this.$refs[val].clear();
       },
-      showConfimrationModal(){
-        // this.$bvModal.show("confrimationModal");
+      // showConfimrationModal(){
+      //   // this.$bvModal.show("confrimationModal");
+      // },
+      async linkClientProgramme(){
+        for(let programme of this.applicableFeeTotal ){
+          let payload = { 
+            "crb5c_Client@odata.bind": `/crb5c_fow_customers(${this.$store.state.assessment_client_id})`, 
+            "crb5c_Programme@odata.bind": `/crb5c_fow_customers(${programme.crb5c_fowprogrammeid})`,
+          }
+          const { data } = await this.$store.state.axios.post(`/crb5c_fowclientandprogrammes`,payload);
+          console.log('client and programme linked', data)
+        }
       },
       async submitServiceAgreement(){
         this.caregiverSignatureImg = this.$refs.caregiverSignature.toDataURL().split(',')[1];
         this.staffSignatureImg = this.$refs.staffSignature.toDataURL().split(',')[1];
-        
+
         const payload1 = { 
           crb5c_caregivername: this.caregiverName,
           crb5c_clientname : this.caregiverClientName,
@@ -1662,113 +1704,159 @@ div
           crb5c_caregiversignature: this.caregiverSignatureImg,
           crb5c_clientid: this.$store.state.assessment_client_id,
        };
-
         const { data } = await this.$store.state.axios.post(`/crb5c_fowserviceagreements`,payload1);
         console.log('main',data)
-
         let id = data.crb5c_fowserviceagreementid
-        console.log('crb5c_fowserviceagreementid',id)
 
+        await this.signatureUploadforStaff(id);
+        await this.uploadAssessmentFullPDF();
+        await this.uploadServiceAgreement();
+
+        this.loadingSubmission = false;
+
+        setTimeout(() => {
+          this.$bvModal.hide('assessmentSubmission');
+          this.sessionAutomation();
+        }, 6000);
+      },
+      async signatureUploadforStaff(id){
         const payload2 = { 
           crb5c_dsgsignature: this.staffSignatureImg,
         };
-
         const { data2 } = await this.$store.state.axios.patch(`/crb5c_fowserviceagreements(${id})`,payload2);
-        console.log('patching img',data2)
-
-        alert('Client Assessment is successfully submitted!');
-
-        window.close();
+        console.log('patching image 2',data2)
+      },
+      async uploadServiceAgreement(){
+        const options = {
+          margin: 5, 
+        };
+        let el = this.$refs.pdfFormView;
+        const pdf = await html2pdf().from(el).set(options).outputPdf();
+        const base64 = btoa(pdf);
+        this.pdfAgreement = base64;
+          
+        const payloadPdf = {
+          documentbody: this.pdfAgreement,
+          subject: this.$store.state.assessment_client_id,
+          filename: 'Service Agreement (Assessment)',
+        }
+        const { pdfSuccsess } = await this.$store.state.axios.post(`/annotations`,payloadPdf);
+        console.log('service agreeement',pdfSuccsess)
+      },
+      async uploadAssessmentFullPDF(){
+        const options = {
+          margin: 5, 
+        };
+        let elementPage = this.$refs.pdfWholePage;
+        const pdfFull = await html2pdf().from(elementPage).set(options).outputPdf();
+        const base64Full = btoa(pdfFull);
+        this.pdfFullPage = base64Full;
+        console.log('this.pdfFullPage',this.pdfFullPage)
+        const payloadAssessmentPdf = {
+        documentbody: this.pdfFullPage,
+        subject: this.$store.state.assessment_client_id,
+        filename: 'Assessment Full',
+        }
+        const { pdfSuccsess } = await this.$store.state.axios.post(`/annotations`,payloadAssessmentPdf);
+        console.log('Assessment',pdfSuccsess)
       },
       async submitassessment(){
-      this.totalscoreMoca = this.totalscore;
-      this.totalscoreEq = this.eq5dcounter;
-  
-      const payload = { 
-        crb5c_typeofdementia: this.type,
-        crb5c_stageofdementia: this.stageof,
-        // crb5c_latestscoreon: this.latestscore,
-        // crb5c_latestscorevalue: (this.latestscore == 'MOCA') ? this.totalscoreMoca : this.latest,
-        crb5c_datedone: this.date,
-        crb5c_sharedcentreobjectivesprogramme: this.checker,
-        crb5c_watchedcentrevideo: this.checker2,
-        crb5c_playedtabletopgame: this.checker3,
-        crb5c_playedneeurofitgame: this.neeuro,
-        crb5c_educationlevel: this.edulev,
-        crb5c_clientname:this.$store.state.assessment_client_name ? this.$store.state.assessment_client_name : 'John testing',
-        crb5c_clientid: this.$store.state.assessment_client_id ? this.$store.state.assessment_client_id : '2343434234',
-        crb5c_alternatetrailmaking: parseInt(this.vis1),
-        crb5c_copycube: parseInt(this.vis2),
-        crb5c_lion: parseInt(this.vis4),
-        crb5c_elephant: parseInt(this.vis5),
-        crb5c_camel: parseInt(this.vis6),
-        crb5c_repeatforward: parseInt(this.vis7),
-        crb5c_repeatbackward: parseInt(this.vis17),
-        crb5c_abletotap: parseInt(this.vis8),
-        crb5c_serial7subtraction: parseInt(this.vis9),
-        crb5c_repeatfirstsentence: parseInt(this.vis10),
-        crb5c_repeatsecondsentence: parseInt(this.vis11),
-        crb5c_similaritybetweentrainbicycle: parseInt(this.vis13),
-        crb5c_similaritybetweenwatchruler: parseInt(this.vis14),
-        crb5c_mocatotalscore: this.totalscoreMoca,
-        crb5c_eqtotalscore: this.totalscoreEq,
-        crb5c_commentsaboutclient: this.checking,
-        crb5c_eqmobility: parseInt(this.eq1),
-        crb5c_eqselfcare:parseInt(this.eq2),
-        crb5c_equsualactivities:parseInt(this.eq3),
-        crb5c_eqpaindiscomfort:parseInt(this.eq4),
-        crb5c_eqanxietydepression:parseInt(this.eq5),
-        crb5c_eqhealthscale: this.healthscale,
-        crb5c_neeurofitattentiongame: this.attentionObj.attentiongame,
-        crb5c_neeurofitattentionlevel: parseInt(this.attentionObj.attentionlevel),
-        crb5c_neeurofitspatialgame: this.spatialObj.spatialgame,
-        crb5c_neeurofitspatiallevel: parseInt(this.attentionObj.attentionlevel),
-        crb5c_neeurofitdecisiongame: this.decisionObj.decisiongame,
-        crb5c_neeurofitdecisionlevel: parseInt(this.decisionObj.decisionlevel),
-        crb5c_neeurofitmemorygame: this.memoryObj.memorygame,
-        crb5c_neeurofitmemorylevel: parseInt(this.memoryObj.memorylevel),
-        crb5c_neeurofitflexibilitygame: this.flexibilityObj.flexibilitygame,
-        crb5c_neeurofitflexibilitylevel: parseInt(this.flexibilityObj.Flexibilitylevel),
-        crb5c_orientation: this.vis16.length,
-        crb5c_delayedrecall: this.delayedrecall,
-        crb5c_fluency: this.checkfluency,
-        crb5c_drawclock: this.vis3.length,
-        crb5c_languageversion: this.language,
-        crb5c_modeofpayment: this.modeofpayment,
-        crb5c_amountcollected: '$' + this.viewamtcollect.toFixed(2),
-        crb5c_educationyear: this.selectedyear,
-        crb5c_mocaform: this.checker4,
-        crb5c_eq5d5lform: this.checker5,
-        crb5c_admissiondate: (this.adm) ? this.adm : null,
-        crb5c_referenceid: this.referenceid,
-        crb5c_dateofassessment: dayjs(this.$store.state.assessment_date).format("MM-DD-YYYY"),
-        crb5c_mocascore: (this.isMOCA) ? this.mocaVal : 0,
-        crb5c_amtscore: (this.isAMT) ? this.amtVal : 0,
-        crb5c_mmsescore: (this.isMMSE) ? this.mmseVal : 0,
-        crb5c_cip1stsession:  this.firSession,
-        crb5c_cip2ndsession: this.secSession,
-        crb5c_additionalfee: this.transport.amountToBePaid,
-        crb5c_refundabledeposit: parseInt(this.refundableDeposit),
-        // crb5c_onetimeassessmentother: this.,
-        crb5c_neeurofitsubscription: this.neeurofitFeeTotal ? 1 : 0,
-        // crb5c_onetimeassessmentpaid: ,
-        // crb5c_onetimeassessmentwaived: ,
-        crb5c_neeurofitamount: this.isCipSelected ? 0 : parseInt(this.neeurofitFeeTotal) ,
-        crb5c_meanstestresult: parseInt(this.subsidyAmount),
-        crb5c_transporttotal: parseInt((this.transport.fixedFee * (1 - ((this.subsidyAmount ?? 0) / 100))).toFixed(2)),
-        crb5c_transportincluded: this.transport.isIncluded ? 1 : 0,
-        crb5c_toteboardincluded: this.subs2 ? 1 : 0,
-        // crb5c_cip1stsessionformat: this.firstSesFormat,
-        // crb5c_cip2ndsessionformat: this.secondSesFormat,
+        if (!this.adm) {
+          alert('Please fill up the admission date before proceeding!') 
+          return
+        }
+        this.loadingSubmission = true;
+        this.$bvModal.show("assessmentSubmission");
+        this.totalscoreMoca = this.totalscore;
+        this.totalscoreEq = this.eq5dcounter;
+    
+        const payload = { 
+          crb5c_typeofdementia: this.type,
+          crb5c_stageofdementia: this.stageof,
+          // crb5c_latestscoreon: this.latestscore,
+          // crb5c_latestscorevalue: (this.latestscore == 'MOCA') ? this.totalscoreMoca : this.latest,
+          crb5c_datedone: this.date,
+          crb5c_sharedcentreobjectivesprogramme: this.checker ? true : false,
+          crb5c_watchedcentrevideo: this.checker2  ? true : false,
+          crb5c_playedtabletopgame: this.checker3  ? true : false,
+          crb5c_playedneeurofitgame: this.neeuro  ? true : false,
+          crb5c_educationlevel: this.edulev,
+          crb5c_clientname:this.$store.state.assessment_client_name,
+          crb5c_clientid: this.$store.state.assessment_client_id,
+          crb5c_alternatetrailmaking: parseInt(this.vis1),
+          crb5c_copycube: parseInt(this.vis2),
+          crb5c_lion: parseInt(this.vis4),
+          crb5c_elephant: parseInt(this.vis5),
+          crb5c_camel: parseInt(this.vis6),
+          crb5c_repeatforward: parseInt(this.vis7),
+          crb5c_repeatbackward: parseInt(this.vis17),
+          crb5c_abletotap: parseInt(this.vis8),
+          crb5c_serial7subtraction: parseInt(this.vis9),
+          crb5c_repeatfirstsentence: parseInt(this.vis10),
+          crb5c_repeatsecondsentence: parseInt(this.vis11),
+          crb5c_similaritybetweentrainbicycle: parseInt(this.vis13),
+          crb5c_similaritybetweenwatchruler: parseInt(this.vis14),
+          crb5c_mocatotalscore: this.totalscoreMoca,
+          crb5c_eqtotalscore: this.totalscoreEq,
+          crb5c_commentsaboutclient: this.checking,
+          crb5c_eqmobility: parseInt(this.eq1),
+          crb5c_eqselfcare:parseInt(this.eq2),
+          crb5c_equsualactivities:parseInt(this.eq3),
+          crb5c_eqpaindiscomfort:parseInt(this.eq4),
+          crb5c_eqanxietydepression:parseInt(this.eq5),
+          crb5c_eqhealthscale: this.healthscale,
+          crb5c_neeurofitattentiongame: this.attentionObj.attentiongame,
+          crb5c_neeurofitattentionlevel: parseInt(this.attentionObj.attentionlevel),
+          crb5c_neeurofitspatialgame: this.spatialObj.spatialgame,
+          crb5c_neeurofitspatiallevel: parseInt(this.attentionObj.attentionlevel),
+          crb5c_neeurofitdecisiongame: this.decisionObj.decisiongame,
+          crb5c_neeurofitdecisionlevel: parseInt(this.decisionObj.decisionlevel),
+          crb5c_neeurofitmemorygame: this.memoryObj.memorygame,
+          crb5c_neeurofitmemorylevel: parseInt(this.memoryObj.memorylevel),
+          crb5c_neeurofitflexibilitygame: this.flexibilityObj.flexibilitygame,
+          crb5c_neeurofitflexibilitylevel: parseInt(this.flexibilityObj.Flexibilitylevel),
+          crb5c_orientation: this.vis16.length,
+          crb5c_delayedrecall: this.delayedrecall,
+          crb5c_fluency: this.checkfluency,
+          crb5c_drawclock: this.vis3.length,
+          crb5c_languageversion: this.language,
+          crb5c_modeofpayment: this.modeofpayment,
+          crb5c_amountcollected: '$' + this.viewamtcollect.toFixed(2),
+          crb5c_educationyear: this.selectedyear,
+          crb5c_mocaform: this.checker4 ? true : false,
+          crb5c_eq5d5lform: this.checker5 ? true : false,
+          crb5c_admissiondate: (this.adm) ? this.adm : null,
+          crb5c_referenceid: this.referenceid,
+          crb5c_dateofassessment: dayjs(this.$store.state.assessment_date).format("MM-DD-YYYY"),
+          crb5c_mocascore: (this.isMOCA) ? this.mocaVal : 0,
+          crb5c_amtscore: (this.isAMT) ? this.amtVal : 0,
+          crb5c_mmsescore: (this.isMMSE) ? this.mmseVal : 0,
+          crb5c_cip1stsession:  this.firSession,
+          crb5c_cip2ndsession: this.secSession,
+          crb5c_additionalfee: this.transport.amountToBePaid,
+          crb5c_refundabledeposit: parseInt(this.refundableDeposit),
+          // crb5c_onetimeassessmentother: this.,
+          crb5c_neeurofitsubscription: this.neeurofitFeeTotal ? 1 : 0,
+          // crb5c_onetimeassessmentpaid: ,
+          // crb5c_onetimeassessmentwaived: ,
+          crb5c_neeurofitamount: this.isCipSelected ? 0 : parseInt(this.neeurofitFeeTotal) ,
+          crb5c_meanstestresult: parseInt(this.subsidyAmount),
+          crb5c_transporttotal: parseInt((this.transport.fixedFee * (1 - ((this.subsidyAmount ?? 0) / 100))).toFixed(2)),
+          crb5c_transportincluded: this.transport.isIncluded ? 1 : 0,
+          crb5c_toteboardincluded: this.subs2 ? 1 : 0,
+          crb5c_cip1stsessionformat: this.firstSesFormat,
+          crb5c_cip2ndsessionformat: this.secondSesFormat,
+        };
+          console.log(payload)
+          const { data } = await this.$store.state.axios.post(
+            `/crb5c_fowassessmentforms`,payload);
+          console.log('data',data)
+          await this.linkClientProgramme();
+          await this.submitServiceAgreement();
         
-       };
-       
-        const { data } = await this.$store.state.axios.post(
-          `/crb5c_fowassessmentforms`,payload);
-        
-        console.log('data',data)
-  
-        await this.submitServiceAgreement();
+    },
+    async sessionAutomation(){
+      this.AutoMatchingSession()
     },
       pick_answer_naming(val){
         if(this[`vis${val}`] == '0'){
@@ -1777,6 +1865,7 @@ div
         }
           this[`vis${val}`] = '0';
       },
+
       checkSubsidy(){
         console.log("running")
       },
@@ -1827,8 +1916,12 @@ div
       }
     },
     watch: {
+        caregiverPicked(val) {
+          this.clientReationship = this.caregiverDetails.find(c => c.crb5c_fow_caregiverid === val)?.crb5c_relationship || '';
+          this.serviceAgreementContact = this.caregiverDetails.find(c => c.crb5c_fow_caregiverid === val)?.crb5c_contactnumbermobile || '';
+          this.caregiverNamePrefilled = this.caregiverDetails.find(c => c.crb5c_fow_caregiverid === val)?.crb5c_name || '';
+        },
       newSessionType(val){
-
         switch (val) {
           case 0:
             this.location =  'Center'
@@ -1981,6 +2074,13 @@ div
 
     },
     computed: {
+      // clientReationship(){
+      //   let val = '';
+      //   if(this.caregiverPicked){
+      //     val = this.caregiverDetails.find(c => c.crb5c_fow_caregiverid === this.caregiverPicked)?.crb5c_relationship;
+      //   }
+      //   return val; 
+      // },
       // autoSelectNeeuroFIt(){
       //   if (this.mocaVal) {
       //     if (this.mocaVal >= 18 && this.ovyearSelected) {
