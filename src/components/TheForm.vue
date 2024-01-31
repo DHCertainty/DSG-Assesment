@@ -117,7 +117,6 @@ div(ref='pdfWholePage')
                   .row
                     label Alternating Trail Making:
                     v-select(v-model="vis1" :options="['0', '1']" :clearable="false")
-                  
                 .col-sm-6 
                   .row.mb-4
                     img(@click="pick_answer_naming('2')").image_container_cube(src="/form-images/cube.png")
