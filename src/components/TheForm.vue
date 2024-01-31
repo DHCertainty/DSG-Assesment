@@ -1168,9 +1168,22 @@ div(ref='pdfWholePage')
         this.$bvModal.hide(modal_name);
       },
       async associateTable(data){
-        const url = `https://orga7b5e99e.crm5.dynamics.com/api/data/v9.2/crb5c_fow_customers(${this.$store.state.assessment_client_id})/crb5c_FOW_Customer_session_schedule_crb5c/$ref`;
-        const pl ={
-          "@odata.id": `https://orga7b5e99e.crm5.dynamics.com/api/data/v9.2/crb5c_fow_session_schedules(${data.crb5c_fow_session_scheduleid})`,
+        let isLocal = location.host.includes("localhost");
+        let url;
+        let pl;
+
+        if(isLocal){
+           url = `https://orga7b5e99e.crm5.dynamics.com/api/data/v9.2/crb5c_fow_customers(${this.$store.state.assessment_client_id})/crb5c_FOW_Customer_session_schedule_crb5c/$ref`;
+           pl ={
+            "@odata.id": `https://orga7b5e99e.crm5.dynamics.com/api/data/v9.2/crb5c_fow_session_schedules(${data.crb5c_fow_session_scheduleid})`,
+          }
+        }
+        else{
+           url = `https://dsg-fow.crm5.dynamics.com/api/data/v9.2/crb5c_fow_customers(${this.$store.state.assessment_client_id})/crb5c_FOW_Customer_session_schedule_crb5c/$ref`;
+           pl ={
+            "@odata.id": `https://dsg-fow.crm5.dynamics.com/api/data/v9.2/crb5c_fow_session_schedules(${data.crb5c_fow_session_scheduleid})`,
+          }
+
         }
 
         const headers = {
