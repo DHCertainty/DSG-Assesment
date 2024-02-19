@@ -1869,7 +1869,7 @@ div(ref='pdfWholePage')
           crb5c_mmsescore: (this.isMMSE) ? this.mmseVal : 0,
           crb5c_cip1stsession:  this.firSession,
           crb5c_cip2ndsession: this.secSession,
-          crb5c_additionalfee: this.transport.amountToBePaid,
+          crb5c_additionalfee: parseInt(this.transport.amountToBePaid),
           crb5c_refundabledeposit: parseInt(this.refundableDeposit),
           // crb5c_onetimeassessmentother: this.,
           crb5c_neeurofitsubscription: this.neeurofitFeeTotal ? 1 : 0,
