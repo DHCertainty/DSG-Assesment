@@ -1,5 +1,5 @@
 <template>
-  <header class="front border-bottom border-dark" >
+  <header class="front border-bottom" >
     <link
       href="https://fonts.googleapis.com/css?family=Roboto"
       rel="stylesheet"
@@ -9,7 +9,7 @@
     <ul style="margin-top: 20px;">
       <li class="navbar__dateAssessment"><button class="timeEdit" v-b-modal.modal-time-change >Edit</button> Date of Assessment: <span style="font-weight:bold">{{ dateofassessment }}</span></li>
       
-      <li class="navbar__clientName">Client name:<span style="font-weight:bold">{{ client_name }}</span></li>
+      <li class="navbar__clientName">Client name: &nbsp;<span style="font-weight:bold">{{ client_name }}</span></li>
     </ul>
 
     <b-modal id="modal-time-change" hide-footer hide-header ref="modal-time-change">
@@ -57,7 +57,7 @@ export default {
     if(!this.isLocal){
       clientId = this.$route.query.client_id;
     }else{
-      clientId = '66d28ad0-e27e-ed11-81ac-000d3a85cb45';
+      clientId = '9dd18ad0-e27e-ed11-81ac-000d3a85cb45';
 
     }
     

@@ -35,8 +35,8 @@ div(ref='pdfWholePage')
                 label.common(for="score") Date Done in hospital:
                 input.numbers#score(v-model="date" name="score" type="date")
   
-          // General questions
-          section.p-4.border.my-4.border-light.rounded.shadow(v-show="type && stageof && date && (isAMT || isMOCA || isMMSE)")
+          // General questions (remove restrictions v-show="type && stageof && date && (isAMT || isMOCA || isMMSE)")
+          section.p-4.border.my-4.border-light.rounded.shadow()
             label.mb-2(style="font-size: 17px;font-weight: bold;") General:
             b-form-checkbox.mb-2(v-model="checker" value="sacop" name="part2") &nbsp;Shared about Centre's objectives & program
             b-form-checkbox.mb-2(v-model="checker2" name="part2" value="wcv") &nbsp;Watched Centre's video
@@ -223,11 +223,15 @@ div(ref='pdfWholePage')
                     .row 
                       .col-sm-12
                         input.numbers(v-model="healthscale" type="range" min="0" max="100") 
-          section.p-4.border.my-4.border-light.rounded.shadow(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
+
+          //remove restrictions v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)"
+          section.p-4.border.my-4.border-light.rounded.shadow()
             .formed
               label.common(for="comment") Comment/Observation about the client
               textarea#comment.p-2(name="comment" rows="3" type="text" placeholder="Comment about the client" v-model="checking")
-          section.p-4.border.my-4.border-light.rounded.shadow(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
+
+          //remove restriction v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)"
+          section.p-4.border.my-4.border-light.rounded.shadow()
             .row
               .col-md-2 
                 label.common Fee & Payment:
@@ -304,15 +308,16 @@ div(ref='pdfWholePage')
                             b-col.col-2
                               b-form-input(v-model="transport.amountToBePaid" type="number" placeholder="Amount")
   
-          section.p-4.border.my-4.border-light.rounded.shadow(v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)")
+          //remove restriction v-show="type && stageof && date && (neeuro || checker || checker2 || checker3 || checker4 || checker5)"
+          section.p-4.border.my-4.border-light.rounded.shadow()
             .formed
               .row
                 .col-sm-3.align-self-center.col-auto
                   label.common(for="session") Session Recommended: 
                 .col.col-auto(style="text-align: right;")   
-                  b-btn#add-btn.btn-warning.mx-3(@click="addmethod(0)") + Pick Session 
+                  b-btn#add-btn.btn-warning.mx-3(@click="addmethod(0)") Available Sessions 
                 .col.col-auto(style="text-align: right;")   
-                  b-btn#add-btn.mx-2.btn-warning(@click="addmethod(1)") + Add New Session 
+                  b-btn#add-btn.mx-2.btn-warning(@click="addmethod(1)") + Create New Session 
                 //- .col.col-auto(style="text-align: right;")   
                 //-   b-btn#add-btn.mx-2.btn-dark(@click="AutoMatchingSession()") + (Test) Automation
                   //- b-btn#add-btn(@click="addfile") + Add file 
@@ -483,8 +488,8 @@ div(ref='pdfWholePage')
 
               b-modal#pick-session(size="lg" title="Add Session" scrollable centered hide-footer) 
                 div
-                  b-form-radio-group(v-model="pick_sessions")
-                    b-form-radio.mb-2( :value="session" required v-for="session in filteredChoice" :id="session.crb5c_fow_session_scheduleid") &nbsp;{{ session.crb5c_session_id }}
+                  b-form-checkbox-group(v-model="pick_sessions")
+                    b-form-checkbox.mb-2( :value="session" required v-for="session in filteredChoice" :id="session.crb5c_fow_session_scheduleid") &nbsp;{{ session.crb5c_session_id }}
                   div.text-center.my-2
                     b-button.my-3.px-4( size="md" variant="success" :disabled="isAddButtonDisabled" @click="addNewPickSession") Add
                   
@@ -505,7 +510,6 @@ div(ref='pdfWholePage')
                     b-form-group(label="Duration: ")
                       b-form-select.p-1.rounded.w-100.input-border-light(v-model="newDuration" :options="durationSession")
                     
-
                 b-card.my-3.p-3(no-body)
                   b-form-group
                     div.d-flex
@@ -543,7 +547,7 @@ div(ref='pdfWholePage')
                   label(v-if="programme.crb5c_type != 4") ${{ programme.crb5c_price }}
                   label(v-else) ${{ fees4val  }}  
                     span(v-if="transport.isIncluded") (with transport fee: ${{ transportTotalView.toFixed(2) }})
-            .formed
+              .formed
 
               .formed.gap.border.border-1(style="border-radius: 0.5rem;" v-show="isCipSelected")
                   b-row.p-3
@@ -604,7 +608,7 @@ div(ref='pdfWholePage')
                               b-btn.gap(@click="CIPtotal") Calculate
                           b-row
                             b-col.d-flex.justify-content-end.align-items-end(style="font-size: 20px;")
-                              label(v-show="totalforCIP") ${{totalforCIP}} for {{ CIPdays }} session
+                              label(v-show="totalforCIP") {{ CIPdays }} sessions
               .formed.mt-3( v-show="this.sessions.length || this.recommended_session_pick.length")
                 label.common.gap(for="admission") Admission date:
                 input.numbers-half#admission(v-model="adm" name="admission" type="date")
@@ -621,8 +625,6 @@ div(ref='pdfWholePage')
                   //-   div(style="text-align: right;width: 100%;font-size: 20px;")
                   //-     label(v-show="totalforCIP") ${{totalforCIP}} for {{ CIPdays }} session
             
-          //
-
           section.p-4.border.my-4.border-light.rounded.shadow(v-show="(this.sessions.length || this.recommended_session_pick.length)  && !isCipSelected" style="margin-top:50px")
             label.common NeeuroFit Subscription:
             b-form-checkbox(v-model="neeurofitFeeTotal" type="checkbox" :value="neeuroFitFees") &nbsp;Centre-based NeeuroFIT 6 months subcription $240
@@ -657,30 +659,45 @@ div(ref='pdfWholePage')
                   p  {{ data.item.isIncludeInFee ? 'Yes' : 'No' }}
                 template(#cell(action)="data")
                   b-button(variant="danger" @click="deleteAdHoc(data.index)") Remove
-          //Payment type
-                //-"
-                //- .row
-                //-   .col
-                //-     .row 
-                //-       .col-sm-8
-                //-         | Fee
-                //-       .col-sm-2
-                //-         | Amount
-                //-     .row.mt-5 
-                //-       .col-sm-8
-                //-         label.common(v-if="totalOfNeeurofit !== 0") {{ isNeeuroFit }}
-                //-       .col-sm
-                //-         label.common(v-if="totalOfNeeurofit !== 0") {{ totalOfNeeurofit }} (with GST : {{ totalOfNeeurofit*1.08.toFixed(2) }})
-                //-   .col
+                //Payment type
+                      //-"
+                      //- .row
+                      //-   .col
+                      //-     .row 
+                      //-       .col-sm-8
+                      //-         | Fee
+                      //-       .col-sm-2
+                      //-         | Amount
+                      //-     .row.mt-5 
+                      //-       .col-sm-8
+                      //-         label.common(v-if="totalOfNeeurofit !== 0") {{ isNeeuroFit }}
+                      //-       .col-sm
+                      //-         label.common(v-if="totalOfNeeurofit !== 0") {{ totalOfNeeurofit }} (with GST : {{ totalOfNeeurofit*1.08.toFixed(2) }})
+                      //-   .col
                 
+          section.p-4.border.my-4.border-light.rounded.shadow(v-if="viewamtcollectNoGST")
+            div.d-flex.justify-content-between
+              div
+                  div.mb-3(v-if="CIPdays")
+                    label.common CIP Fee (without GST)
+                    div(v-if="CIPdays" v-for="(programme, index) in CipPrgrammeSummary" :key="index")
+                        label {{programme.name}} X {{ programme.quantity }} ( ${{ programme.isCip ? fees4val : programme.cost }})
+                  div 
+                    label.common(v-if="selectedProgrammeSummary.length") Fee (without GST):
+                    div(v-for="(programme, index) in selectedProgrammeSummary" :key="index")
+                        label {{programme.name}} X {{ programme.quantity }} ( ${{ programme.cost }})
+                
+                  
+
+              div.d-flex.flex-column.align-items-end
+                label.common.mb-4 Amount to be Collected :
+                label.mb-2(for="collect" style="font-size:20px") Total : ${{ viewamtcollectNoGST.toFixed(2)}}
+                label.mb-2(for="collect" style="font-size:20px") 9% GST: ${{ (viewamtcollect - viewamtcollectNoGST ).toFixed(2)}}
+                label.common(for="collect" style="font-size:30px") Total + GST: ${{ viewamtcollect.toFixed(2)}}
 
           section.p-4.border.my-4.border-light.rounded.shadow(v-show="this.sessions.length || this.recommended_session_pick.length")
-            div.d-flex.justify-content-between.align-items-center
-              div()
+            div.justify-content-center.align-items-center.text-center
                 b-button(variant="success" @click="navigateToServiceForm" v-if="!viewServiceForm") Continue to Agreement 
-              div.d-flex.flex-column.align-items-end
-                label.common(for="collect" ) Amount to be Collected + GST [SGD]:
-                label.common(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
 
           div( ref='pdfFormView' v-if="viewServiceForm")
             section.p-4.border.my-4.border-light.rounded.shadow()
@@ -763,8 +780,7 @@ div(ref='pdfWholePage')
                 
                 //- .row(v-if="imagesSign")
                 //-   img(:src="'data:image/jpeg;base64,' + imagesSign[0].crb5c_caregiversignature")
-              //- input.numbers#collect(v-model="amtcollect " name="collect" type="text" readonly="readonly")
-        
+              //- input.numbers#collect(v-model="amtcollect " name="collect" type="text" readonly="readonly") 
         
       section(v-if="modeofpayment")
         //- b-row.justify-content-center
@@ -774,8 +790,8 @@ div(ref='pdfWholePage')
         //- b-row
         //-   .col-sm-2
         //-     img.signatureView(:src="signatureImg")
+      //- Submit button 
 
-      // Submit button 
 </template>
   
   <script>
@@ -812,6 +828,8 @@ div(ref='pdfWholePage')
     // emits: ["newresource"],
     data() {
       return {
+        // CIPdays: 0,
+        CIPprice: 0,
         caregiverNamePrefilled: '',
         pdfFullPage: '',
         pdfAgreement: '',
@@ -872,7 +890,7 @@ div(ref='pdfWholePage')
         pick_sessions: [],
         schedule_info: [],
         recommended_session_pick: [],
-        GST: 1.08,
+        GST: 1.09,
         neeuroFitFees: 240,
         applicableFeeTotal: [],
         additionalFeeTotal: [],
@@ -934,7 +952,7 @@ div(ref='pdfWholePage')
         mmseVal: null,
         amtVal: null,
         mocaVal: null,
-        gstval: 1.08,
+        gstval: 1.09,
         checkCenter:false,
         checkResidence:false,
         checkZoom:false,
@@ -1193,7 +1211,7 @@ div(ref='pdfWholePage')
 
         const {data: x} = await axios.post(url, pl, { headers })
 
-        console.log(x)
+        console.log('associate result',x)
 
         let params = new URLSearchParams({
             $select: "crb5c_time_hrs,crb5c_time_mins,crb5c_day,crb5c_duration,crb5c_session_id,crb5c_allowadhoccheckin,crb5c_fow_session_scheduleid,crb5c_sessionreporttype,crb5c_sessiontype,crb5c_gender,crb5c_language,crb5c_transportincluded,crb5c_isactive",
@@ -1274,7 +1292,7 @@ div(ref='pdfWholePage')
         this.clearadhoc()
       },
       async addNewPickSession(){
-        this.recommended_session_pick.push(this.pick_sessions);
+        this.recommended_session_pick.push(...this.pick_sessions);
         await this.filterFees();
         this.$bvModal.hide("pick-session");
         this.pick_sessions = [];
@@ -1504,6 +1522,10 @@ div(ref='pdfWholePage')
           this.totalforCIP = this.fees4val * (totalDay);
           this.CIPdays = totalDay;
         }
+
+        
+
+
       
       },
       filterFees() {
@@ -1512,6 +1534,7 @@ div(ref='pdfWholePage')
         for (let i = 0 ; i < this.sessions.length; i++){
           if (this.sessions[i].type == 'Group' && this.sessions[i].location=="Center" && this.subs2){
             this.filterTypeValues.push(4)
+            return;
           } 
           if (this.sessions[i].type == 'Group' && this.sessions[i].location=="Center"){
             this.filterTypeValues.push(0)
@@ -1530,6 +1553,7 @@ div(ref='pdfWholePage')
         for (let i = 0 ; i < this.recommended_session_pick.length; i++){
           if (this.recommended_session_pick[i].crb5c_sessiontype === 0 && this.subs2){
             this.filterTypeValues.push(4)
+            return;
           } 
           if (this.recommended_session_pick[i].crb5c_sessiontype === 0){
             this.filterTypeValues.push(0)
@@ -1763,7 +1787,7 @@ div(ref='pdfWholePage')
         const pdfFull = await html2pdf().from(elementPage).set(options).outputPdf();
         const base64Full = btoa(pdfFull);
         this.pdfFullPage = base64Full;
-        console.log('this.pdfFullPage',this.pdfFullPage)
+        // console.log('this.pdfFullPage',this.pdfFullPage)
         const payloadAssessmentPdf = {
         documentbody: this.pdfFullPage,
         subject: this.$store.state.assessment_client_id,
@@ -2086,6 +2110,63 @@ div(ref='pdfWholePage')
 
     },
     computed: {
+      CipPrgrammeSummary(){
+        let programmeName = [];
+
+        if (this.CIPdays) {
+          for( let programme of this.applicableFeeTotal ){
+          if(programme.crb5c_type === 4){
+            programmeName.push({name: programme.crb5c_programmename, quantity: this.CIPdays, cost: programme.crb5c_price, isCip: true})
+          }
+        }
+        }
+        if(this.transport.isIncluded){
+          programmeName.push({name: 'Transport Fee', quantity: this.CIPdays, cost: (this.transport.fixedFee * (1 - ((this.subsidyAmount ?? 0) / 100))).toFixed(2) })
+        }
+        if(this.transport.amountToBePaid){
+          programmeName.push({name: 'Additional Transport Fee', quantity: this.CIPdays, cost: this.transport.amountToBePaid })
+        }
+        
+        return  programmeName;
+      },
+      selectedProgrammeSummary(){
+        let programmeName = [];
+        
+        if (this.applicableFeeTotal.length) {
+          for( let programme of this.applicableFeeTotal ){
+          if(programme.crb5c_type === !4){
+            programmeName.push({name: programme.crb5c_programmename, quantity: 1, cost: programme.crb5c_price, isCip: false})
+          }
+        }
+        }
+        if(this.neeurofitFeeTotal){
+          programmeName.push({name: ' NeeuroFIT 6 months subcription', quantity: 1, cost:this.neeurofitFeeTotal})
+        }
+
+        if (this.additionalFeeTotal.length) {
+          programmeName.push({name: 'One-time Assessment', quantity: 1, cost:this.additionalFeeTotal[0]})
+        }
+
+         if (this.refundableFeeTotal) {
+          programmeName.push({name: 'Refundable Deposit (No GST)', quantity: 1, cost:this.refundableDeposit})
+        }
+
+        if (this.subs1 && this.subs1val && this.dsgsubsidy) {
+          if(this.subs1 && this.subs1val && this.dsgsubsidy == '$'){
+            programmeName.push({name: 'DSG Subsidy DEDUCTED', quantity: 1, cost: '- $' + this.subs1val})
+          }
+        if (this.subs1 && this.subs1val && this.dsgsubsidy == '%') {
+            programmeName.push({name: 'DSG Subsidy DEDUCTED', quantity: 1, cost: '- ' + this.subs1val+ ' %' })
+
+          }
+        } 
+        if (this.adHocFeeTotal.length) {
+          for( let adhoc of this.adHocFeeTotal){
+            programmeName.push({name: adhoc.remark, quantity: 1, cost: adhoc.total })
+          }
+        }
+        return programmeName;
+      },
       // clientReationship(){
       //   let val = '';
       //   if(this.caregiverPicked){
@@ -2195,7 +2276,10 @@ div(ref='pdfWholePage')
         return 0;    
       },
       calculateCipCost(){
-        return this.totalforCIP ? (this.totalforCIP)*1.08 : 0;
+        return this.totalforCIP ? (this.totalforCIP)*1.09 : 0;
+      },
+      calculateCipCostNoGST(){
+        return this.totalforCIP ? (this.totalforCIP) : 0;
       },
       filteredProgrammeInfos(){
         let filteredProgramme = []
@@ -2207,10 +2291,31 @@ div(ref='pdfWholePage')
         }
         return filteredProgramme;
       },
+      viewamtcollectNoGST(){      
+        let refundable = this.refundableFeeTotal ? this.refundableDeposit : 0;
+        let GSTtotal = this.isCipSelected ? 0 :((this.totalOfAdditional + this.totalOfNeeurofit));
+        let dsgsubsidiyval = this.checkdsgsubsidy((refundable + this.totalOfNeeurofit));
+        let cipCost = this.calculateCipCostNoGST;
+
+        let CIPAdditional = this.totalOfAdditional ? (this.totalOfAdditional) : 0;
+        let addHocAdditional = this.totalofAddhoc ? (this.totalofAddhoc) : 0;
+
+        const transportFee = this.transport.isIncluded ? (this.transport.fixedFee * (1 - (this.subsidyAmount ?? 0) / 100)) : 0;
+        const transportAdditionalFee = this.transport.amountToBePaid ? +this.transport.amountToBePaid : 0;
+        const totalTransportFeeWithGST = (transportFee + transportAdditionalFee);
+
+        if (this.isCipSelected) {
+          return (GSTtotal + cipCost + CIPAdditional + addHocAdditional) + (totalTransportFeeWithGST * this.CIPdays);
+        }
+        else{
+          return (GSTtotal + cipCost + addHocAdditional + refundable - dsgsubsidiyval ) + (totalTransportFeeWithGST *  this.CIPdays);
+        }
+
+      },
       viewamtcollect(){      
         let refundable = this.refundableFeeTotal ? this.refundableDeposit : 0;
         let GSTtotal = this.isCipSelected ? 0 :((this.totalOfAdditional + this.totalOfNeeurofit) * this.GST);
-        let dsgsubsidiyval = this.checkdsgsubsidy(GSTtotal);
+        let dsgsubsidiyval = this.checkdsgsubsidy((refundable + this.totalOfNeeurofit * this.GST));
         let cipCost = this.calculateCipCost;
 
         let CIPAdditional = this.totalOfAdditional ? (this.totalOfAdditional*this.GST) : 0;
