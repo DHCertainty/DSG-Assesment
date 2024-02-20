@@ -1779,7 +1779,7 @@ div(ref='pdfWholePage')
         await this.uploadServiceAgreement();
 
         this.loadingSubmission = false;
-        this.$refs['paymentConfirmation'].hide()
+        this.$bvModal.hide('paymentConfirmation');
 
         setTimeout(() => {
           this.$bvModal.hide('assessmentSubmission');
