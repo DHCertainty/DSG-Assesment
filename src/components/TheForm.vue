@@ -307,7 +307,7 @@ div(ref='pdfWholePage')
                               b-form-input(v-model="transport.destinationPostalCode" type="number" placeholder="Enter postal code" disabled)
                       b-row.my-4
                         b-col.col-3
-                          b-button(style="background-color: rgb(118, 80, 137); color: #fff; font-weight: bold; border-radius: 0.625rem" @click="checkDistanceTransport")
+                          b-button( v-show="notPDFview" style="background-color: rgb(118, 80, 137); color: #fff; font-weight: bold; border-radius: 0.625rem" @click="checkDistanceTransport")
                             | Check distance
                       b-row.my-2
                         b-col.col-12
@@ -1801,7 +1801,7 @@ div(ref='pdfWholePage')
       },
       async uploadServiceAgreement(){
         const options = {
-          margin: 5, 
+          margin: 2, 
         };
         let el = this.$refs.pdfFormView;
         const pdf = await html2pdf().from(el).set(options).outputPdf();
