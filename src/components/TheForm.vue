@@ -2,6 +2,19 @@
 div(ref='pdfWholePage')
     b-container.main-container.mt-2.mb-4
       form
+          .mb-4
+            .row
+              .col-auto
+                label Date: 
+                  span(style="font-weight: bold;").mx-2 {{ dateofassessment }}
+                  span
+                    button.timeEdit(v-b-modal.modal-time-change v-show="notPDFview") Edit date
+              .col-auto(style="margin-left:auto")
+                label Name:
+                  span.mx-2(style="font-weight: bold;") {{ caregiverClientName }}
+              .col-auto
+                label NRIC (last 4 digit): 
+                  span.mx-2(style="font-weight: bold;") {{ caregiverClientIc.slice(-4) }}
           //- div
           //-   button(@click="generatePDF") Generate PDF
           section.p-4.border.mb-4.border-light.rounded.shadow
@@ -298,7 +311,7 @@ div(ref='pdfWholePage')
                             | Check distance
                       b-row.my-2
                         b-col.col-12
-                          iframe(style="width: 100%;" id="iframe" height="500" width="500" :src="transport.iframeSrc")
+                          iframe( v-show="notPDFview" style="width: 100%;" id="iframe" height="500" width="500" :src="transport.iframeSrc")
                       b-row.my-4
                         b-col.col-12
                           b-row.align-items-center
@@ -315,9 +328,9 @@ div(ref='pdfWholePage')
                 .col-sm-3.align-self-center.col-auto
                   label.common(for="session") Session Recommended: 
                 .col.col-auto(style="text-align: right;")   
-                  b-btn#add-btn.btn-warning.mx-3(@click="addmethod(0)") Available Sessions 
+                  b-btn#add-btn.btn-warning.mx-3(@click="addmethod(0)" v-show="notPDFview") Available Sessions 
                 .col.col-auto(style="text-align: right;")   
-                  b-btn#add-btn.mx-2.btn-warning(@click="addmethod(1)") + Create New Session 
+                  b-btn#add-btn.mx-2.btn-warning(@click="addmethod(1)" v-show="notPDFview") + Create New Session 
                 //- .col.col-auto(style="text-align: right;")   
                 //-   b-btn#add-btn.mx-2.btn-dark(@click="AutoMatchingSession()") + (Test) Automation
                   //- b-btn#add-btn(@click="addfile") + Add file 
@@ -347,7 +360,13 @@ div(ref='pdfWholePage')
               //- b-modal#confrimationModal.modal_confimration(size="lg" title="Sign here" scrollable centered hide-footer)
               //-     input(type="file" @change="uploadFile")
               //-     b-btn(@click="confirmUpload") Submit
-              
+
+              b-modal(id="modal-time-change" hide-footer hide-header ref="modal-time-change")
+                p.my-4 Pick a time
+                b-form-datepicker(id="datepicker" v-model="edit_time" class="mb-2")
+                div(style="text-align:center; margin-top: 30px; margin-bottom: 20px;")
+                  b-button(@click="editTime") Change date
+                            
               b-modal#automatedMatchingModal.modal_confimration(size="lg"  scrollable centered hide-footer hide-header no-close-on-esc no-close-on-backdrop)
                 div(v-if="loadingAutomated")
                   b-row.mt-5 
@@ -361,7 +380,7 @@ div(ref='pdfWholePage')
                   b-row.mt-2.justify-content-center
                     lord-icon(src="https://cdn.lordicon.com/gqjpawbc.json" trigger="loop" delay="500"  colors="primary:#121331,secondary:#4f1091" state="in-reveal" style="width:350px;height:350px")
                   b-row.my-5.text-center
-                    h6 Successfully automated the sessions, you can now close this pop-up.
+                    h6 Completed, you can now close this page.
 
               b-modal#assessmentSubmission.modal_confimration(size="lg"  scrollable centered hide-footer hide-header no-close-on-esc no-close-on-backdrop)
                 div(v-if="loadingSubmission")
@@ -571,7 +590,7 @@ div(ref='pdfWholePage')
                               input.numbers-half#admission(v-model="dsgOffDay.date" name="dsgOffday" type="date")
                           b-row
                             b-col.gap
-                              b-button(@click="addDSGOffday")
+                              b-button(@click="addDSGOffday" v-show="notPDFview")
                                 | Add Off day
                           b-row(v-if="dsgOffDay.listDay.length !== 0")
                             b-col
@@ -605,7 +624,7 @@ div(ref='pdfWholePage')
                               input.numbers-half#admission(v-model="secSession" name="admission" type="date")
                           b-row
                             b-col
-                              b-btn.gap(@click="CIPtotal") Calculate
+                              b-btn.gap(@click="CIPtotal" v-show="notPDFview") Calculate
                           b-row
                             b-col.d-flex.justify-content-end.align-items-end(style="font-size: 20px;")
                               label(v-show="totalforCIP") {{ CIPdays }} sessions
@@ -633,7 +652,7 @@ div(ref='pdfWholePage')
           section.p-4.border.my-4.border-light.rounded.shadow(v-show="this.sessions.length || this.recommended_session_pick.length")
               .d-flex.align-items-center
                 label Additional fee:
-                b-button.mx-3(v-b-modal.addAdHocModal variant="success") Ad-hoc fee
+                b-button.mx-3(v-b-modal.addAdHocModal variant="success" v-show="notPDFview") Ad-hoc fee
               .formed.gap(v-show="!subs1")
                 b-form-checkbox(v-model="additionalFeeTotal" type="checkbox" :value="additionalFees.one_time.price") &nbsp;One-time Assessment $50
               .formed.gap(v-show="subs1")
@@ -754,7 +773,7 @@ div(ref='pdfWholePage')
                     div.d-flex.justify-content-between
                       h5
                         u.text-center Caregiver Sign Here
-                      b-button(variant="danger" @click="clearCanvas('caregiverSignature')") Clear
+                      b-button(v-show="notPDFview" variant="danger" @click="clearCanvas('caregiverSignature')") Clear
 
                           
                   .col 
@@ -763,7 +782,7 @@ div(ref='pdfWholePage')
                     div.d-flex.justify-content-between.align-items-center
                       h5
                         u.text-center Staff Sign Here 
-                      b-button(variant="danger" @click="clearCanvas('staffSignature')") Clear
+                      b-button(v-show="notPDFview" variant="danger" @click="clearCanvas('staffSignature')") Clear
                 hr
                 .row.mt-2
                   .col-sm
@@ -776,7 +795,7 @@ div(ref='pdfWholePage')
                   .col-sm
                       input.form-control(type="date" v-model="serviceAgreementDate")
                 div.mt-3.d-flex.justify-content-center.align-items-center
-                  b-button.px-5.py-2( v-if="viewamtcollect" variant="success" v-b-modal.paymentConfirmation) Continue
+                  b-button.px-5.py-2( v-show="notPDFview" v-if="viewamtcollect" variant="success" v-b-modal.paymentConfirmation) Continue
                 
                 //- .row(v-if="imagesSign")
                 //-   img(:src="'data:image/jpeg;base64,' + imagesSign[0].crb5c_caregiversignature")
@@ -828,6 +847,9 @@ div(ref='pdfWholePage')
     // emits: ["newresource"],
     data() {
       return {
+        notPDFview: true,
+        edit_time: null,
+        dateofassessment: '',
         // CIPdays: 0,
         CIPprice: 0,
         caregiverNamePrefilled: '',
@@ -1165,9 +1187,16 @@ div(ref='pdfWholePage')
       this.serviceAgreementDate = today;
       
       this.getProgrammeInfos();
+      this.dateofassessment = dayjs().format("MM-DD-YYYY");
+      this.$store.commit('assessment_date',this.dateofassessment);
 
     },
     methods: {
+      editTime(){
+      this.dateofassessment = dayjs(this.edit_time).format("MM-DD-YYYY");
+      this.$store.commit('assessment_date',this.dateofassessment);
+      this.$refs['modal-time-change'].hide()
+    },
       // async generatePDF() {
       //   },
     pdfToBase64(pdfBlob) {
@@ -1745,15 +1774,23 @@ div(ref='pdfWholePage')
         let id = data.crb5c_fowserviceagreementid
 
         await this.signatureUploadforStaff(id);
+        await this.triggerPDFView();
         await this.uploadAssessmentFullPDF();
         await this.uploadServiceAgreement();
 
         this.loadingSubmission = false;
+        this.$refs['paymentConfirmation'].hide()
 
         setTimeout(() => {
           this.$bvModal.hide('assessmentSubmission');
           this.sessionAutomation();
         }, 6000);
+
+
+
+      },
+      triggerPDFView(){
+        this.notPDFview = false;
       },
       async signatureUploadforStaff(id){
         const payload2 = { 
@@ -1901,10 +1938,9 @@ div(ref='pdfWholePage')
         }
           this[`vis${val}`] = '0';
       },
-
-      checkSubsidy(){
-        console.log("running")
-      },
+      // checkSubsidy(){
+      //   console.log("running")
+      // },
       checkDistanceTransport(){
         if(!this.transport.startPostalCode || !this.transport.destinationPostalCode){
           alert('Please specify start and destination postal code');
@@ -1972,8 +2008,6 @@ div(ref='pdfWholePage')
             this.location = 'Video-Call'
             break;
         }
-
-  
       },
       firSession(val){
         if (val) {
@@ -2196,7 +2230,6 @@ div(ref='pdfWholePage')
           return total_amount;
         }
         return 0;
-
       },
       // paynowString(){
       //     let qrcode = new PaynowQR({
@@ -2650,6 +2683,12 @@ div(ref='pdfWholePage')
       width: 315px;
       margin: auto;
   }
+
+  .timeEdit{
+  background: rgba(255, 255, 255, 0);
+  border: none;
+  color: rgb(140, 63, 211);
+}
   
   .image_container_lion{
       width: 265px;

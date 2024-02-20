@@ -6,19 +6,19 @@
     />
     
     <img src="../assets/logo.png" />
-    <ul style="margin-top: 20px;">
+    <!-- <ul style="margin-top: 20px;">
       <li class="navbar__dateAssessment"><button class="timeEdit" v-b-modal.modal-time-change >Edit</button> Date of Assessment: <span style="font-weight:bold">{{ dateofassessment }}</span></li>
       
       <li class="navbar__clientName">Client name: &nbsp;<span style="font-weight:bold">{{ client_name }}</span></li>
-    </ul>
+    </ul> -->
 
-    <b-modal id="modal-time-change" hide-footer hide-header ref="modal-time-change">
+    <!-- <b-modal id="modal-time-change" hide-footer hide-header ref="modal-time-change">
     <p class="my-4">Pick a time</p>
     <b-form-datepicker id="datepicker" v-model="edit_time" class="mb-2"></b-form-datepicker>
     <div style="text-align:center;margin-top: 30px;margin-bottom: 20px;"><b-button @click="editTime">Change date</b-button></div>
 
     
-  </b-modal>
+  </b-modal> -->
   
   </header>
   
@@ -43,7 +43,7 @@ export default {
   data(){
     return{
       isLocal: false,
-      edit_time:null,
+      // edit_time:null,
       client_id: "",
       client_name: "",
       dateofassessment: "",
@@ -89,15 +89,15 @@ export default {
       // console.log(clientData);
       this.client_name = clientData.value[0].crb5c_no;
       this.$store.commit('assessment_client_name',this.client_name);
-      this.dateofassessment = dayjs().format("MM-DD-YYYY");
-      this.$store.commit('assessment_date',this.dateofassessment);
+      // this.dateofassessment = dayjs().format("MM-DD-YYYY");
+      // this.$store.commit('assessment_date',this.dateofassessment);
       this.$root.$emit('getFormData')
     },
-    editTime(){
-      this.dateofassessment = dayjs(this.edit_time).format("MM-DD-YYYY");
-      this.$store.commit('assessment_date',this.dateofassessment);
-      this.$refs['modal-time-change'].hide()
-    }
+    // editTime(){
+    //   this.dateofassessment = dayjs(this.edit_time).format("MM-DD-YYYY");
+    //   this.$store.commit('assessment_date',this.dateofassessment);
+    //   this.$refs['modal-time-change'].hide()
+    // }
   }
 }
 </script>
