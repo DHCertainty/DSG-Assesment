@@ -23,6 +23,7 @@
     "lottie-web": "^5.12.2",
     "sass": "^1.69.7",
     "vue": "^2.7.14",
+    "vue-html2pdf": "^1.8.0",
     "vue-qrcode": "^2.2.0",
     "vue-router": "^3.5.1",
     "vue-select": "^3.20.2",
