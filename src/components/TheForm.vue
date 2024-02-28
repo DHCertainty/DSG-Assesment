@@ -1020,7 +1020,7 @@ div(ref='pdfWholePage')
         // latest: "0",
         type: "",
         stageof: "",
-        date: "",
+        date: null,
         edulev: "",
         gp: false,
         ind: false,
@@ -1201,7 +1201,7 @@ div(ref='pdfWholePage')
       this.serviceAgreementDate = today;
       
       this.getProgrammeInfos();
-      this.dateofassessment = dayjs().format("MM-DD-YYYY");
+      this.dateofassessment = dayjs().format("YYYY-MM-DD");
       this.$store.commit('assessment_date',this.dateofassessment);
       console.log('public holiday',this.listPublicHolidayCurrentMonth)
           console.log('dsg off', this.dsgOffDay.listDay)
@@ -1209,7 +1209,7 @@ div(ref='pdfWholePage')
     },
     methods: {
       editTime(){
-      this.dateofassessment = dayjs(this.edit_time).format("MM-DD-YYYY");
+      this.dateofassessment = dayjs(this.edit_time).format("YYYY-MM-DD");
       this.$store.commit('assessment_date',this.dateofassessment);
       this.$refs['modal-time-change'].hide()
     },
@@ -1958,14 +1958,14 @@ div(ref='pdfWholePage')
           crb5c_educationyear: this.selectedyear,
           crb5c_mocaform: this.checker4 ? true : false,
           crb5c_eq5d5lform: this.checker5 ? true : false,
-          crb5c_admissiondate: (this.adm) ? this.adm : null,
+          crb5c_admissiondate:  this.adm ? dayjs(this.adm).toISOString(): null,
           crb5c_referenceid: this.referenceid,
-          crb5c_dateofassessment: dayjs(this.$store.state.assessment_date).format("MM-DD-YYYY"),
+          crb5c_dateofassessment: dayjs(this.$store.state.assessment_date).toISOString(),
           crb5c_mocascore: (this.isMOCA) ? this.mocaVal : 0,
           crb5c_amtscore: (this.isAMT) ? this.amtVal : 0,
           crb5c_mmsescore: (this.isMMSE) ? this.mmseVal : 0,
-          crb5c_cip1stsession:  this.firSession,
-          crb5c_cip2ndsession: this.secSession,
+          crb5c_cip1stsession:  this.firSession ? dayjs(this.firSession).toISOString(): null,
+          crb5c_cip2ndsession: this.secSession ? dayjs(this.secSession).toISOString(): null,
           crb5c_additionalfee: parseInt(this.transport.amountToBePaid),
           crb5c_refundabledeposit: parseInt(this.refundableDeposit),
           // crb5c_onetimeassessmentother: this.,
