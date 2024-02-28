@@ -627,8 +627,16 @@ div(ref='pdfWholePage')
                             b-col
                               b-btn.gap(@click="CIPtotal" v-show="notPDFview") Calculate
                           b-row
-                            b-col.d-flex.justify-content-end.align-items-end(style="font-size: 20px;")
-                              label(v-show="totalforCIP") {{ CIPdays }} sessions
+                            b-col.d-flex.justify-content-start.align-items-start(v-show="totalforCIP" style="font-size: 20px;")
+                              b-row 
+                                .col-auto
+                                  input.numbers-half.col-auto( type="number" v-model="CIPdays") 
+                                  span Session (s)
+                                //- b-col
+                                //-   label.mx-2 
+                              
+                              
+                              
               .formed.mt-3( v-show="this.sessions.length || this.recommended_session_pick.length")
                 label.common.gap(for="admission") Admission date:
                 input.numbers-half#admission(v-model="adm" name="admission" type="date")
@@ -1484,25 +1492,26 @@ div(ref='pdfWholePage')
 
           let offDayList = [];
           if (this.listPublicHolidayCurrentMonth || this.dsgOffDay.listDay.length) {
+
             for (let index = 0; index < this.dsgOffDay.listDay.length; index++) {
               offDayList.push(dayjs(this.dsgOffDay.listDay[index].date).day())
             }
             console.log('offDayList',offDayList)
           }
 
-          // if (offDayList.length) {
-          //   for (let i = 0; i < offDayList.length; i++) {
-          //   // console.log('offDayList[i]',offDayList[i])
-          //   // console.log('first',dayjs(this.firSession).day())
-          //   // console.log('second',dayjs(this.secSession).day())
-          //   if (offDayList[i] === dayjs(this.firSession).day()) {
-          //     day1count--;
-          //   }
-          //   else if (offDayList[i] === dayjs(this.secSession).day()) {
-          //     day2count--;
-          //   }
-          // }
-          // }
+          if (offDayList.length) {
+            for (let i = 0; i < offDayList.length; i++) {
+            console.log('offDayList[i]',offDayList[i])
+            console.log('first',dayjs(this.firSession).day())
+            // console.log('second',dayjs(this.secSession).day())
+            if (offDayList[i] === dayjs(this.firSession).day()) {
+              day1count--;
+            }
+            else if (offDayList[i] === dayjs(this.secSession).day()) {
+              day2count--;
+            }
+          }
+          }
           
           const totalDay = day1count + (day2count ? day2count : 0);
           this.totalforCIP = this.fees4val * (totalDay);
