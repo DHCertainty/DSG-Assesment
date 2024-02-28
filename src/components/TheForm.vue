@@ -374,9 +374,9 @@ div(ref='pdfWholePage')
                   b-row.my-5.text-center
                     h6 Please wait while the sessions are being automated
                 div(v-else)
-                  div.mx-3(style="text-align: right; font-size: 3vh") 
-                    b-button.btn-transparent(@click="closeModal('automatedMatchingModal')")
-                      Icon(icon="ic:twotone-close" ) 
+                  //- div.mx-3(style="text-align: right; font-size: 3vh") 
+                  //-   b-button.btn-transparent(@click="closeModal('automatedMatchingModal')")
+                  //-     Icon(icon="ic:twotone-close" ) 
                   b-row.mt-2.justify-content-center
                     lord-icon(src="https://cdn.lordicon.com/gqjpawbc.json" trigger="loop" delay="500"  colors="primary:#121331,secondary:#4f1091" state="in-reveal" style="width:350px;height:350px")
                   b-row.my-5.text-center
