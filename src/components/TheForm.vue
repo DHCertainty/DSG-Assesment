@@ -714,14 +714,14 @@ div(ref='pdfWholePage')
             div.d-flex.justify-content-between
               div
                   div.mb-3(v-if="CIPdays")
-                    label.common CIP Fee (without GST)
+                    label.common CIP Fee (before GST)
                     div(v-if="CIPdays" v-for="(programme, index) in CipPrgrammeSummary" :key="index")
-                        label {{programme.name}} X {{ programme.quantity }} ( ${{ programme.isCip ? fees4val : programme.cost }})
+                        label {{programme.name}}  ( ${{ programme.isCip ? fees4val : programme.cost }} {{ programme.quantity > 1 ? "X " + programme.quantity : ''  }} )
                   div 
-                    label.common(v-if="selectedProgrammeSummary.length") Fee (without GST):
+                    label.common(v-if="selectedProgrammeSummary.length") Fee (before GST):
                     div(v-for="(programme, index) in selectedProgrammeSummary" :key="index")
-                        label {{programme.name}} X {{ programme.quantity }} 
-                        | ( {{typeof programme.cost === 'number' ? '$' :''}}{{ programme.cost }})
+                        label {{programme.name}} 
+                        |  &nbsp; ( {{typeof programme.cost === 'number' ? '$' :''}}{{ programme.cost }}  {{ programme.quantity > 1 ? "X " +programme.quantity : '' }} )
                 
                   
 
