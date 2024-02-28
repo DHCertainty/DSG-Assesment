@@ -1457,10 +1457,11 @@ div(ref='pdfWholePage')
         });
   
         this.dsgOffDay.date = null;
-  
+        this.CIPtotal();
       },
       removeDSGOffDay(id){
         this.dsgOffDay.listDay = this.dsgOffDay.listDay.filter(item => item.id !== id);
+        this.CIPtotal();
   
       },
       formatDSFOffDayContent(dateParent){
