@@ -567,44 +567,13 @@ div(ref='pdfWholePage')
                   label(v-else) ${{ fees4val  }}  
                     span(v-if="transport.isIncluded") (with transport fee: ${{ transportTotalView.toFixed(2) }})
               .formed
-
-              .formed.gap.border.border-1(style="border-radius: 0.5rem;" v-show="isCipSelected")
-                  b-row.p-3
-                    b-col.col-6
+              .border.border-1.m-4(v-show="isCipSelected" style="border-radius: 0.5rem;")
+                  b-row.p-3.mx-4
+                    b-col.col-6(style="border-right-style: ridge;")
                       b-row
                         b-col
-                          b-row
-                            b-col
-                              label.common.gap Public & DSG Holiday:
-                              p(v-if="listPublicHolidayCurrentMonth" v-for="publicHoliday in listPublicHolidayCurrentMonth" :key="publicHoliday._id")
-                                | {{ formatDatePublicHoliday(publicHoliday.date) }} - {{ publicHoliday.holiday }}
-                              p(v-if="!listPublicHolidayCurrentMonth")
-                                | No Public Holiday for this month
-                      b-row
-                        b-col
-                          b-row
-                            b-col.col-auto.align-self-center
-                              label.common.gap(for="dsgOffday") DSG Off day:
-                            b-col.col-auto.gap
-                              b-button(@click="addDSGOffday" v-show="notPDFview")
-                                | +
-                          b-row
-                            b-col
-                              input.numbers-half#admission(v-model="dsgOffDay.date" name="dsgOffday" type="date")
-                          
-                            
-                          b-row(v-if="dsgOffDay.listDay.length !== 0")
-                            b-col
-                              b-row.mb-2.align-items-center(v-for="holiday in dsgOffDay.listDay" :key="holiday.id")
-                                b-col.col-8
-                                  p.my-auto
-                                    | {{ formatDSFOffDayContent(holiday.date) }}
-                                b-col.col-4
-                                  b-button(variant="danger" @click="removeDSGOffDay(holiday.id)")
-                                    | Remove
-                    b-col.col-6
-                      b-row
-                        b-col
+                          b-row.my-4 
+                            label(style="font-size:16px;font-weight:bold;color:#6f6f6f;text-decoration-line: underline;") CIP Date picker
                           b-row
                             b-col
                               label.common.gap(for="admission") 1st Session date: [{{ firstSesDay(this.firSession) }}]
@@ -624,17 +593,55 @@ div(ref='pdfWholePage')
                             b-col
                               input.numbers-half#admission(v-model="secSession" name="admission" type="date")
                           b-row
-                            b-col
-                              b-btn.gap(@click="CIPtotal" v-show="notPDFview") Calculate
-                          b-row
+                            //- b-col
+                            //-   b-btn.gap(@click="CIPtotal" v-show="notPDFview") Calculate
+                          b-row.my-4
                             b-col.d-flex.justify-content-start.align-items-start(v-show="totalforCIP" style="font-size: 20px;")
-                              b-row 
-                                .col-auto
-                                  input.numbers-half.col-auto( type="number" v-model="CIPdays") 
-                                  span Session (s)
-                                //- b-col
-                                //-   label.mx-2 
+                              label(style="font-size:14px") Total of {{ CIPdays }} Session (s) for this month
+                              //- b-row.flex 
+                              //-   .col-auto
+                              //-     input.numbers-half.col-auto( type="number" v-model="CIPdays")
+                              //-   .col-auto 
+                              //-     span Session (s)
+                              //-   b-col
+                              //-     label.mx-2 
                               
+                    b-col.col-6
+
+                      b-row.mx-4
+                        b-col
+                          b-row.my-4 
+                            label(style="font-size:16px;font-weight:bold;color:#6f6f6f;text-decoration-line: underline;") Holidays and Off days
+                          b-row
+                            b-col
+                              label.common.gap Public & DSG Holiday:
+                              p(v-if="listPublicHolidayCurrentMonth" v-for="publicHoliday in listPublicHolidayCurrentMonth" :key="publicHoliday._id")
+                                | {{ formatDatePublicHoliday(publicHoliday.date) }} - {{ publicHoliday.holiday }}
+                              p(v-if="!listPublicHolidayCurrentMonth")
+                                | No Public Holiday for this month
+                      b-row.mx-4.mb-5
+                        b-col
+                          b-row
+                            b-col.col-auto.align-self-center
+                              label.common.gap(for="dsgOffday") DSG Off day:
+                            b-col.col-auto.gap
+                              b-button(@click="addDSGOffday" v-show="notPDFview")
+                                | +
+                          b-row
+                            b-col
+                              input.numbers-half#admission(v-model="dsgOffDay.date" name="dsgOffday" type="date")
+                          
+                      
+                          b-row(v-if="dsgOffDay.listDay.length !== 0")
+                            b-col
+                              b-row.mb-2.align-items-center(v-for="holiday in dsgOffDay.listDay" :key="holiday.id")
+                                b-col
+                                  p.my-auto
+                                    | {{ formatDSFOffDayContent(holiday.date) }}
+                                b-col
+                                  b-button(variant="danger" @click="removeDSGOffDay(holiday.id)")
+                                    | Remove
+                    
                               
                               
               .formed.mt-3( v-show="this.sessions.length || this.recommended_session_pick.length")
@@ -724,7 +731,7 @@ div(ref='pdfWholePage')
                 label.mb-2(for="collect" style="font-size:20px") 9% GST: ${{ (viewamtcollect - viewamtcollectNoGST ).toFixed(2)}}
                 label.common(for="collect" style="font-size:30px") Total + GST: ${{ viewamtcollect.toFixed(2)}}
 
-          section.p-4.border.my-4.border-light.rounded.shadow(v-show="this.sessions.length || this.recommended_session_pick.length")
+          section.p-4.border.my-4.border-light.rounded.shadow(v-if="!viewServiceForm" v-show="this.sessions.length || this.recommended_session_pick.length")
             div.justify-content-center.align-items-center.text-center
                 b-button(variant="success" @click="navigateToServiceForm" v-if="!viewServiceForm") Continue to Agreement 
 
@@ -2048,6 +2055,11 @@ div(ref='pdfWholePage')
       }
     },
     watch: {
+        secSession(val){
+          if(val){
+            this.CIPtotal();
+          }
+        },
         caregiverPicked(val) {
           this.clientReationship = this.caregiverDetails.find(c => c.crb5c_fow_caregiverid === val)?.crb5c_relationship || '';
           this.serviceAgreementContact = this.caregiverDetails.find(c => c.crb5c_fow_caregiverid === val)?.crb5c_contactnumbermobile || '';
@@ -2072,6 +2084,7 @@ div(ref='pdfWholePage')
       firSession(val){
         if (val) {
           this.adm = val;
+          this.CIPtotal();
         }
       },
       checker4(val){
