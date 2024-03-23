@@ -249,7 +249,7 @@ div(ref='pdfWholePage')
               .col-md-2 
                 label.common Fee & Payment:
             .centerCheckbox
-              b-form-checkbox(v-model="subsidy" v-b-toggle.subsidy_box type="checkbox" value=true) &nbsp;Subsidy included
+              b-form-checkbox(v-model="subsidy" v-b-toggle.subsidy_box type="checkbox" :value="`${true}`") &nbsp;Subsidy included
             b-collapse.mt-3#subsidy_box(v-model="subsidy")
               b-card
                 section
@@ -844,7 +844,11 @@ div(ref='pdfWholePage')
   import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
   import axios from 'axios';
   import VueSignatureCanvas from 'vue-signature-canvas';
-  
+  import { 
+    // mapState, 
+    mapMutations, 
+  } from "vuex";
+
   dayjs.extend(utc);
   dayjs.extend(timezone);
   dayjs.extend(isToday);
@@ -1183,6 +1187,8 @@ div(ref='pdfWholePage')
     },
     compatConfig: { MODE: 3 },
     async mounted() {
+      this.initSavedData();
+
       const component = this;
       this.$root.$on('getFormData', function(){
         component.getdatainform();
@@ -1215,7 +1221,116 @@ div(ref='pdfWholePage')
 
     },
     methods: {
-      editTime(){
+    ...mapMutations(['assessmentDataChange']),
+    initSavedData(){
+      const rawAssessmentData = localStorage.getItem("assessmentData");
+      if(!rawAssessmentData){
+        return;
+      }
+
+      const assessmentData = JSON.parse(rawAssessmentData);
+
+      this.type = assessmentData.typeOfDementia;
+      this.stageof = assessmentData.stageOfDementia;
+      this.isAMT = assessmentData.isAMT;
+      this.amtVal = assessmentData.amtVal;
+      this.isMOCA = assessmentData.isMOCA;
+      this.mocaVal = assessmentData.mocaVal;
+      this.isMMSE = assessmentData.isMMSE;
+      this.mmseVal = assessmentData.mmseVal;
+      this.date = assessmentData.dateDoneInHospital;
+
+      // general
+      this.checker = assessmentData.generalCheckerOne;
+      this.checker2 = assessmentData.generalCheckerTwo;
+      this.checker3 = assessmentData.generalCheckerThree;
+      // general
+
+      // games & survey
+      // neeurofit
+      this.neeuro = assessmentData.isNeeuroFitBrainTrainingGame;
+      this.atten = assessmentData.atten;
+      this.attentionObj = assessmentData.attentionObj ?? {...this.attentionObj};
+      this.spatial = assessmentData.spatial;
+      this.spatialObj = assessmentData.spatialObj ?? {...this.spatialObj};
+      this.decision = assessmentData.decision;
+      this.decisionObj = assessmentData.decisionObj ?? {...this.decisionObj};
+      this.memory = assessmentData.memory;
+      this.memoryObj = assessmentData.memoryObj ?? {...this.memoryObj};
+      this.flexibility = assessmentData.flexibility;
+      this.flexibilityObj = assessmentData.flexibilityObj ?? {...this.flexibilityObj};
+      // neeurofit
+      // MOCA form
+      this.checker4 = assessmentData.isMocaForm;
+      this.language = assessmentData.language;
+      this.edulev = assessmentData.edulev;
+      this.unyearSelected = assessmentData.unyearSelected;
+      this.ovyearSelected = assessmentData.ovyearSelected;
+      this.vis1 = assessmentData.vis1 ?? this.vis1;
+      this.vis2 = assessmentData.vis2 ?? this.vis2;
+      this.vis3 = assessmentData.vis3 ?? this.vis3;
+      this.vis4 = assessmentData.vis4 ?? this.vis4;
+      this.vis5 = assessmentData.vis5 ?? this.vis5;
+      this.vis6 = assessmentData.vis6 ?? this.vis6;
+      this.vis7 = assessmentData.vis7 ?? this.vis7;
+      this.vis8 = assessmentData.vis8 ?? this.vis8;
+      this.vis9 = assessmentData.vis9 ?? this.vis9;
+      this.vis10 = assessmentData.vis10 ?? this.vis10;
+      this.vis11 = assessmentData.vis11 ?? this.vis11;
+      this.vis18 = assessmentData.vis18 ?? this.vis18;
+      this.vis13 = assessmentData.vis13 ?? this.vis13;
+      this.vis14 = assessmentData.vis14 ?? this.vis14;
+      this.vis15 = assessmentData.vis15 ?? this.vis15;
+      this.vis16 = assessmentData.vis16 ?? this.vis16;
+      // MOCA form
+      // EQ5D5L form
+      this.checker5 = assessmentData.isEQ5D5Lform;
+      this.eq1 = assessmentData.eq1 ?? this.eq1;
+      this.eq2 = assessmentData.eq2 ?? this.eq2;
+      this.eq3 = assessmentData.eq3 ?? this.eq3;
+      this.eq4 = assessmentData.eq4 ?? this.eq4;
+      this.eq5 = assessmentData.eq5 ?? this.eq5;
+      this.healthscale = assessmentData.healthscale;
+      // EQ5D5L form
+      // games & survey
+
+      this.checking = assessmentData.checking;
+
+      //-- fee & payment
+      //-- DSG
+      this.subsidy = assessmentData.subsidy;
+      this.subs1 = assessmentData.subs1 ?? this.subs1;
+      this.subs1val = assessmentData.subs1val ?? this.subs1val;
+      this.dsgsubsidy = assessmentData.dsgsubsidy ?? this.dsgsubsidy;
+      //-- DSG
+      //-- Toteboard
+      this.subs2 = assessmentData.subs2 ?? this.subs2;
+      this.subsidyAmount = assessmentData.subsidyAmount ?? this.subsidyAmount;
+      //-- Toteboard
+      this.transport = assessmentData.transport ?? this.transport;
+      //-- fee & payment
+
+      // TODO: set data here
+      this.recommended_session_pick = assessmentData.recommended_session_pick ?? this.recommended_session_pick;
+      this.applicableFeeTotal = assessmentData.applicableFeeTotal ?? this.applicableFeeTotal;
+      this.firSession = assessmentData.firSession ?? this.firSession;
+      this.secSession = assessmentData.secSession ?? this.secSession;
+      this.dsgOffDay = assessmentData.dsgOffDay ?? this.dsgOffDay;
+      this.adHocFeeTotal = assessmentData.adHocFeeTotal ?? this.adHocFeeTotal;
+
+      // //---- Service Agreement Form
+      // this.clientReationship = assessmentData.clientReationship ?? this.clientReationship;
+      // this.caregiverClientName = assessmentData.caregiverClientName ?? this.caregiverClientName;
+      // this.caregiverClientIc = assessmentData.caregiverClientIc ?? this.caregiverClientIc;
+      // this.serviceAgreementContact = assessmentData.serviceAgreementContact ?? this.serviceAgreementContact;
+      // this.serviceAgreementDate = assessmentData.serviceAgreementDate ?? this.serviceAgreementDate;
+      // //---- Service Agreement Form
+
+    },
+    clearLocalStorage(){
+      localStorage.clear();
+    },
+    editTime(){
       this.dateofassessment = dayjs(this.edit_time).format("YYYY-MM-DD");
       this.$store.commit('assessment_date',this.dateofassessment);
       this.$refs['modal-time-change'].hide()
@@ -1994,6 +2109,8 @@ div(ref='pdfWholePage')
           console.log('data',data)
           await this.linkClientProgramme();
           await this.submitServiceAgreement();
+
+          this.clearLocalStorage();
         
     },
     async sessionAutomation(){
@@ -2056,15 +2173,416 @@ div(ref='pdfWholePage')
       }
     },
     watch: {
+      //------------------ SAVE TO LOCAL STORAGE ------------------//
+      type(val){
+        this.assessmentDataChange({
+          typeOfDementia: val,
+        });
+      },
+      stageof(val){
+        this.assessmentDataChange({
+          stageOfDementia: val,
+        });
+      },
+      isAMT(val){
+        this.assessmentDataChange({
+          isAMT: val,
+        });
+      },
+      amtVal(val){
+        this.assessmentDataChange({
+          amtVal: val,
+        });
+      },
+      isMOCA(val){
+        this.assessmentDataChange({
+          isMOCA: val,
+        });
+      },
+      mocaVal(val){
+        this.assessmentDataChange({
+          mocaVal: val,
+        });
+      },
+      isMMSE(val){
+        this.assessmentDataChange({
+          isMMSE: val,
+        });
+      },
+      mmseVal(val){
+        this.assessmentDataChange({
+          mmseVal: val,
+        });
+      },
+      date(val){
+        this.assessmentDataChange({
+          dateDoneInHospital: val,
+        });
+      },
+      //-- general
+      checker(val){
+        this.assessmentDataChange({
+          generalCheckerOne: val,
+        });
+      },
+      checker2(val){
+        this.assessmentDataChange({
+          generalCheckerTwo: val,
+        });
+      },
+      checker3(val){
+        this.assessmentDataChange({
+          generalCheckerThree: val,
+        });
+      },
+      //-- general
+      //-- games & surveys
+      //-- Neeurofit
+      neeuro(val){
+        this.assessmentDataChange({
+          isNeeuroFitBrainTrainingGame: val,
+        });
+      },
+      atten(val){
+        this.assessmentDataChange({
+          atten: val,
+        });
+      },
+      attentionObj: {
+        handler(val){
+          this.assessmentDataChange({
+            attentionObj: val,
+          });
+        },
+        deep: true,
+      },
+      spatial(val){
+        this.assessmentDataChange({
+          spatial: val,
+        });
+      },
+      spatialObj: {
+        handler(val){
+          this.assessmentDataChange({
+            spatialObj: {
+              ...val
+            },
+          });
+        },
+        deep: true,
+      },
+      decision(val){
+        this.assessmentDataChange({
+          decision: val,
+        });
+      },
+      decisionObj:{
+        handler(val){
+          this.assessmentDataChange({
+            decisionObj: val,
+          });
+        },
+        deep: true,
+      },
+      memory(val){
+        this.assessmentDataChange({
+          memory: val,
+        });
+      },
+      memoryObj: {
+        handler(val){
+          this.assessmentDataChange({
+            memoryObj: val,
+          });
+        },
+        deep: true,
+      },
+      flexibility(val){
+        this.assessmentDataChange({
+          flexibility: val,
+        });
+      },
+      flexibilityObj: {
+        handler(val){
+          this.assessmentDataChange({
+            flexibilityObj: val,
+          });
+        },
+        value: true,
+      },
+
+      //-- Neeurofit
+      //-- MOCA Form
+      language(val){
+        this.assessmentDataChange({
+          language: val,
+        });
+      },
+      // edulev(val){
+      //   this.assessmentDataChange({
+      //     edulev: val,
+      //   });
+      // },
+      // unyearSelected(val){
+      //   this.assessmentDataChange({
+      //     unyearSelected: val,
+      //   });
+      // },
+      // ovyearSelected(val){
+      //   this.assessmentDataChange({
+      //     ovyearSelected: val,
+      //   });
+      // },
+      vis1(val){
+        this.assessmentDataChange({
+          vis1: val,
+        });
+      },
+      vis2(val){
+        this.assessmentDataChange({
+          vis2: val,
+        });
+      },
+      vis3(val){
+        this.assessmentDataChange({
+          vis3: val,
+        });
+      },
+      vis4(val){
+        this.assessmentDataChange({
+          vis4: val,
+        });
+      },
+      vis5(val){
+        this.assessmentDataChange({
+          vis5: val,
+        });
+      },
+      vis6(val){
+        this.assessmentDataChange({
+          vis6: val,
+        });
+      },
+      vis7(val){
+        this.assessmentDataChange({
+          vis7: val,
+        });
+      },
+      vis8(val){
+        this.assessmentDataChange({
+          vis8: val,
+        });
+      },
+      vis9(val){
+        this.assessmentDataChange({
+          vis9: val,
+        });
+      },
+      vis10(val){
+        this.assessmentDataChange({
+          vis10: val,
+        });
+      },
+      vis11(val){
+        this.assessmentDataChange({
+          vis11: val,
+        });
+      },
+      vis18(val){
+        this.assessmentDataChange({
+          vis18: val,
+        });
+      },
+      vis13(val){
+        this.assessmentDataChange({
+          vis13: val,
+        });
+      },
+      vis14(val){
+        this.assessmentDataChange({
+          vis14: val,
+        });
+      },
+      vis15(val){
+        this.assessmentDataChange({
+          vis15: val,
+        });
+      },
+      vis16(val){
+        this.assessmentDataChange({
+          vis16: val,
+        });
+      },
+      //-- MOCA Form
+      //-- EQ5D5L Form
+      checker5(val){
+        this.assessmentDataChange({
+          isEQ5D5Lform: val,
+        });
+      },
+      eq1(val){
+        this.assessmentDataChange({
+          eq1: val,
+        });
+      },
+      eq2(val){
+        this.assessmentDataChange({
+          eq2: val,
+        });
+      },
+      eq3(val){
+        this.assessmentDataChange({
+          eq3: val,
+        });
+      },
+      eq4(val){
+        this.assessmentDataChange({
+          eq4: val,
+        });
+      },
+      eq5(val){
+        this.assessmentDataChange({
+          eq5: val,
+        });
+      },
+      healthscale(val){
+        this.assessmentDataChange({
+          healthscale: val,
+        });
+      },
+      //-- EQ5D5L Form
+      //-- games & surveys
+      
+      checking(val){
+        this.assessmentDataChange({
+          checking: val,
+        });
+      },
+
+      //-- fee & payment
+      subsidy(val){
+        this.assessmentDataChange({
+          subsidy: val,
+        });
+      },
+      //-- DSG
+      subs1(val){
+        this.assessmentDataChange({
+          subs1: val,
+        });
+      },
+      subs1val(val){
+        this.assessmentDataChange({
+          subs1val: val,
+        });
+      },
+      dsgsubsidy(val){
+        this.assessmentDataChange({
+          dsgsubsidy: val,
+        });
+      },
+      //-- DSG
+      //-- Toteboard
+      // subs2(val){
+      //   this.assessmentDataChange({
+      //     subs2: val,
+      //   });
+      // },
+      // subsidyAmount(val){
+      //   this.assessmentDataChange({
+      //     subsidyAmount: val,
+      //   });
+      // },
+      //-- Toteboard
+      //-- fee & payment
+
+      //-- Transport Included
+      // transport: {
+      //   handler(val){
+      //     this.assessmentDataChange({
+      //       transport: {
+      //         ...val
+      //       },
+      //     });
+      //   },
+      //   deep: true,
+      // },
+      //-- Transport Included
+
+
+      recommended_session_pick(val){
+        this.assessmentDataChange({
+          recommended_session_pick: val,
+        });
+      },
+      applicableFeeTotal(val){
+        this.assessmentDataChange({
+          applicableFeeTotal: val,
+        });
+      },
+      dsgOffDay: {
+        handler(val){
+          this.assessmentDataChange({
+            dsgOffDay: {
+              ...val,
+            },
+          });
+        },
+        deep: true,
+      },
+      adHocFeeTotal(val){
+        this.assessmentDataChange({
+          adHocFeeTotal: val,
+        });
+      },
+
+      // //---- Service Agreement Form
+      // clientReationship(val){
+      //   this.assessmentDataChange({
+      //     clientReationship: val,
+      //   });
+      // },
+      // caregiverClientName(val){
+      //   this.assessmentDataChange({
+      //     caregiverClientName: val,
+      //   });
+      // },
+      // caregiverClientIc(val){
+      //   this.assessmentDataChange({
+      //     caregiverClientIc: val,
+      //   });
+      // },
+      // serviceAgreementContact(val){
+      //   this.assessmentDataChange({
+      //     serviceAgreementContact: val,
+      //   });
+      // },
+      // serviceAgreementDate(val){
+      //   this.assessmentDataChange({
+      //     serviceAgreementDate: val,
+      //   });
+      // },
+      // //---- Service Agreement Form
+
+      //------------------ SAVE TO LOCAL STORAGE ------------------//
         secSession(val){
           if(val){
             this.CIPtotal();
           }
+
+          this.assessmentDataChange({
+            secSession: val,
+          });
         },
         caregiverPicked(val) {
+          
           this.clientReationship = this.caregiverDetails.find(c => c.crb5c_fow_caregiverid === val)?.crb5c_relationship || '';
           this.serviceAgreementContact = this.caregiverDetails.find(c => c.crb5c_fow_caregiverid === val)?.crb5c_contactnumbermobile || '';
           this.caregiverNamePrefilled = this.caregiverDetails.find(c => c.crb5c_fow_caregiverid === val)?.crb5c_name || '';
+          
+          // this.assessmentDataChange({
+          //   caregiverPicked: val,
+          // });
         },
       newSessionType(val){
         switch (val) {
@@ -2087,11 +2605,18 @@ div(ref='pdfWholePage')
           this.adm = val;
           this.CIPtotal();
         }
+
+        this.assessmentDataChange({
+          firSession: val,
+        });
       },
       checker4(val){
         if (val) {
           this.additionalFeeTotal.push(this.additionalFees.one_time.price)
         }
+        this.assessmentDataChange({
+          isMocaForm: val,
+        });
       },
       isCipSelected:{
         deep: true,
@@ -2124,6 +2649,10 @@ div(ref='pdfWholePage')
         if(value === true){
           this.discount = this.subsidyAmount ? this.subsidyAmount/100 : 0;
         }
+
+        this.assessmentDataChange({
+          subsidyAmount: value,
+        });
       },
       cn(value) {
         if (value === true) {
@@ -2162,6 +2691,10 @@ div(ref='pdfWholePage')
           this.unpoint = 0;
           this.selectedyear = 1;
         }
+
+        this.assessmentDataChange({
+          edulev: value,
+        });
       },
       unyearSelected(value) {
         if (value === true) {
@@ -2170,11 +2703,19 @@ div(ref='pdfWholePage')
         } else {
           this.unpoint = 0;
         }
+
+        this.assessmentDataChange({
+          unyearSelected: value,
+        });
       },
       ovyearSelected(value) {
         if (value === true) {
           this.unyearSelected = false;
         }
+
+        this.assessmentDataChange({
+          ovyearSelected: value,
+        });
       },
 
       typeses(value){
@@ -2192,6 +2733,10 @@ div(ref='pdfWholePage')
           this.filterTypeValues = [];
           this.filterTypeValues.push(4)
         }
+
+        this.assessmentDataChange({
+          subs2: value,
+        });
       },
       // isCIP(value){
       //   if(!value){
@@ -2212,6 +2757,12 @@ div(ref='pdfWholePage')
           if(!value.isIncluded){
             this.transport.amountToBePaid = null;
           }
+
+          this.assessmentDataChange({
+            transport: {
+              ...value,
+            },
+          });
 
         },
         deep: true,

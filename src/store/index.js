@@ -13,10 +13,21 @@ export default new Vuex.Store({
       rooms:{},
       sessionId: null,
       msalAccount: null,
-      clientId: null
+      clientId: null,
+      assessmentData: {},
     }
   },
   mutations: {
+    assessmentDataChange(state, payload){
+      const modifyPayload = {
+        ...state.assessmentData,
+        ...payload,
+      };
+
+      state.assessmentData = modifyPayload;
+      
+      localStorage.setItem('assessmentData', JSON.stringify(modifyPayload));
+    },
     accessToken(state, payload) {
       state.accessToken = payload;
    },
