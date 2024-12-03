@@ -744,6 +744,93 @@ export default {
     },
 }}
 
+
+const createPDF = async (data) => {
+    const pdfDoc = await PDFDocument.create();
+    pdfDoc.registerFontkit(fontkit);
+
+    const fontUrl = '/src/font/NotoSansSC-Regular.ttf'; // Replace with your font URL
+    const fontResponse = await fetch(fontUrl);
+    const fontBytes = await fontResponse.arrayBuffer();
+    const customFont = await pdfDoc.embedFont(fontBytes, {
+        unicode: true, // Specify Unicode encoding
+    });
+
+    const fontSize = 12;
+    const textColor = rgb(0, 0, 0);
+
+    let yPosition = 780;
+    let isFirstPage = true;
+ 
+    data.forEach(section => {
+        if (!isFirstPage) {
+            const page = pdfDoc.addPage([600, 800]);
+            yPosition = 780; // Reset yPosition for new page
+        } else {
+            isFirstPage = false;
+        }
+
+        page.drawImage(logoImage, {
+            x: 50,
+            y: 750,
+            width: 50,
+            height: 50 
+        });
+
+        page.drawText(section.sectionName, {
+            x: 50,
+            y: yPosition,
+            size: fontSize + 2,
+            color: textColor,
+            font: customFont,
+        });
+        yPosition -= 20;
+
+        section.questions.forEach(question => {
+            const formattedText = `${question.label}: ${question.value ? (question.value.label || question.value) : ''}`;
+            const lines = page.drawText(formattedText, {
+                x: 50,
+                y: yPosition,
+                size: fontSize,
+                color: textColor,
+                font: customFont,
+                maxWidth: 500, // Set a maxWidth to prevent text overflow
+            });
+            yPosition -= lines.length * fontSize + 5; // Adjust yPosition based on lines of text
+        });
+
+        yPosition -= 10; // Add some vertical space between sections
+    });
+
+    const pdfBytes = await pdfDoc.save();
+    return pdfBytes;
+}
+
+// Example usage:
+const data = [
+    {
+        sectionName: "Section 1",
+        questions: [
+            { label: "Question 1", value: "Answer 1" },
+            { label: "Question 2", value: "Answer 2" },
+            // Add more questions as needed
+        ]
+    },
+    {
+        sectionName: "Section 2",
+        questions: [
+            { label: "Question 3", value: "Answer 3" },
+            { label: "Question 4", value: "Answer 4" },
+            // Add more questions as needed
+        ]
+    }
+];
+
+createPDF(data).then(pdfBytes => {
+    // Handle the PDF bytes, e.g., save to a file or send to client
+}).catch(error => {
+    console.error('Error generating PDF:', error);
+});
 //font: roboto
 </script>
 

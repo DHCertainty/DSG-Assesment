@@ -94,13 +94,13 @@ export default {
             authority: `https://login.microsoftonline.com/${this.logindata.TENANT_ID}`,
           },
         };
-        console.log(msalConfig);
+        // console.log(msalConfig);
         let msalApp = (this.msalApp = new msal.PublicClientApplication(
           msalConfig
         ));
         let accounts = msalApp.getAllAccounts();
         this.$store.commit('msalAccount', accounts);
-        console.log(accounts);
+        // console.log(accounts);
         if (accounts.length > 0) {
           msalApp.setActiveAccount(accounts[0]);
           this.$store.commit("msalApp", msalApp);

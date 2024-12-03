@@ -8,7 +8,7 @@ div(ref='pdfWholePage')
                 label Date: 
                   span(style="font-weight: bold;").mx-2 {{ dateofassessment }}
                   span
-                    button.timeEdit(v-b-modal.modal-time-change v-show="notPDFview") Edit date
+                    b-button.timeEdit(v-b-modal="'modal-time'" v-show="notPDFview") Edit date
               .col-auto(style="margin-left:auto")
                 label Name:
                   span.mx-2(style="font-weight: bold;") {{ caregiverClientName }}
@@ -106,10 +106,10 @@ div(ref='pdfWholePage')
             b-card.my-4(v-show="checker4"  header-tag="header")
               template(#header)
                 h5.font-weight-bold MOCA
-              p.common Version:
-              div.d-flex
-                b-form-checkbox(v-model="language" name="languageVer" type="checkbox" value="0") &nbsp;Chinese
-                b-form-checkbox.mx-4(v-model="language" name="languageVer" type="checkbox" value="1") &nbsp;English
+              //- p.common Version:
+              //- div.d-flex
+              //-   b-form-checkbox(v-model="language" name="languageVer" type="checkbox" value="0" disabled) &nbsp;Chinese
+              //-   b-form-checkbox.mx-4(v-model="language" name="languageVer" type="checkbox" value="1") &nbsp;English
               p.common.gap Education Level:
               .col-sm-6
                 v-select(v-model="edulev" :options="edulevel")
@@ -264,7 +264,7 @@ div(ref='pdfWholePage')
                             .col-md-2
                               label.common subsidy
                               //- checknationality 
-                        b-form-checkbox.mb-2(v-model="subs2" name="subsidy2" type="checkbox" value="dsg2" :disabled="false") &nbsp;Toteboard
+                        b-form-checkbox.mb-2( v-model="subs2" name="subsidy2" type="checkbox" value="dsg2" disabled) &nbsp;Toteboard
                         .row.my-2(v-show="subs2")
                           .col-md-2 
                             label.common Means Test Result
@@ -329,8 +329,8 @@ div(ref='pdfWholePage')
                   label.common(for="session") Session Recommended: 
                 .col.col-auto(style="text-align: right;")   
                   b-btn#add-btn.btn-warning.mx-3(@click="addmethod(0)" v-show="notPDFview") Available Sessions 
-                .col.col-auto(style="text-align: right;")   
-                  b-btn#add-btn.mx-2.btn-warning(@click="addmethod(1)" v-show="notPDFview") + Create New Session 
+                //- .col.col-auto(style="text-align: right;")   
+                //-   b-btn#add-btn.mx-2.btn-warning(@click="addmethod(1)" v-show="notPDFview") + Create New Session 
                 //- .col.col-auto(style="text-align: right;")   
                 //-   b-btn#add-btn.mx-2.btn-dark(@click="AutoMatchingSession()") + (Test) Automation
                   //- b-btn#add-btn(@click="addfile") + Add file 
@@ -357,11 +357,15 @@ div(ref='pdfWholePage')
                     | {{index+1+'.'}} {{ses.name}} [{{ses.type}}] - {{ ses.day }} {{ ses.time }} ( {{ ses.location }} ) 
                     b-icon.delete_icon(icon="x-circle-fill" @click="removeSession(index)")
 
+              .formed.mt-3( v-show="this.sessions.length || this.recommended_session_pick.length")
+                label.common.gap(for="admission") Admission date:
+                input.numbers-half#admission(v-model="adm" name="admission" type="date")
+
               //- b-modal#confrimationModal.modal_confimration(size="lg" title="Sign here" scrollable centered hide-footer)
               //-     input(type="file" @change="uploadFile")
               //-     b-btn(@click="confirmUpload") Submit
 
-              b-modal(id="modal-time-change" hide-footer hide-header ref="modal-time-change")
+              b-modal(id="modal-time" hide-footer hide-header)
                 p.my-4 Pick a time
                 b-form-datepicker(id="datepicker" v-model="edit_time" class="mb-2")
                 div(style="text-align:center; margin-top: 30px; margin-bottom: 20px;")
@@ -508,7 +512,7 @@ div(ref='pdfWholePage')
               b-modal#pick-session(size="lg" title="Add Session" scrollable centered hide-footer) 
                 div
                   b-form-checkbox-group(v-model="pick_sessions")
-                    b-form-checkbox.mb-2( :value="session" required v-for="session in filteredChoice" :id="session.crb5c_fow_session_scheduleid") &nbsp;{{ session.crb5c_session_id }}
+                    b-form-checkbox.mb-2( :value="session" required v-for="session in filteredChoice" :key='session.crb5c_fow_session_scheduleid' :id="session.crb5c_fow_session_scheduleid") &nbsp;{{ session.crb5c_session_id }}
                   div.text-center.my-2
                     b-button.my-3.px-4( size="md" variant="success" :disabled="isAddButtonDisabled" @click="addNewPickSession") Add
                   
@@ -644,9 +648,7 @@ div(ref='pdfWholePage')
                     
                               
                               
-              .formed.mt-3( v-show="this.sessions.length || this.recommended_session_pick.length")
-                label.common.gap(for="admission") Admission date:
-                input.numbers-half#admission(v-model="adm" name="admission" type="date")
+              
   
                   //- b-card
                   //-   label.common.gap(for="admission") 1st Session date:
@@ -661,7 +663,7 @@ div(ref='pdfWholePage')
                   //-     label(v-show="totalforCIP") ${{totalforCIP}} for {{ CIPdays }} session
             
           section.p-4.border.my-4.border-light.rounded.shadow(v-show="(this.sessions.length || this.recommended_session_pick.length)  && !isCipSelected" style="margin-top:50px")
-            label.common NeeuroFit Subscription:
+            label.common NeeuroFit Subscription (Optional):
             b-form-checkbox(v-model="neeurofitFeeTotal" type="checkbox" :value="neeuroFitFees") &nbsp;Centre-based NeeuroFIT 6 months subcription $240
 
           
@@ -669,14 +671,14 @@ div(ref='pdfWholePage')
               .d-flex.align-items-center
                 label Additional fee:
                 b-button.mx-3(v-b-modal.addAdHocModal variant="success" v-show="notPDFview") Ad-hoc fee
-              .formed.gap(v-show="!subs1")
+              .formed.gap()
                 b-form-checkbox(v-model="additionalFeeTotal" type="checkbox" :value="additionalFees.one_time.price") &nbsp;One-time Assessment $50
+              //- .formed.gap(v-show="subs1")
+              //-   input#one_time_other.checkbox_circle( v-model="additionalFeeTotal"  type="checkbox" :value="oneTimeOtherValue" :disabled="!oneTimeOtherValue")
+              //-   label.gapped.text-small(for="one_time_other") One-time Assessment $
+              //-     input.mx-2(type="number" v-model="one_time_other_value")
               .formed.gap(v-show="subs1")
-                input#one_time_other.checkbox_circle( v-model="additionalFeeTotal"  type="checkbox" :value="oneTimeOtherValue" :disabled="!oneTimeOtherValue")
-                label.gapped.text-small(for="one_time_other") One-time Assessment $
-                  input.mx-2(type="number" v-model="one_time_other_value")
-              .formed.gap(v-show="subs1")
-                input#one_time_waived.checkbox_circle(v-model="additionalFeeTotal" type="checkbox" :value="additionalFees.one_time_waived.price")
+                input#one_time_waived(v-model="additionalFeeTotal" type="checkbox" :value="additionalFees.one_time_waived.price")
                 label.gapped.text-small(for="one_time_waived") One-time Assessment
                   strike.mx-2 $50 
                     label.mx-2 [Waived]
@@ -731,8 +733,8 @@ div(ref='pdfWholePage')
                 label.mb-2(for="collect" style="font-size:20px") 9% GST: ${{ (viewamtcollect - viewamtcollectNoGST ).toFixed(2)}}
                 label.common(for="collect" style="font-size:30px") Total + GST: ${{ viewamtcollect.toFixed(2)}}
 
-          section.p-4.border.my-4.border-light.rounded.shadow(v-if="!viewServiceForm" v-show="this.sessions.length || this.recommended_session_pick.length")
-            div.justify-content-center.align-items-center.text-center
+          section(v-if="!viewServiceForm" v-show="this.sessions.length || this.recommended_session_pick.length")
+            div.justify-content-left.align-items-left
                 b-button(variant="success" @click="navigateToServiceForm" v-if="!viewServiceForm") Continue to Agreement 
 
           div( ref='pdfFormView' v-if="viewServiceForm")
@@ -758,17 +760,18 @@ div(ref='pdfWholePage')
                     p Date of Commencement:
                   .col-sm
                     | {{ adm }}
-              .row.mt-3
-                  .col-sm.text-left
-                    p Fee charged per session (before GST): $
-                  .col-sm
-                    | {{ isCipSelected? (fees4val + transportTotalView )  : totalOfApplicable  }} 
+              //- .row.mt-3
+              //-     .col-sm.text-left
+              //-       p Fee charged per session (before GST): $
+              //-     .col-sm
+              //-       | {{ isCipSelected? (fees4val + transportTotalView )  : totalOfApplicable  }} 
                     
               hr
               .row(style="text-align:justify;line-height:5vh")
                 .d-flex.flex-wrap
                   span.m-2 I,
-                  b-form-select.w-25.d-inline.m-2(v-model="caregiverPicked" :options="caregiverDetails" value-field="crb5c_fow_caregiverid" text-field="crb5c_name")
+                  v-select.w-25.d-inline.m-2(:options="caregiverDetails" v-model="caregiverPicked" label="crb5c_name" taggable)
+                  //- b-form-select.w-25.d-inline.m-2(v-model="caregiverPicked" :options="caregiverDetails" value-field="crb5c_fow_caregiverid" text-field="crb5c_name")
                   span.m-2 (NRIC Name), confirm that I am the
                   input.form-control.w-25.d-inline.m-2(type="text" v-model="clientReationship" placeholder="Spouse / Sibling / Children / Caregiver / Guardian")
                   span.m-2 (relationship) of
@@ -806,6 +809,11 @@ div(ref='pdfWholePage')
                       p Contact Number:
                   .col-sm
                       input.form-control(type="number" v-model="serviceAgreementContact")
+                .row.mt-2
+                  .col-sm
+                      p Email:
+                  .col-sm
+                      input.form-control(type="email" v-model="serviceAgreementEmail")
                 .row.mt-3
                   .col-sm 
                       p Date:
@@ -881,7 +889,7 @@ div(ref='pdfWholePage')
         pdfFullPage: '',
         pdfAgreement: '',
         clientReationship: '',
-        caregiverPicked: '',
+        caregiverPicked: null,
         caregiverDetails: [],
         adHocFeeTableFields:[
           {key:'remark', label:'Remarks'},
@@ -907,6 +915,7 @@ div(ref='pdfWholePage')
         caregiverClientName: '',
         caregiverClientIc: '',
         serviceAgreementContact: '',
+        serviceAgreementEmail: '',
         serviceAgreementDate: '',
         imagesSign: [],
         isNeeuroFit: 'NeeuroFIT 6 months subcription',
@@ -1188,7 +1197,7 @@ div(ref='pdfWholePage')
     compatConfig: { MODE: 3 },
     async mounted() {
       this.initSavedData();
-
+    
       const component = this;
       this.$root.$on('getFormData', function(){
         component.getdatainform();
@@ -1216,8 +1225,8 @@ div(ref='pdfWholePage')
       this.getProgrammeInfos();
       this.dateofassessment = dayjs().format("YYYY-MM-DD");
       this.$store.commit('assessment_date',this.dateofassessment);
-      console.log('public holiday',this.listPublicHolidayCurrentMonth)
-          console.log('dsg off', this.dsgOffDay.listDay)
+      // console.log('public holiday',this.listPublicHolidayCurrentMonth)
+      // console.log('dsg off', this.dsgOffDay.listDay)
 
     },
     methods: {
@@ -1333,7 +1342,7 @@ div(ref='pdfWholePage')
     editTime(){
       this.dateofassessment = dayjs(this.edit_time).format("YYYY-MM-DD");
       this.$store.commit('assessment_date',this.dateofassessment);
-      this.$refs['modal-time-change'].hide()
+      this.$bvModal.hide('modal-time');
     },
       // async generatePDF() {
       //   },
@@ -1439,6 +1448,10 @@ div(ref='pdfWholePage')
                             
       },
       navigateToServiceForm(){
+        // if (!this.adm) {
+        //   alert('Please fill up the admission date before proceeding!') 
+        //   return
+        // }
         // this.AutoMatchingSession();
         this.viewServiceForm = true;
       },
@@ -1861,7 +1874,7 @@ div(ref='pdfWholePage')
         const clientId = this.$store.state.assessment_client_id;
         let paramObj = {
           $select:'crb5c_no,crb5c_nricno,crb5c_citizenship',
-          $expand:"crb5c_fow_caregiver_client_crb5c_FOW_Cust($select=crb5c_name,crb5c_contactnumbermobile,crb5c_relationship)",
+          $expand:"crb5c_fow_caregiver_client_crb5c_FOW_Cust($select=crb5c_name,crb5c_contactnumbermobile,crb5c_relationship,crb5c_email)",
           $filter: `crb5c_fow_customerid eq '${clientId}'`,
           };
         let params = new URLSearchParams(paramObj);
@@ -1872,7 +1885,7 @@ div(ref='pdfWholePage')
         this.caregiverClientIc = this.clientdata.crb5c_nricno;
         this.caregiverClientName = this.clientdata.crb5c_no;
         this.caregiverDetails = this.clientdata.crb5c_fow_caregiver_client_crb5c_FOW_Cust;
-        console.log('caregiver data',this.caregiverDetails);
+        // console.log('caregiver data',this.caregiverDetails);
 
 
       },
@@ -1896,7 +1909,7 @@ div(ref='pdfWholePage')
           );
           this.programmeInfos = data.value;
           this.programmeInfos.sort((a, b) => a.crb5c_programmename.localeCompare(b.crb5c_programmename))
-          console.log('programme data',this.programmeInfos);
+          // console.log('programme data',this.programmeInfos);
     },
     async getImagesInfos(){
           let id = '9d8fc0b8-157f-ee11-8179-002248ecdc58';
@@ -2575,11 +2588,15 @@ div(ref='pdfWholePage')
           });
         },
         caregiverPicked(val) {
-          
-          this.clientReationship = this.caregiverDetails.find(c => c.crb5c_fow_caregiverid === val)?.crb5c_relationship || '';
-          this.serviceAgreementContact = this.caregiverDetails.find(c => c.crb5c_fow_caregiverid === val)?.crb5c_contactnumbermobile || '';
-          this.caregiverNamePrefilled = this.caregiverDetails.find(c => c.crb5c_fow_caregiverid === val)?.crb5c_name || '';
-          
+          const caregiver = this.caregiverDetails.find(c => c.crb5c_fow_caregiverid === val.crb5c_fow_caregiverid);
+          if (caregiver) {
+            this.clientReationship = caregiver.crb5c_relationship || '';
+            this.serviceAgreementContact = caregiver.crb5c_contactnumbermobile || '';
+            this.serviceAgreementEmail = caregiver.crb5c_email || '';
+          } else {
+            this.clientReationship = '';
+            this.serviceAgreementContact = '';
+          }
           // this.assessmentDataChange({
           //   caregiverPicked: val,
           // });

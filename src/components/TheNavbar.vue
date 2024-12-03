@@ -66,12 +66,11 @@ export default {
       const state = url.get('state');
       clientId = state?.split('|')[1];
     }
-    console.log('receivedid:',clientId);
+    // console.log('receivedid:',clientId);
     this.client_id = clientId;
     this.$store.commit('assessment_client_id',clientId)
     
     await this.$parent.init();
-    // console.log(this.$store.state);
     await this.getClientData();
 
    
