@@ -51,15 +51,8 @@ export default {
   },
   async mounted() {
     let clientId = '';
-
-    this.isLocal = location.host.includes("localhost");
-
-    if(!this.isLocal){
-      clientId = this.$route.query.client_id;
-    }else{
-      clientId = '9dd18ad0-e27e-ed11-81ac-000d3a85cb45';
-
-    }
+    clientId = this.$route.query.client_id;
+    
     
     if (!clientId) {
       const url = new URLSearchParams(window.location.href);
