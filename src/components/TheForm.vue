@@ -348,6 +348,10 @@ div(ref='pdfWholePage')
               b-table.my-4(:fields="sessionTableFields" :items="recommended_session_pick" v-if="recommended_session_pick.length" striped bordered responsive)
                 template(#cell(session_name)="data")
                   p {{data.item.crb5c_session_id}}
+                template(#cell(session_type)="data")
+                  p {{sessionTypeCheck(data.item.crb5c_sessiontype)}}
+                template(#cell(session_duration)="data")
+                  p {{sessionDurationCheck(data.item.crb5c_duration)}}
                 template(#cell(actions)="data")
                   b-button(variant="danger" @click="removePickedSession(data.index)") Remove
 
@@ -414,15 +418,10 @@ div(ref='pdfWholePage')
                       b-button(@click="adHocFee" variant="primary" :disabled="!adHocItems.remark || !adHocItems.total || (!adHocItems.isRecurring && !adHocItems.isIncludeInFee)" style="width:50%") Add Fee
 
               b-modal#paymentConfirmation(size="xl" scrollable centered hide-footer)
-                section.gap.mx-5
-                  label.common(for="collect") Amount to be Collected + GST [SGD]:
-                  label.common(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
-                    
-                hr
                 .mx-5
-                    h1(style="font-weight:700;") Payment (LIMITED)
-                    h4.my-2.text-danger(style="font-weight:700;") Payment and billing are on hold .
-                    p For the time being you can only do cash payment, but do keep record of the payment details manually untill the full billing and invoice is released.
+                  h3(style="font-weight:700;") Payment Instructions
+                  h5.text-danger(style="font-weight:700;") Payment via QR code is highly recommended.
+                  p Kindly make payment by scanning the PayNow QR code below with a mobile banking application.
                 hr
                     
                 label.common.gap.mx-5.my-2 Mode of Payment:
@@ -435,22 +434,26 @@ div(ref='pdfWholePage')
                         img.checkboxImg.mx-3(src="/form-images/money.png")
                   .col(cols="2")
                     label(for="paynow") 
-                      div.border-danger(:class="(this.modeofpayment == 'paynow') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
-                        input#paynow( v-model="modeofpayment" name="payment" type="radio" value="paynow" disabled) 
+                      div(:class="(this.modeofpayment == 'paynow') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
+                        input#paynow( v-model="modeofpayment" name="payment" type="radio" value="paynow") 
                         |&nbsp;&nbsp;PayNow
                         img.mx-3.my-2(src="/form-images/paynow_logo.png" style="width:100px")
-                  .col(cols="6")
-                    label(for="e-bank") 
-                      div.border-danger(:class="(this.modeofpayment == 'e-bank') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
-                        input#e-bank( v-model="modeofpayment" name="payment" type="radio" value="e-bank" disabled)
-                        |&nbsp;&nbsp;Internet Banking
-                        img.checkboxImg.mx-3(src="/form-images/money_transfer.png")
-                  .col(cols="6")
-                    label(for="cheque")
-                      div.border-danger(:class="(this.modeofpayment == 'cheque') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
-                        input#cheque( v-model="modeofpayment" name="payment" type="radio" value="cheque" disabled)
-                        |&nbsp;&nbsp;Cheque
-                        img.checkboxImg.mx-3(src="/form-images/cheque.png")
+                  //- .col(cols="6")
+                  //-   label(for="e-bank") 
+                  //-     div.border-danger(:class="(this.modeofpayment == 'e-bank') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
+                  //-       input#e-bank( v-model="modeofpayment" name="payment" type="radio" value="e-bank" disabled)
+                  //-       |&nbsp;&nbsp;Internet Banking
+                  //-       img.checkboxImg.mx-3(src="/form-images/money_transfer.png")
+                  //- .col(cols="6")
+                  //-   label(for="cheque")
+                  //-     div.border-danger(:class="(this.modeofpayment == 'cheque') ? 'checkboxSelectionSelected' : 'checkboxSelection'")
+                  //-       input#cheque( v-model="modeofpayment" name="payment" type="radio" value="cheque" disabled)
+                  //-       |&nbsp;&nbsp;Cheque
+                  //-       img.checkboxImg.mx-3(src="/form-images/cheque.png")
+                  section.mx-5.my-4
+                    label.common(for="collect") Total (GST Included):
+                    label.common(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
+                  hr
 
                 section.gap( v-if="this.modeofpayment == 'cash'" style="margin: 20px 60px 60px")
                   label.common(for="collect") Please collect the payment before continuing!
@@ -459,43 +462,44 @@ div(ref='pdfWholePage')
                   p.my-2.text-danger IMPORTANT: For electronic funds transfer, please indicate invoice number as payment reference.
                   
                     
-                    h4.mb-5.text-danger(style="font-weight:700; text-decoration:underline;")
-                    .row 
-                      .col-6 
-                        .d-flex.px-5.mx-2.my-4
-                        b-table-simple(small, borderless, style="max-width:50%;")
-                          b-tr
-                            b-td Bank account name:
-                            b-td Dementia Singapore Ltd - Acc 1
-                          b-tr
-                            b-td Bank account number:
-                            b-td 451-312-912-7
-                          b-tr
-                            b-td UEN for PayNow:
-                            b-td 202111519KDSG
-                          b-tr
-                            b-td Bank:
-                            b-td United Overseas Bank Limited
-                          b-tr
-                            b-td Branch code:
-                            b-td 001
-                          b-tr
-                            b-td Bank address:
-                            b-td
-                              | 80 Raffles Place
-                              br
-                              | Singapore 048624
-                          b-tr
-                            b-td Bank Code:
-                            b-td 7375
-                          b-tr
-                            b-td Bank SWIFT Code:
-                            b-td UOVBSGSG
-                      .col-2
-                        .ml-auto.qrcode
-                          //- vueQrcode(:value="paynowString", :options="qroptions")
-                          img.qr_code(src="/form-images/sample_paynow.png", alt="paynow")
-                      hr
+                    //- h4.mb-5.text-danger(style="font-weight:700; text-decoration:underline;")
+                    //- .row 
+                    //-   .col-6 
+                    //-     .d-flex.px-5.mx-2.my-4
+                    //-     b-table-simple(small, borderless, style="max-width:50%;")
+                    //-       b-tr
+                    //-         b-td Bank account name:
+                    //-         b-td Dementia Singapore Ltd - Acc 1
+                    //-       b-tr
+                    //-         b-td Bank account number:
+                    //-         b-td 451-312-912-7
+                    //-       b-tr
+                    //-         b-td UEN for PayNow:
+                    //-         b-td 202111519KDSG
+                    //-       b-tr
+                    //-         b-td Bank:
+                    //-         b-td United Overseas Bank Limited
+                    //-       b-tr
+                    //-         b-td Branch code:
+                    //-         b-td 001
+                    //-       b-tr
+                    //-         b-td Bank address:
+                    //-         b-td
+                    //-           | 80 Raffles Place
+                    //-           br
+                    //-           | Singapore 048624
+                    //-       b-tr
+                    //-         b-td Bank Code:
+                    //-         b-td 7375
+                    //-       b-tr
+                    //-         b-td Bank SWIFT Code:
+                    //-         b-td UOVBSGSG
+                    //-   .col-2
+                        
+                      hr'
+                  .ml-auto.qrcode
+                      //- vueQrcode(:value="paynowString", :options="qroptions")
+                      img.qr_code(src="/form-images/sample_paynow.png", alt="paynow")
                                     
 
                 section.gap(v-if="this.modeofpayment == 'cheque'" style="margin: 20px 60px 60px")
@@ -506,7 +510,7 @@ div(ref='pdfWholePage')
 
                   
                 section.submitbtn(v-if="modeofpayment" @click="submitassessment")
-                  b-btn(style="background: #917093;font-size: 17px;width: 20%;") Submit
+                  b-btn(style="background: #917093;font-size: 17px;width: 20%;") Done
 
 
               b-modal#pick-session(size="lg" title="Add Session" scrollable centered hide-footer) 
@@ -820,7 +824,7 @@ div(ref='pdfWholePage')
                   .col-sm
                       input.form-control(type="date" v-model="serviceAgreementDate")
                 div.mt-3.d-flex.justify-content-center.align-items-center
-                  b-button.px-5.py-2( v-show="notPDFview" v-if="viewamtcollect" variant="success" v-b-modal.paymentConfirmation) Continue
+                  b-button.px-5.py-2( v-show="notPDFview" v-if="viewamtcollect" variant="success" @click="paymentSubmission" ) Continue to Payment
                 
                 //- .row(v-if="imagesSign")
                 //-   img(:src="'data:image/jpeg;base64,' + imagesSign[0].crb5c_caregiversignature")
@@ -852,6 +856,7 @@ div(ref='pdfWholePage')
   import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
   import axios from 'axios';
   import VueSignatureCanvas from 'vue-signature-canvas';
+  import { createInvoice } from "@/utils/generateInvoiceNumber.mjs";
   import { 
     // mapState, 
     mapMutations, 
@@ -883,6 +888,7 @@ div(ref='pdfWholePage')
         notPDFview: true,
         edit_time: null,
         dateofassessment: '',
+        invoices: [],
         // CIPdays: 0,
         CIPprice: 0,
         caregiverNamePrefilled: '',
@@ -899,7 +905,10 @@ div(ref='pdfWholePage')
           {key:'action', label:'Action'}
         ],
         sessionTableFields:[
-          {key:"session_name", label:"Session Name"},
+          {key:"session_name", label:"Name"},
+          {key:"session_duration", label:"Duration"},
+          {key:"session_type", label:"Type"},
+
           {key:"actions", label:"Actions"}
         ],
         language:null,
@@ -1339,6 +1348,84 @@ div(ref='pdfWholePage')
     clearLocalStorage(){
       localStorage.clear();
     },
+    // async generateInvoice(){
+    //   const invoiceJson = {
+    //     sessions: this.selectedProgrammeSummary.map(item => ({
+    //       id: item.crb5c_fow_session_scheduleid,
+    //       name: item.crb5c_session_id,
+    //       time: item.crb5c_time,
+    //       day: item.crb5c_day,
+    //       type: item.crb5c_sessiontype,
+    //       hrs: item.crb5c_time_hrs
+    //     }))
+    //   };
+    //   return  JSON.stringify(sessionJson)
+    //   },
+    getRecSessions(val){
+      const sessionJson = {
+        sessions: val.map(item => ({
+          id: item.crb5c_fow_session_scheduleid,
+          name: item.crb5c_session_id,
+          time: item.crb5c_time,
+          day: item.crb5c_day,
+          type: item.crb5c_sessiontype,
+          hrs: item.crb5c_time_hrs
+        }))
+      };
+      return  JSON.stringify(sessionJson)
+    },
+    getApplicable(val){
+      const applcableJson = {
+        applicable: val.map(item => ({
+          id: item.crb5c_fowprogrammeid,
+          name: item.crb5c_programmename,
+          cost: item.crb5c_price,
+          type: item.crb5c_type
+        }))
+      };
+      return  JSON.stringify(applcableJson)
+    },
+    async getFeeInfo(val){
+      const feeJson = {
+        fee: val.map(item => ({
+          name: item.name,
+          cost: item.cost,
+          gst: item.noGst ? false : true,
+          date: dayjs(),
+          client_id: this.$store.state.assessment_client_id
+        }))
+      };
+      return  JSON.stringify(feeJson)
+    },
+    async paymentSubmission(){
+      let data = await this.getFeeInfo(this.selectedProgrammeSummary);
+      let invoiceData = JSON.parse(data)
+      // console.log(invoiceData)
+      if(!this.invoices.length){
+        let response = await createInvoice(invoiceData.fee)
+        this.invoices = response;
+        console.log('Invoice created',this.invoices);
+      }
+      this.$bvModal.show("paymentConfirmation");
+    },
+    sessionTypeCheck(val){
+      switch (val) {
+        case 0: return "Group HQ (Centre) Based";
+        case 1: return "One-to-one (Centre) Based";
+        case 2: return "Home Based";
+        case 3: return "Virtual/Online/Zoom";
+        default: return "null";
+      }
+    },
+    sessionDurationCheck(val){
+      let hours = Math.floor(val / 60);
+      let minutes = val % 60;
+      if (hours > 0) {
+        return hours + ' Hour(s) ' + (minutes > 0 ? minutes + ' Minute(s)' : '');
+      } else {
+        return minutes + ' Minute(s)';
+      }
+    },
     editTime(){
       this.dateofassessment = dayjs(this.edit_time).format("YYYY-MM-DD");
       this.$store.commit('assessment_date',this.dateofassessment);
@@ -1448,11 +1535,14 @@ div(ref='pdfWholePage')
                             
       },
       navigateToServiceForm(){
+        // this.getFeeInfo(this.selectedProgrammeSummary);
         // if (!this.adm) {
         //   alert('Please fill up the admission date before proceeding!') 
         //   return
         // }
+
         // this.AutoMatchingSession();
+        // console.log("applicableFeeTotal", this.applicableFeeTotal)
         this.viewServiceForm = true;
       },
       clearadhoc(){
@@ -1519,6 +1609,10 @@ div(ref='pdfWholePage')
         this.$bvModal.show("confrimationModal");
       },
       async removePickedSession(id){
+        if (this.applicableFeeTotal.length) {
+          alert('Un-check any "Applicable Sessions" before removing session')
+          return;
+        }
         this.recommended_session_pick = this.recommended_session_pick.filter((_, index) => index !== id)
         await this.filterFees();
       },
@@ -1823,7 +1917,7 @@ div(ref='pdfWholePage')
         }
         else{
           let data = await this.getSessionScheduleinform();
-          this.schedule_info = data.filter(item => item.crb5c_sessionreporttype != 3);
+          this.schedule_info = data;
           this.schedule_info.sort((a, b) => a.crb5c_day - b.crb5c_day)
           // console.log('schedule_info',this.schedule_info)
           this.$bvModal.show("pick-session");
@@ -1892,6 +1986,7 @@ div(ref='pdfWholePage')
       async getSessionScheduleinform(){
         let paramObj = {
           $select:'crb5c_session_id,crb5c_sessionreporttype,crb5c_sessiontype,crb5c_day,crb5c_duration,crb5c_time,crb5c_time_hrs,crb5c_time_mins,crb5c_session_time_choice',
+          $filter:'crb5c_isactive eq true',
           };
         let params = new URLSearchParams(paramObj);
         let { data: data } = await this.$store.state.axios.get(
@@ -2115,8 +2210,11 @@ div(ref='pdfWholePage')
           crb5c_toteboardincluded: this.subs2 ? 1 : 0,
           crb5c_cip1stsessionformat: this.firstSesFormat,
           crb5c_cip2ndsessionformat: this.secondSesFormat,
+          crb5c_recommendedsessions: this.getRecSessions(this.recommended_session_pick),
+          crb5c_applicablesessions: this.getApplicable(this.applicableFeeTotal),
+          // crb5c_feeinfo: this.getFeeInfo(this.selectedProgrammeSummary),
         };
-          console.log(payload)
+          console.log('payload',payload)
           const { data } = await this.$store.state.axios.post(
             `/crb5c_fowassessmentforms`,payload);
           console.log('data',data)
@@ -2830,7 +2928,7 @@ div(ref='pdfWholePage')
         }
 
          if (this.refundableFeeTotal) {
-          programmeName.push({name: 'Refundable Deposit (No GST)', quantity: 1, cost:this.refundableDeposit})
+          programmeName.push({name: 'Refundable Deposit (No GST)', quantity: 1, cost:this.refundableDeposit, noGst: true})
         }
 
         if (this.subs1 && this.subs1val && this.dsgsubsidy) {
@@ -2946,7 +3044,7 @@ div(ref='pdfWholePage')
         }return 0;
       },
       totalOfApplicable(){
-        if(this.applicableFeeTotal.length ) {
+        if(this.applicableFeeTotal.length && this.applicableFeeTotal.length ) {
           let total_amount = 0;
           for(let totalApplicable of this.applicableFeeTotal){
             total_amount = total_amount + totalApplicable.crb5c_price;
