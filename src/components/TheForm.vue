@@ -509,8 +509,9 @@ div(ref='pdfWholePage')
                         p Kindly indicate name of the client and invoice number at the back of the cheque.
 
                   
-                section.submitbtn(v-if="modeofpayment" @click="submitassessment")
-                  b-btn(style="background: #917093;font-size: 17px;width: 20%;") Done
+                section.submitbtn(v-if="modeofpayment")
+                  b-btn(style="background: #917093;font-size: 17px;width: 20%;" @click="submitassessment") Done
+                  b-btn(style="background: #917093;font-size: 17px;width: 20%;margin-left:10px;" @click="printPopup") Print PDF
 
 
               b-modal#pick-session(size="lg" title="Add Session" scrollable centered hide-footer) 
@@ -871,6 +872,7 @@ div(ref='pdfWholePage')
   dayjs.tz.setDefault(defaultTimezone);
   import "vue-select/dist/vue-select.css";
   import vSelect from "vue-select";
+import generatePDF from "@/utils/generatePDF";
   // import colors from "././scss/colors.scss";
   export default {
     // Deselect,
@@ -1231,7 +1233,7 @@ div(ref='pdfWholePage')
       let today = dayjs().format('YYYY-MM-DD')
       this.serviceAgreementDate = today;
       
-      this.getProgrammeInfos();
+      await this.getProgrammeInfos();
       this.dateofassessment = dayjs().format("YYYY-MM-DD");
       this.$store.commit('assessment_date',this.dateofassessment);
       // console.log('public holiday',this.listPublicHolidayCurrentMonth)
@@ -1240,6 +1242,98 @@ div(ref='pdfWholePage')
     },
     methods: {
     ...mapMutations(['assessmentDataChange']),
+    printPopup(){
+      const data = {
+          // general details
+          name: 'Assessment Form',
+          clientName: this.$store.state.assessment_client_name,
+          clientId: this.$store.state.assessment_client_id,
+          clientNRIC: this.clientdata.crb5c_nricno,
+          caregiverName: this.caregiverPicked,
+          caregiverRelationship: this.clientReationship,
+          dateofassessment: this.$store.state.assessment_date,
+          admissiondate: this.adm,
+
+          // assessment details
+          typeofdementia: this.type,
+          stageofdementia: this.stageof,
+          latestscore: this.latestscore,
+          latestscorevalue: (this.latestscore == 'MOCA') ? this.totalscoreMoca : this.latest,
+          datedone: this.date,
+          sharedcentreobjectivesprogramme: this.checker,
+          watchedcentrevideo: this.checker2,
+          playedtabletopgame: this.checker3,
+           mocascore: (this.isMOCA) ? this.mocaVal : 0,
+          amtscore: (this.isAMT) ? this.amtVal : 0,
+          mmsescore: (this.isMMSE) ? this.mmseVal : 0,
+
+          // visual-spatial & game details
+          playedneeurofitgame: this.neeuro,
+          eq5d5lform: this.checker5,
+          isMocaForm: this.checker4,
+
+          // score of neurofit
+          attentiongame: this.attentionObj.attentiongame,
+          attentionlevel: this.attentionObj.attentionlevel,
+          spatialgame: this.spatialObj.spatialgame,
+          spatiallevel: this.spatialObj.spatiallevel,
+          decisiongame: this.decisionObj.decisiongame,
+          decisionlevel: this.decisionObj.decisionlevel,
+          memorygame: this.memoryObj.memorygame,
+          memorylevel: this.memoryObj.memorylevel,
+          flexibilitygame: this.flexibilityObj.flexibilitygame,
+          Flexibilitylevel: this.flexibilityObj.Flexibilitylevel,
+
+          //moca form
+          educationlevel: this.edulev,
+          educationYear: this.unyearSelected ? '≤ 6 Years' : ' > 6 Years',
+          trailMaking: this.vis1,
+          uploadedImageTrailMaking: this.imageForVis1,
+          copyCube: this.vis2,
+          uploadedImageCopyCube: this.imageForVis2,
+          drawClock: this.vis3,
+          uploadedImageDrawClock: this.imageForVis3,
+          nameLion: this.vis4,
+          nameElephant: this.vis5,
+          nameCamel: this.vis6,
+          attentionGame: {
+            repeatForward: this.vis7,
+            repeatBackward: this.vis17,
+            ableToTap: this.vis8,
+            serial7Subtraction: this.vis9,
+          },
+          languageGame: {
+            repeatFirstSentence: this.vis10,
+            repeatSecondSentence: this.vis11,
+            fluency: this.vis18,
+          },
+          abstractionGame: {
+            similarityTrainBicycle: this.vis13,
+            similarityWatchRuler: this.vis14,
+          },
+          delayedRecall: this.vis15,
+          orientation: this.vis16,
+
+          // eq5d5l score
+          eqmobility: this.eq1,
+          eqselfcare: this.eq2,
+          equsualactivities: this.eq3,
+          eqpaindiscomfort: this.eq4,
+          eqanxietydepression: this.eq5,
+          eqhealthscale: this.healthscale,
+          
+          // comments 
+          commentsaboutclient: this.checking,
+        //service agreement
+          serviceAgreement: this.pdfAgreement,
+          // signature
+          staffSignature: this.staffSignatureImg,
+          caregiverSignature: this.caregiverSignatureImg,
+          
+        };
+
+        generatePDF(data);
+    },
     initSavedData(){
       const rawAssessmentData = localStorage.getItem("assessmentData");
       if(!rawAssessmentData){
@@ -2066,7 +2160,7 @@ div(ref='pdfWholePage')
 
         await this.signatureUploadforStaff(id);
         await this.triggerPDFView();
-        await this.uploadAssessmentFullPDF();
+        // await this.uploadAssessmentFullPDF();
         await this.uploadServiceAgreement();
 
         this.loadingSubmission = false;
