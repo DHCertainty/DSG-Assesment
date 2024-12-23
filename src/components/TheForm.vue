@@ -1,6 +1,8 @@
 <template lang="pug">
 div(ref='pdfWholePage')
-    b-container.main-container.mt-2.mb-4
+    //- b-container(v-if='axiosReady')
+    //-   | axios getting ready
+    b-container().main-container.mt-2.mb-4
       form
           .mb-4
             .row
@@ -458,10 +460,19 @@ div(ref='pdfWholePage')
                 section.gap( v-if="this.modeofpayment == 'cash'" style="margin: 20px 60px 60px")
                   label.common(for="collect") Please collect the payment before continuing!
                 
-                section.gap(v-if="this.modeofpayment == 'paynow' || this.modeofpayment == 'e-bank'" style="margin: 20px 60px 60px")
+                section.gap(v-if="this.modeofpayment == 'paynow' || this.modeofpayment == 'e-bank'" style="margin: 20px 60px 40px")
                   p.my-2.text-danger IMPORTANT: For electronic funds transfer, please indicate invoice number as payment reference.
+                  h4.text-danger(style="font-weight:700; text-decoration:underline;")
+                    u {{invoices[0].crb5c_id}}
+                  div.payment-container
+                    .background-container.my-3
+                      .qr-code-container
+                        vueQrcode(:value="paynowString" :options="{ width: 250, height: 250}" )
+                      .paynow-logo-container.my-1
+                        .logo-background
+                          img(src="/form-images/paynow_logo.png" alt='paynow' style="max-width:100px; height:auto;")
                   
-                    
+            
                     //- h4.mb-5.text-danger(style="font-weight:700; text-decoration:underline;")
                     //- .row 
                     //-   .col-6 
@@ -497,9 +508,8 @@ div(ref='pdfWholePage')
                     //-   .col-2
                         
                       hr'
-                  .ml-auto.qrcode
-                      //- vueQrcode(:value="paynowString", :options="qroptions")
-                      img.qr_code(src="/form-images/sample_paynow.png", alt="paynow")
+                  
+                      
                                     
 
                 section.gap(v-if="this.modeofpayment == 'cheque'" style="margin: 20px 60px 60px")
@@ -510,7 +520,7 @@ div(ref='pdfWholePage')
 
                   
                 section.submitbtn(v-if="modeofpayment" @click="submitassessment")
-                  b-btn(style="background: #917093;font-size: 17px;width: 20%;") Done
+                  b-button(variant="success" style="font-size: 17px;width: 90%;") Done
 
 
               b-modal#pick-session(size="lg" title="Add Session" scrollable centered hide-footer) 
@@ -848,8 +858,8 @@ div(ref='pdfWholePage')
   // import html2canvas from 'html2canvas';
   import * as html2pdf from 'html2pdf.js';
   import {Icon} from '@iconify/vue2';
-  // import PaynowQR from '@chewhx/paynowqr';
-  // import VueQrcode from 'vue-qrcode';
+  import PaynowQR from 'paynowqr'
+  import VueQrcode from '@chenfengyuan/vue-qrcode';
   import utc from "dayjs/plugin/utc";
   import timezone from "dayjs/plugin/timezone"; // dependent on utc plugin
   import isToday from "dayjs/plugin/isToday";
@@ -875,8 +885,11 @@ div(ref='pdfWholePage')
   export default {
     // Deselect,
     // OpenIndicator,
+    
     components: { 
       vSelect,
+      VueQrcode,
+      // PaynowQR,
       // VueQrcode,
       Icon,
       VueSignatureCanvas,
@@ -925,6 +938,7 @@ div(ref='pdfWholePage')
         caregiverClientIc: '',
         serviceAgreementContact: '',
         serviceAgreementEmail: '',
+        serviceAgreementName: '',
         serviceAgreementDate: '',
         imagesSign: [],
         isNeeuroFit: 'NeeuroFIT 6 months subcription',
@@ -1206,14 +1220,13 @@ div(ref='pdfWholePage')
     compatConfig: { MODE: 3 },
     async mounted() {
       this.initSavedData();
-    
       const component = this;
       this.$root.$on('getFormData', function(){
         component.getdatainform();
       })
 
-      const listPublicHoliday = await this.getSGPublicHoliday();
-      this.listPublicHolidayCurrentMonth = this.getPublicHolidayCurrentMonth(listPublicHoliday).length === 0 ? null : this.getPublicHolidayCurrentMonth(listPublicHoliday);
+      // const listPublicHoliday = await this.getSGPublicHoliday();
+      // this.listPublicHolidayCurrentMonth = this.getPublicHolidayCurrentMonth(listPublicHoliday).length === 0 ? null : this.getPublicHolidayCurrentMonth(listPublicHoliday);
       // let getHolidays = await this.getDsgHoliday();
       // // console.log('getHolidays',getHolidays)
       // let dsgHoliday = getHolidays.map(
@@ -1227,16 +1240,14 @@ div(ref='pdfWholePage')
       //   }
       // );
       // this.listPublicHolidayCurrentMonth.push(...dsgHoliday);
+      // console.log('public holiday',this.listPublicHolidayCurrentMonth)
+      // console.log('dsg off', this.dsgOffDay.listDay)
 
       let today = dayjs().format('YYYY-MM-DD')
       this.serviceAgreementDate = today;
       
-      this.getProgrammeInfos();
       this.dateofassessment = dayjs().format("YYYY-MM-DD");
       this.$store.commit('assessment_date',this.dateofassessment);
-      // console.log('public holiday',this.listPublicHolidayCurrentMonth)
-      // console.log('dsg off', this.dsgOffDay.listDay)
-
     },
     methods: {
     ...mapMutations(['assessmentDataChange']),
@@ -1374,6 +1385,16 @@ div(ref='pdfWholePage')
       };
       return  JSON.stringify(sessionJson)
     },
+    async generateEmail(){
+      const response = await axios.post('/api/sendEmail', {
+          cr_email: this.serviceAgreementEmail,
+          cr_name: this.serviceAgreementName,
+          staff_email: this.$store.state.msalAccount[0].username,
+          staff_name: this.$store.state.msalAccount[0].name,
+        });
+      console.log(response.data.message);
+      
+    },
     getApplicable(val){
       const applcableJson = {
         applicable: val.map(item => ({
@@ -1398,6 +1419,10 @@ div(ref='pdfWholePage')
       return  JSON.stringify(feeJson)
     },
     async paymentSubmission(){
+      if (!this.serviceAgreementEmail || !this.serviceAgreementName) {
+        alert('Fill up the caregiver name and email.')
+        return;
+      }
       let data = await this.getFeeInfo(this.selectedProgrammeSummary);
       let invoiceData = JSON.parse(data)
       // console.log(invoiceData)
@@ -1975,12 +2000,13 @@ div(ref='pdfWholePage')
         let { data: data } = await this.$store.state.axios.get(
           `crb5c_fow_customers/?${params.toString()}`
           );
+        // console.log('data',data)
         this.clientdata = data.value[0];
         this.caregiverClientIc = this.clientdata.crb5c_nricno;
         this.caregiverClientName = this.clientdata.crb5c_no;
         this.caregiverDetails = this.clientdata.crb5c_fow_caregiver_client_crb5c_FOW_Cust;
         // console.log('caregiver data',this.caregiverDetails);
-
+        await this.getProgrammeInfos();
 
       },
       async getSessionScheduleinform(){
@@ -1999,11 +2025,21 @@ div(ref='pdfWholePage')
             $select:'crb5c_programmename,crb5c_price,crb5c_type',
           };
           let params = new URLSearchParams(paramObj);
-          let { data } = await this.$store.state.axios.get(
+          try {
+            let { data } = await this.$store.state.axios.get(
             `crb5c_fowprogrammes/?${params.toString()}`
-          );
-          this.programmeInfos = data.value;
-          this.programmeInfos.sort((a, b) => a.crb5c_programmename.localeCompare(b.crb5c_programmename))
+            );
+            if (data) {
+              this.programmeInfos = data.value;
+              this.programmeInfos.sort((a, b) => a.crb5c_programmename.localeCompare(b.crb5c_programmename))
+            }
+            else{
+              console.log('No programmes retrieved')
+            }
+          } catch (error) {
+            console.error('Error fetching programme', error)
+          }
+          
           // console.log('programme data',this.programmeInfos);
     },
     async getImagesInfos(){
@@ -2125,10 +2161,12 @@ div(ref='pdfWholePage')
         console.log('Assessment',pdfSuccsess)
       },
       async submitassessment(){
+
         if (!this.adm) {
           alert('Please fill up the admission date before proceeding!') 
           return
         }
+
         this.loadingSubmission = true;
         this.$bvModal.show("assessmentSubmission");
         this.totalscoreMoca = this.totalscore;
@@ -2220,6 +2258,7 @@ div(ref='pdfWholePage')
           console.log('data',data)
           await this.linkClientProgramme();
           await this.submitServiceAgreement();
+          await this.generateEmail();
 
           this.clearLocalStorage();
         
@@ -2688,9 +2727,11 @@ div(ref='pdfWholePage')
         caregiverPicked(val) {
           const caregiver = this.caregiverDetails.find(c => c.crb5c_fow_caregiverid === val.crb5c_fow_caregiverid);
           if (caregiver) {
+            // console.log('caregiver',caregiver)
             this.clientReationship = caregiver.crb5c_relationship || '';
             this.serviceAgreementContact = caregiver.crb5c_contactnumbermobile || '';
             this.serviceAgreementEmail = caregiver.crb5c_email || '';
+            this.serviceAgreementName = caregiver.crb5c_name || '';
           } else {
             this.clientReationship = '';
             this.serviceAgreementContact = '';
@@ -2885,6 +2926,14 @@ div(ref='pdfWholePage')
 
     },
     computed: {
+      // axiosReady(){
+      //   if (this.$store.state.axios) {
+      //     return true;
+      //   }
+      //   else{
+      //     return false;
+      //   }
+      // },
       CipPrgrammeSummary(){
         let programmeName = [];
 
@@ -2977,23 +3026,23 @@ div(ref='pdfWholePage')
         }
         return 0;
       },
-      // paynowString(){
-      //     let qrcode = new PaynowQR({
-      //         uen:'202111519KDSG',           //Required: UEN of company
-      //         amount : 100,               //Specify amount of money to pay.
-      //         refNumber: 1234567,   //Reference number for Paynow Transaction. Useful if you need to track payments for recouncilation.
-      //         company:  'Dementia Singapore Ltd. - Acc 1'   //Company name to embed in the QR code. Optional.               
-      //       });
-      //       return qrcode.output();
-      // },
-      // qroptions(){
-      //     return{
-      //         errorCorrectionLevel:"H",
-      //         color:{
-      //             dark:"#7C1978"
-      //         }
-      //     }
-      // },
+      paynowString(){
+          let qrcode = new PaynowQR({
+              uen:'202111519KDSG', //Required: UEN of company
+              amount : this.viewamtcollect.toFixed(2), //Specify amount of money to pay.
+              refNumber: this.invoices[0].crb5c_id,  //Reference number for Paynow Transaction. Useful if you need to track payments for recouncilation.
+              company:  'Dementia Singapore Ltd. - Acc 1', //Company name to embed in the QR code. Optional.               
+            });
+            return qrcode.output();
+      },
+      qroptions(){
+          return{
+              errorCorrectionLevel:"H",
+              color:{
+                  dark:"#7C1978"
+              }
+          }
+      },
       is1stAM(){
         return this.firstSesFormat == 0 ? 'AM' : 'PM';
       },
@@ -3365,7 +3414,34 @@ div(ref='pdfWholePage')
     border: 1px solid #ccc;
     border-radius: 5px;
   }
-  
+  .payment-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+}
+
+.qr-code-container {
+  margin: 20px 0;
+}
+
+.background-container {
+  background: linear-gradient(135deg, #ec3965, #972887);
+  padding: 20px;
+  border-radius: 10px;
+  display: inline-block;
+}
+.logo-background {
+  background-color: #ffffff;
+  padding: 5px;
+  border-radius: 5px;
+  display: inline-block;
+}
+.paynow-logo-container {
+  margin-top: 20px;
+}
   select.common {
     display: flex;
     width: 100%;
@@ -3587,5 +3663,7 @@ div(ref='pdfWholePage')
   .main-container{
     border: 1px Solid rgb(255, 255, 255);
   }
+
+
   </style>
   

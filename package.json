@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@azure/msal-browser": "^2.32.2",
+    "@chenfengyuan/vue-qrcode": "^1.0.2",
     "@chewhx/paynowqr": "^1.1.0",
     "@lordicon/element": "^1.4.2",
     "@popperjs/core": "^2.11.8",
@@ -23,8 +24,9 @@
     "jquery": "^3.7.1",
     "lottie-web": "^5.12.2",
     "nodemailer": "^6.9.16",
+    "paynowqr": "^1.1.2",
     "sass": "^1.69.7",
-    "vue": "^2.7.14",
+    "vue": "^2.7.16",
     "vue-html2pdf": "^1.8.0",
     "vue-qrcode": "^2.2.0",
     "vue-router": "^3.5.1",
