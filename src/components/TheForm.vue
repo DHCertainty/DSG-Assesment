@@ -3138,6 +3138,7 @@ import generatePDF from "@/utils/generatePDF";
         }
         return 0;
       },
+      //get list of newly created invoices
       invoicesList(){
         if(this.invoices){
           if(this.invoices.length > 1){
