@@ -40,7 +40,7 @@ export default async (req, res) => {
                         <p>Thank you for trusting us to be a part of this important journey <span style="color: blue;">with your loved one</span>. If you have any questions or need assistance setting up the app, don’t hesitate to reach out.</p>
                         <p>We look forward to working together and making a positive impact to your <span style="color: blue;">loved one</span>!</p>
                         <p style="color: blue;">Best Regards</p>
-                        <p style="color: blue;">From ${staff_name}</p>
+                        <p style="color: blue;">${staff_name}</p>
                     `,
                 },
                 toRecipients: [

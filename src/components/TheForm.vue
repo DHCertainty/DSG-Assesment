@@ -405,7 +405,7 @@ div(ref='pdfWholePage')
                   b-row.mt-4.justify-content-center
                     lord-icon(src="https://cdn.lordicon.com/wzwygmng.json" trigger="loop" delay="1200"  colors="primary:#121331,secondary:#4f1091" state="in-reveal" style="width:350px;height:350px")
                   b-row.my-5.text-center
-                    h6 Submitted successfully, session automation will beginin 5 seconds.
+                    h6 Submitted successfully, session automation will begin in 5 seconds.
 
                 
               b-modal#addAdHocModal.modal_confimration(size="lg" title="Ad-hoc Fee" scrollable centered hide-footer)
