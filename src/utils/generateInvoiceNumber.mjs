@@ -245,3 +245,24 @@ export const createInvoice = async (invData, type="FOW") => {
 
     return invoices;
 }
+
+export const createDeposit = async (depositAmt,client,isPaid) => {
+    const deposit = [];
+    let amt = depositAmt;
+    let ref = 'FOW-Deposit-' + client;
+
+    const payload = {
+        crb5c_depoamount: amt.toString(),
+        crb5c_depopaid: isPaid,
+        crb5c_depositref: ref,
+    };
+    console.log(payload)
+    try {
+        const { data } = await store.state.axios.patch(`/crb5c_fow_customers(${client})`,payload);
+        deposit.push(data);
+    } catch (error) {
+        console.error(`Failed to create deposit`, error);
+    }
+
+    return deposit;
+}

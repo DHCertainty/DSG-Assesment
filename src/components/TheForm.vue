@@ -454,7 +454,11 @@ div(ref='pdfWholePage')
                   //-       img.checkboxImg.mx-3(src="/form-images/cheque.png")
                   section.mx-5.my-4
                     label.common(for="collect") Total (GST Included):
+                    //- b-form-input.input-border-light.rounded(v-model="totalToCollect" size="sm" type="text")  
                     label.common(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
+                    div( style="justify-items: left")
+                      b-form-checkbox.common(v-model="depositPaid") 
+                          span.mx-1 Pay together with Deposit
                   hr
 
                 section.gap( v-if="this.modeofpayment == 'cash'" style="margin: 20px 60px 60px")
@@ -463,7 +467,7 @@ div(ref='pdfWholePage')
                 section.gap(v-if="this.modeofpayment == 'paynow' || this.modeofpayment == 'e-bank'" style="margin: 20px 60px 40px")
                   p.my-2.text-danger IMPORTANT: For electronic funds transfer, please indicate invoice number as payment reference.
                   h4.text-danger(style="font-weight:700; text-decoration:underline;")
-                    u {{invoices[0].crb5c_id}}
+                    u {{invoicesList}}
                   div.payment-container
                     .background-container.my-3
                       .qr-code-container
@@ -867,7 +871,7 @@ div(ref='pdfWholePage')
   import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
   import axios from 'axios';
   import VueSignatureCanvas from 'vue-signature-canvas';
-  import { createInvoice } from "@/utils/generateInvoiceNumber.mjs";
+  import { createInvoice , createDeposit} from "@/utils/generateInvoiceNumber.mjs";
   import { 
     // mapState, 
     mapMutations, 
@@ -899,6 +903,7 @@ import generatePDF from "@/utils/generatePDF";
     // emits: ["newresource"],
     data() {
       return {
+        totalToCollect: 0,
         neeuroFitAuto: false,
         notPDFview: true,
         edit_time: null,
@@ -1023,6 +1028,7 @@ import generatePDF from "@/utils/generatePDF";
         subs1val: null,
         dsgsubsidy: null,
         isCIP: 0,
+        depositPaid: 0,
         firstSesFormat: 0,
         secondSesFormat: 0,
         totalforCIP: 0,
@@ -1479,6 +1485,11 @@ import generatePDF from "@/utils/generatePDF";
       };
       return  JSON.stringify(sessionJson)
     },
+    async addDepo(){
+      let clientId = this.$store.state.assessment_client_id
+      let depo = await createDeposit(this.refundableDeposit,clientId,this.depositPaid)
+      console.log(depo)
+    },
     async generateEmail(){
       const response = await axios.post('/api/sendEmail', {
           cr_email: this.serviceAgreementEmail,
@@ -1517,6 +1528,7 @@ import generatePDF from "@/utils/generatePDF";
         alert('Fill up the caregiver name and email.')
         return;
       }
+
       let data = await this.getFeeInfo(this.selectedProgrammeSummary);
       let invoiceData = JSON.parse(data)
       // console.log(invoiceData)
@@ -1525,6 +1537,7 @@ import generatePDF from "@/utils/generatePDF";
         this.invoices = response;
         console.log('Invoice created',this.invoices);
       }
+      // this.totalToCollect = this.viewamtcollect.toFixed(2);
       this.$bvModal.show("paymentConfirmation");
     },
     sessionTypeCheck(val){
@@ -1654,6 +1667,10 @@ import generatePDF from "@/utils/generatePDF";
                             
       },
       navigateToServiceForm(){
+        if (!this.adm) {
+          alert('Please fill up the admission date before proceeding!') 
+          return
+        }
         // this.getFeeInfo(this.selectedProgrammeSummary);
         // if (!this.adm) {
         //   alert('Please fill up the admission date before proceeding!') 
@@ -2350,10 +2367,11 @@ import generatePDF from "@/utils/generatePDF";
           const { data } = await this.$store.state.axios.post(
             `/crb5c_fowassessmentforms`,payload);
           console.log('data',data)
+
+          await this.addDepo();
           await this.linkClientProgramme();
           await this.submitServiceAgreement();
           await this.generateEmail();
-
           this.clearLocalStorage();
         
     },
@@ -3119,6 +3137,17 @@ import generatePDF from "@/utils/generatePDF";
           return total_amount;
         }
         return 0;
+      },
+      invoicesList(){
+        if(this.invoices){
+          if(this.invoices.length > 1){
+            return this.invoices.map(invoice => invoice.crb5c_id).join(',');
+          }else{
+            return this.invoices[0].crb5c_id
+          }
+        }else{
+          return '';
+        }     
       },
       paynowString(){
           let qrcode = new PaynowQR({
