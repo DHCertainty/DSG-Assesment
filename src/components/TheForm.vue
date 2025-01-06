@@ -455,9 +455,10 @@ div(ref='pdfWholePage')
                   section.mx-5.my-4
                     label.common(for="collect") Total (GST Included):
                     //- b-form-input.input-border-light.rounded(v-model="totalToCollect" size="sm" type="text")  
-                    label.common(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
+                    //- label.common(for="collect" style="font-size:30px") ${{ viewamtcollect.toFixed(2)}}
+                    label.common(for="collect" style="font-size:30px") ${{ toPayAmount.toFixed(2)}}
                     div( style="justify-items: left")
-                      b-form-checkbox.common(v-model="depositPaid") 
+                      b-form-checkbox.common(v-model="depositPaid" v-if="refundableFeeTotal") 
                           span.mx-1 Pay together with Deposit
                   hr
 
@@ -1028,7 +1029,7 @@ import generatePDF from "@/utils/generatePDF";
         subs1val: null,
         dsgsubsidy: null,
         isCIP: 0,
-        depositPaid: 0,
+        depositPaid: true,
         firstSesFormat: 0,
         secondSesFormat: 0,
         totalforCIP: 0,
@@ -2282,7 +2283,7 @@ import generatePDF from "@/utils/generatePDF";
         this.$bvModal.show("assessmentSubmission");
         this.totalscoreMoca = this.totalscore;
         this.totalscoreEq = this.eq5dcounter;
-    
+        
         const payload = { 
           crb5c_typeofdementia: this.type,
           crb5c_stageofdementia: this.stageof,
@@ -2367,6 +2368,8 @@ import generatePDF from "@/utils/generatePDF";
           const { data } = await this.$store.state.axios.post(
             `/crb5c_fowassessmentforms`,payload);
           console.log('data',data)
+
+          
 
           await this.addDepo();
           await this.linkClientProgramme();
@@ -3152,7 +3155,7 @@ import generatePDF from "@/utils/generatePDF";
       paynowString(){
           let qrcode = new PaynowQR({
               uen:'202111519KDSG', //Required: UEN of company
-              amount : this.viewamtcollect.toFixed(2), //Specify amount of money to pay.
+              amount : this.toPayAmount.toFixed(2), //Specify amount of money to pay.
               refNumber: this.invoices[0].crb5c_id,  //Reference number for Paynow Transaction. Useful if you need to track payments for recouncilation.
               company:  'Dementia Singapore Ltd. - Acc 1', //Company name to embed in the QR code. Optional.               
             });
@@ -3262,6 +3265,15 @@ import generatePDF from "@/utils/generatePDF";
           return (GSTtotal + cipCost + addHocAdditional + refundable - dsgsubsidiyval ) + (totalTransportFeeWithGST *  this.CIPdays);
         }
 
+      },
+      toPayAmount(){
+        if(this.depositPaid){
+          return this.viewamtcollect;
+        }
+        else{
+          return (this.viewamtcollect - (this.refundableFeeTotal ? this.refundableDeposit : 0));
+        }
+        
       },
       viewamtcollect(){      
         let refundable = this.refundableFeeTotal ? this.refundableDeposit : 0;
