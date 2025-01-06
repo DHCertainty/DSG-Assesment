@@ -252,10 +252,10 @@ export const createDeposit = async (depositAmt,client,isPaid) => {
     let ref = 'FOW-Deposit-' + client;
 
     const payload = {
-        crb5c_depoamount: amt.toString(),
-        crb5c_depopaid: isPaid,
-        crb5c_depositref: ref,
         crb5c_initialassessment: true,
+        crb5c_depoamount: isPaid ? amt.toString() : '',
+        crb5c_depopaid: isPaid,
+        crb5c_depositref: isPaid ? ref : '',
     };
     console.log(payload)
     try {
