@@ -7,6 +7,7 @@ div(ref='pdfWholePage')
           .mb-4
             .row
               .col-auto
+                b-button.mx-2(variant='danger' @click='clearLocalStorage') Clear Form
                 label Date: 
                   span(style="font-weight: bold;").mx-2 {{ dateofassessment }}
                   span
@@ -1459,6 +1460,8 @@ import generatePDF from "@/utils/generatePDF";
     },
     clearLocalStorage(){
       localStorage.clear();
+      location.reload();
+
     },
     // async generateInvoice(){
     //   const invoiceJson = {
@@ -2369,13 +2372,11 @@ import generatePDF from "@/utils/generatePDF";
             `/crb5c_fowassessmentforms`,payload);
           console.log('data',data)
 
-          
-
           await this.addDepo();
           await this.linkClientProgramme();
           await this.submitServiceAgreement();
           await this.generateEmail();
-          this.clearLocalStorage();
+          localStorage.clear();
         
     },
     async sessionAutomation(){
