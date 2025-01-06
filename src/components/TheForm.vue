@@ -258,7 +258,7 @@ div(ref='pdfWholePage')
                 section
                     .formed
                       .formed
-                        b-form-checkbox.mb-2(v-model="subs1" name="subsidy1" type="checkbox" value="dsg1") &nbsp;DSG
+                        b-form-checkbox.mb-2(v-model="subs1" name="subsidy1" type="checkbox" value="dsg1" disabled) &nbsp;DSG
                         .row.my-2(v-show="subs1")
                             .col-md-2 
                               input.numbers#means(name="means" type="number" min="20" v-model="subs1val")
