@@ -3,7 +3,7 @@
 import * as html2pdf from 'html2pdf.js';
 import logo from '../assets/logo.png';
 
-export default function generatePDF(data) {
+export default async function generatePDF(data) {
     console.log(data);
     const printContent = `
         <html>
@@ -203,11 +203,11 @@ export default function generatePDF(data) {
                     <div class="section-header">Moca Score</div>
                     <p>Education Level: ${data.educationlevel}</p>
                     <p>Education Year: ${data.educationYear}</p>
-                    ${data.uploadedImageTrailMaking ? `<img class="uploaded-image-moca" src="${data.uploadedImageTrailMaking}" alt="Trail Making" />` : ''}
+                    ${data.uploadedImageTrailMaking ? `<img class="uploaded-image-moca" src="${data.uploadedImageTrailMaking?.url}" alt="Trail Making" />` : ''}
                     <p>Trail Making: ${data.trailMaking}</p>
-                    ${data.uploadedImageCopyCube ? `<img class="uploaded-image-moca" src="${data.uploadedImageCopyCube}" alt="Copy Cube" />` : ''}
+                    ${data.uploadedImageCopyCube ? `<img class="uploaded-image-moca" src="${data.uploadedImageCopyCube?.url}" alt="Copy Cube" />` : ''}
                     <p>Copy Cube: ${data.copyCube}</p>
-                    ${data.uploadedImageDrawClock ? `<img class="uploaded-image-moca" src="${data.uploadedImageDrawClock}" alt="Draw Clock" />` : ''}
+                    ${data.uploadedImageDrawClock ? `<img class="uploaded-image-moca" src="${data.uploadedImageDrawClock?.url}" alt="Draw Clock" />` : ''}
                     <p>Draw Clock: ${data.drawClock}</p>
                     <p>Named Lion: ${data.nameLion}</p>
                     <p>Named Elephant: ${data.nameElephant}</p>

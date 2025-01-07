@@ -129,17 +129,22 @@ div(ref='pdfWholePage')
                     img(@click="pick_answer_naming('1')").image_container_number(src="/form-images/number.png")
                   .row
                     label Alternating Trail Making:
-                    v-select(v-model="vis1" :options="['0', '1']" :clearable="false")
+                    v-select(v-model="vis1" :options="['0', '1']" :clearable="false")  
+                    input(type="file" @change="uploadImage($event, 'vis1')")
+                    
+
                 .col-sm-6 
                   .row.mb-4
                     img(@click="pick_answer_naming('2')").image_container_cube(src="/form-images/cube.png")
                   .row
                     label Copy Cube:
                     v-select(v-model="vis2" :options="['0', '1']" :clearable="false") 
-  
+                    input(type="file" @change="uploadImage($event, 'vis2')")
+
   
                 label.gap Draw Clock(Ten past eleven) [3 Points]
                 v-select(multiple v-model="vis3" :options="dclock" :clearable="false") 
+                input(type="file" @change="uploadImage($event, 'vis3')")
               .row 
                 p.common.gap Naming
                   .row.center_items_row.mb-4
@@ -873,6 +878,7 @@ div(ref='pdfWholePage')
   import "vue-select/dist/vue-select.css";
   import vSelect from "vue-select";
 import generatePDF from "@/utils/generatePDF";
+import { uploadFileToSharePoint } from "@/utils/sharepoint.mjs";
   // import colors from "././scss/colors.scss";
   export default {
     // Deselect,
@@ -1109,6 +1115,9 @@ import generatePDF from "@/utils/generatePDF";
         vis16: [],
         vis17: [0],
         vis18: [],
+        imageForVis1:{},
+        imageForVis2:{},
+        imageForVis3:{},
         eq1: 0,
         eq2: 0,
         eq3: 0,
@@ -1241,6 +1250,32 @@ import generatePDF from "@/utils/generatePDF";
 
     },
     methods: {
+     uploadImage(event, type){
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        if(type === 'vis1'){
+          
+          this.imageForVis1 = {
+            file,
+            url: reader.result
+          };
+        }else if(type === 'vis2'){
+          
+          this.imageForVis2 = {
+            file,
+            url: reader.result
+          }
+        }else if(type === 'vis3'){
+          
+          this.imageForVis3 = {
+            file,
+            url: reader.result
+          }
+        }
+      }
+      reader.readAsDataURL(file);
+    },
     ...mapMutations(['assessmentDataChange']),
     printPopup(){
       const data = {
@@ -2227,8 +2262,47 @@ import generatePDF from "@/utils/generatePDF";
         this.$bvModal.show("assessmentSubmission");
         this.totalscoreMoca = this.totalscore;
         this.totalscoreEq = this.eq5dcounter;
-    
+
+        const folderPath = `OMS_DATA/UAT/Clients/${data?.clientName}/Assessments/Uploads`;
+        let imageForVis1Uploaded = null;
+        let imageForVis2Uploaded = null;
+        let imageForVis3Uploaded = null;
+        if (this.imageForVis1.file) {
+           imageForVis1Uploaded = await uploadFileToSharePoint(this.imageForVis1, folderPath);
+        }
+        if (this.imageForVis2.file) {
+           imageForVis2Uploaded = await uploadFileToSharePoint(this.imageForVis2, folderPath);
+        }
+        if (this.imageForVis3.file) {
+           imageForVis3Uploaded = await uploadFileToSharePoint(this.imageForVis3, folderPath);
+        }
+        let uploadedImage = [];
+
+        if (imageForVis1Uploaded) {
+          uploadedImage.push({
+            name: "imageForVis1",
+            id: imageForVis1Uploaded?.data?.id,
+            downloadURL: imageForVis1Uploaded?.data["@microsoft.graph.downloadUrl"],
+          });
+        }
+
+        if (imageForVis2Uploaded) {
+          uploadedImage.push({
+            name: "imageForVis2",
+            id: imageForVis2Uploaded?.data?.id,
+            downloadURL: imageForVis2Uploaded?.data["@microsoft.graph.downloadUrl"],
+          });
+        }
+
+        if (imageForVis3Uploaded) {
+          uploadedImage.push({
+            name: "imageForVis3",
+            id: imageForVis3Uploaded?.data?.id,
+            downloadURL: imageForVis3Uploaded?.data["@microsoft.graph.downloadUrl"],
+          });
+        }
         const payload = { 
+          crb5c_imagesuploaded: JSON.stringify(uploadedImage),
           crb5c_typeofdementia: this.type,
           crb5c_stageofdementia: this.stageof,
           // crb5c_latestscoreon: this.latestscore,
