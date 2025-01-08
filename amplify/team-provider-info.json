@@ -21,7 +21,7 @@
       "function": {
         "dsgassessment": {
           "deploymentBucketName": "amplify-dsgassessment-dev-143733-deployment",
-          "s3Key": "amplify-builds/dsgassessment-6f546941574738597530-build.zip"
+          "s3Key": "amplify-builds/dsgassessment-50637a6934587079632f-build.zip"
         }
       },
       "api": {

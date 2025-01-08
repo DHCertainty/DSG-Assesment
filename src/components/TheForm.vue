@@ -840,8 +840,11 @@ div(ref='pdfWholePage')
                       p Date:
                   .col-sm
                       input.form-control(type="date" v-model="serviceAgreementDate")
-                div.mt-3.d-flex.justify-content-center.align-items-center
+                div.mt-5.d-flex.align-items-center.justify-content-between
                   b-button.px-5.py-2( v-show="notPDFview" v-if="viewamtcollect" variant="success" @click="paymentSubmission" ) Continue to Payment
+                  b-button.px-5.py-2( v-show="notPDFview" v-if="viewamtcollect" variant="danger" @click="skipPayment" ) Skip Payment
+                  //- b-form-checkbox.mx-3.common(v-model="skipInvoice") 
+                  //-         span.mx-1 Skip Invoice
                 
                 //- .row(v-if="imagesSign")
                 //-   img(:src="'data:image/jpeg;base64,' + imagesSign[0].crb5c_caregiversignature")
@@ -905,6 +908,7 @@ import generatePDF from "@/utils/generatePDF";
     // emits: ["newresource"],
     data() {
       return {
+        formCompleted: false,
         totalToCollect: 0,
         neeuroFitAuto: false,
         notPDFview: true,
@@ -1031,6 +1035,7 @@ import generatePDF from "@/utils/generatePDF";
         dsgsubsidy: null,
         isCIP: 0,
         depositPaid: true,
+        // skipInvoice: false,
         firstSesFormat: 0,
         secondSesFormat: 0,
         totalforCIP: 0,
@@ -1229,11 +1234,13 @@ import generatePDF from "@/utils/generatePDF";
     },
     compatConfig: { MODE: 3 },
     async mounted() {
+      window.addEventListener('beforeunload', this.handleExit);
       this.initSavedData();
       const component = this;
       this.$root.$on('getFormData', function(){
         component.getdatainform();
       })
+      
 
       // const listPublicHoliday = await this.getSGPublicHoliday();
       // this.listPublicHolidayCurrentMonth = this.getPublicHolidayCurrentMonth(listPublicHoliday).length === 0 ? null : this.getPublicHolidayCurrentMonth(listPublicHoliday);
@@ -1259,7 +1266,17 @@ import generatePDF from "@/utils/generatePDF";
       this.dateofassessment = dayjs().format("YYYY-MM-DD");
       this.$store.commit('assessment_date',this.dateofassessment);
     },
+    beforeUnmount(){
+      window.removeEventListener('beforeunload', this.handleExit);
+    },
     methods: {
+      handleExit(event){
+        if (!this.formCompleted) {
+          const alertMessage = "You are about to leave? Unsaved changes will be lost.";
+          event.returnValue = alertMessage;
+          return alertMessage;
+        }
+      },
     ...mapMutations(['assessmentDataChange']),
     printPopup(){
       const data = {
@@ -1527,6 +1544,13 @@ import generatePDF from "@/utils/generatePDF";
       };
       return  JSON.stringify(feeJson)
     },
+    async skipPayment(){
+      let result = confirm('You are about to skip payment and submit assessment!')
+      if (!result) {
+        return;
+      }
+      this.submitassessment();
+    },
     async paymentSubmission(){
       if (!this.serviceAgreementEmail || !this.serviceAgreementName) {
         alert('Fill up the caregiver name and email.')
@@ -1536,13 +1560,15 @@ import generatePDF from "@/utils/generatePDF";
       let data = await this.getFeeInfo(this.selectedProgrammeSummary);
       let invoiceData = JSON.parse(data)
       // console.log(invoiceData)
+
       if(!this.invoices.length){
-        let response = await createInvoice(invoiceData.fee)
-        this.invoices = response;
-        console.log('Invoice created',this.invoices);
+      let response = await createInvoice(invoiceData.fee)
+      this.invoices = response;
+      console.log('Invoice created',this.invoices);
       }
-      // this.totalToCollect = this.viewamtcollect.toFixed(2);
       this.$bvModal.show("paymentConfirmation");
+      // this.totalToCollect = this.viewamtcollect.toFixed(2);
+      
     },
     sessionTypeCheck(val){
       switch (val) {
@@ -2376,6 +2402,7 @@ import generatePDF from "@/utils/generatePDF";
           await this.linkClientProgramme();
           await this.submitServiceAgreement();
           await this.generateEmail();
+          this.formCompleted = true;
           localStorage.clear();
         
     },
